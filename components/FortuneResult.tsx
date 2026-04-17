@@ -24,6 +24,9 @@ export default function FortuneResult() {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
   const [exporting, setExporting] = useState(false)
   const [exportingHtml, setExportingHtml] = useState(false)
+  const [hideName, setHideName] = useState(false)
+  const [hideBirth, setHideBirth] = useState(false)
+  const [shareToast, setShareToast] = useState('')
   const exportRef = useRef<HTMLDivElement>(null)
 
   const tabs: { id: TabId; label: string; icon: string }[] = [
@@ -146,6 +149,65 @@ ${exportRef.current.innerHTML}
     }
   }
 
+  async function handleShare() {
+    if (!exportRef.current || !reading) return
+    const { input, fortune } = reading
+    const date = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'zh-CN').replace(/\//g, '-')
+    const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : input.name
+    const title = lang === 'en' ? `${displayName}'s Destiny Report` : `${displayName} 命理报告`
+
+    // 生成 HTML 内容（复用导出逻辑的 CSS，但用 exportRef 内容）
+    const htmlContent = `<!DOCTYPE html>
+<html lang="${lang}">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${title}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg-deep:#060412;--bg-card:#0f0a1e;--bg-card2:#150e28;--gold:#d4af37;--gold-light:#f0d060;--rose:#c97b84;--purple:#7c3aed;--purple-light:#a78bfa;--text-primary:#f0e8ff;--text-muted:#9080b0;--border:rgba(212,175,55,0.2)}
+body{background:var(--bg-deep);color:var(--text-primary);font-family:'PingFang SC','Microsoft YaHei',sans-serif;padding:32px 20px;line-height:1.6}
+.mystic-card{background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-card2) 100%);border:1px solid var(--border);border-radius:16px;position:relative;overflow:hidden}
+.mystic-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,175,55,0.03) 0%,transparent 60%);pointer-events:none}
+.gold-card{background:linear-gradient(135deg,rgba(212,175,55,0.05) 0%,rgba(124,58,237,0.05) 100%);border:1px solid rgba(212,175,55,0.3);border-radius:12px}
+.text-gold-gradient{background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 50%,var(--rose) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.score-ring{filter:drop-shadow(0 0 8px rgba(212,175,55,0.4))}.fortune-bar{height:6px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden}.fortune-bar-fill{height:100%;border-radius:3px}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:.75rem;font-weight:500}
+.space-y-4>*+*{margin-top:1rem}.space-y-3>*+*{margin-top:.75rem}.space-y-2>*+*{margin-top:.5rem}.space-y-8>*+*{margin-top:2rem}
+.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.flex-col{flex-direction:column}
+.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.flex-1{flex:1}.flex-shrink-0{flex-shrink:0}.flex-wrap{flex-wrap:wrap}
+.grid{display:grid}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@media(min-width:768px){.md\\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.p-4{padding:1rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-4{padding-left:1rem;padding-right:1rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.pb-4{padding-bottom:1rem}
+.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}
+.text-xs{font-size:.75rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.text-3xl{font-size:1.875rem}
+.font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}
+.leading-relaxed{line-height:1.625}.text-center{text-align:center}.text-right{text-align:right}
+.w-16{width:4rem}.w-8{width:2rem}.w-full{width:100%}.relative{position:relative}.absolute{position:absolute}.inset-0{inset:0}
+.overflow-hidden{overflow:hidden}.whitespace-pre-wrap{white-space:pre-wrap}
+</style></head><body>
+<div style="max-width:760px;margin:0 auto">${exportRef.current.innerHTML}</div>
+</body></html>`
+
+    const filename = `${displayName}_${lang === 'en' ? 'destiny_report' : '命理报告'}_${date}.html`
+    const file = new File([htmlContent], filename, { type: 'text/html' })
+
+    try {
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title })
+      } else if (navigator.share) {
+        await navigator.share({ title, text: lang === 'en'
+          ? `Check out this destiny reading from MysticOracle!`
+          : `来自 MysticOracle 的命理解读报告` })
+      } else {
+        // 降级：下载文件
+        const url = URL.createObjectURL(file)
+        const a = document.createElement('a'); a.href = url; a.download = filename; a.click()
+        URL.revokeObjectURL(url)
+        setShareToast(lang === 'en' ? 'Report downloaded!' : '报告已下载')
+        setTimeout(() => setShareToast(''), 2500)
+      }
+    } catch {
+      // 用户取消，不处理
+    }
+  }
+
   if (!reading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -159,23 +221,43 @@ ${exportRef.current.innerHTML}
 
   const { bazi, sunSign, numerology, ziwei, tarotCards, liuyao, meihua, runes, humanDesign, vedic, xingming, fortune, input } = reading
   const periodLabel = tr.result.periodLabels[input.period]
+  const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : input.name
+  const displayBirth = hideBirth
+    ? (lang === 'en' ? '????-??-??' : '****年**月**日')
+    : (lang === 'en'
+        ? `${input.birthYear}/${input.birthMonth}/${input.birthDay}${input.birthHour !== null ? ` ${input.birthHour}:00` : ''}`
+        : `${input.birthYear}年${input.birthMonth}月${input.birthDay}日${input.birthHour !== null ? ` ${input.birthHour}时` : ''}`)
+
+  function PrivacyChip({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+    return (
+      <button onClick={onClick} className="text-xs px-2 py-0.5 rounded-full transition-all" style={{
+        background: active ? 'rgba(201,123,132,0.15)' : 'rgba(255,255,255,0.05)',
+        border: `1px solid ${active ? 'rgba(201,123,132,0.4)' : 'rgba(255,255,255,0.12)'}`,
+        color: active ? 'var(--rose)' : 'var(--text-muted)',
+      }}>
+        {active ? '🙈' : '👁'} {label}
+      </button>
+    )
+  }
 
   return (
     <div className="min-h-screen relative z-10 pb-16">
       <div className="max-w-2xl mx-auto px-4 pt-8">
         {/* 头部 */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <div className="text-4xl mb-2">🔮</div>
           <h1 className="text-2xl font-bold mb-1">
-            <span className="text-gold-gradient">{input.name}</span>
+            <span className="text-gold-gradient">{displayName}</span>
             <span className="text-lg font-normal ml-2" style={{ color: 'var(--text-muted)' }}>{tr.result.subtitleSuffix(periodLabel)}</span>
           </h1>
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {input.birthYear}年{input.birthMonth}月{input.birthDay}日
-            {input.birthHour !== null ? ` ${input.birthHour}时` : ''} ·
-            {input.gender === 'female' ? ' 女' : ' 男'} ·
-            {tr.result.info12}
+          <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+            {displayBirth} · {input.gender === 'female' ? (lang === 'en' ? 'Female' : '女') : (lang === 'en' ? 'Male' : '男')} · {tr.result.info12}
           </p>
+          {/* 隐私开关 */}
+          <div className="flex gap-2 justify-center">
+            <PrivacyChip active={hideName}  onClick={() => setHideName(v => !v)}  label={lang === 'en' ? 'Hide name'       : '隐藏姓名'} />
+            <PrivacyChip active={hideBirth} onClick={() => setHideBirth(v => !v)} label={lang === 'en' ? 'Hide birth info'  : '隐藏生辰'} />
+          </div>
         </div>
 
         {/* 标签导航 */}
@@ -235,7 +317,12 @@ ${exportRef.current.innerHTML}
         </div>
 
         {/* 操作按钮 */}
-        <div className="flex gap-3 mt-8">
+        {shareToast && (
+          <div className="mt-6 py-2 text-center text-sm rounded-xl" style={{ background: 'rgba(124,58,237,0.12)', color: 'var(--purple-light)', border: '1px solid rgba(124,58,237,0.25)' }}>
+            {shareToast}
+          </div>
+        )}
+        <div className="flex gap-3 mt-4">
           <button
             onClick={handleExport}
             disabled={exporting}
@@ -260,7 +347,18 @@ ${exportRef.current.innerHTML}
               cursor: exportingHtml ? 'not-allowed' : 'pointer',
             }}
           >
-            {exportingHtml ? tr.result.exporting : (lang === 'en' ? '🌐 Export HTML' : '🌐 导出 HTML')}
+            {exportingHtml ? tr.result.exporting : (lang === 'en' ? '🌐 HTML' : '🌐 导出')}
+          </button>
+          <button
+            onClick={handleShare}
+            className="flex-1 py-3 rounded-xl text-sm font-medium transition-all"
+            style={{
+              background: 'rgba(201,123,132,0.12)',
+              border: '1px solid rgba(201,123,132,0.35)',
+              color: 'var(--rose)',
+            }}
+          >
+            {lang === 'en' ? '🔗 Share' : '🔗 分享'}
           </button>
         </div>
         <div className="flex gap-3">
