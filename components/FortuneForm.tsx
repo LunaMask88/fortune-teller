@@ -16,6 +16,7 @@ export default function FortuneForm() {
   const router = useRouter()
   const { tr, lang } = useLang()
   const [loading, setLoading] = useState(false)
+  const [progress, setProgress] = useState<{ step: string; pct: number } | null>(null)
   const [error, setError] = useState('')
   const [timeUnknown, setTimeUnknown] = useState(false)
 
@@ -47,6 +48,7 @@ export default function FortuneForm() {
     if (!form.name.trim()) { setError(tr.form.errorName); return }
     setError('')
     setLoading(true)
+    setProgress({ step: lang === 'en' ? 'Starting…' : '启动中…', pct: 5 })
 
     try {
       const resp = await fetch('/api/fortune', {
@@ -55,13 +57,36 @@ export default function FortuneForm() {
         body: JSON.stringify({ ...form, lang }),
       })
       if (!resp.ok) throw new Error(tr.form.errorFailed)
-      const data: FullReading = await resp.json()
-      // 将结果存入 sessionStorage，result 页面读取
-      sessionStorage.setItem('fortune_reading', JSON.stringify(data))
-      router.push('/result')
+
+      // 读取 SSE 流
+      const reader = resp.body!.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() ?? ''
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue
+          const event = JSON.parse(line.slice(6))
+          if (event.type === 'progress') {
+            setProgress({ step: event.step, pct: event.pct })
+          } else if (event.type === 'result') {
+            sessionStorage.setItem('fortune_reading', JSON.stringify(event.data))
+            router.push('/result')
+          } else if (event.type === 'error') {
+            throw new Error(event.message)
+          }
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : tr.form.errorRetry)
       setLoading(false)
+      setProgress(null)
     }
   }
 
@@ -289,12 +314,38 @@ export default function FortuneForm() {
           </p>
         )}
 
+        {/* 进度条（loading 时显示） */}
+        {loading && progress && (
+          <div className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(212,175,55,0.06)', border: '1px solid rgba(212,175,55,0.2)' }}>
+            <div className="flex items-center justify-between text-xs" style={{ color: 'var(--gold)' }}>
+              <span className="flex items-center gap-1.5">
+                <span className="animate-spin inline-block">✦</span>
+                {progress.step}
+              </span>
+              <span>{progress.pct}%</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${progress.pct}%`,
+                  background: 'linear-gradient(90deg, #d4af37 0%, #a78bfa 100%)',
+                  boxShadow: '0 0 8px rgba(212,175,55,0.5)',
+                }}
+              />
+            </div>
+            <p className="text-xs text-center" style={{ color: 'var(--text-muted)' }}>
+              {lang === 'en' ? 'Please wait, this usually takes 20–40 seconds' : '请稍候，通常需要 20–40 秒'}
+            </p>
+          </div>
+        )}
+
         <button
           type="submit"
           disabled={loading}
           className="w-full py-4 rounded-xl font-semibold text-base transition-all"
           style={{
-            background: loading ? 'rgba(212,175,55,0.3)' : 'linear-gradient(135deg, #d4af37 0%, #b8952e 100%)',
+            background: loading ? 'rgba(212,175,55,0.15)' : 'linear-gradient(135deg, #d4af37 0%, #b8952e 100%)',
             color: loading ? 'var(--text-muted)' : '#0a0a0a',
             cursor: loading ? 'not-allowed' : 'pointer',
             boxShadow: loading ? 'none' : '0 4px 20px rgba(212,175,55,0.3)',
