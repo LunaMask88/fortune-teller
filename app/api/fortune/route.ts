@@ -13,11 +13,6 @@ import { calculateVedic } from '@/lib/vedic'
 import { analyzeXingming } from '@/lib/xingming'
 import type { UserInput, FullReading } from '@/types'
 
-const client = new OpenAI({
-  apiKey: process.env.DEEPSEEK_API_KEY!,
-  baseURL: 'https://api.deepseek.com',
-})
-
 const PERIOD_TEXT = { today: '今日', month: '本月', year: '今年' }
 const PERIOD_TEXT_EN = { today: 'Daily', month: 'Monthly', year: 'Annual' }
 
@@ -130,6 +125,11 @@ ${hasQuestions ? '3. 在 answers 数组中逐一回答用户的问题，每题2-
 }
 luckyItems 需 7-9 个，覆盖水晶/符文/颜色/数字/植物/饰品/香薰等多种类别。`}
 `
+
+  const client = new OpenAI({
+    apiKey: process.env.DEEPSEEK_API_KEY!,
+    baseURL: 'https://api.deepseek.com',
+  })
 
   try {
     const response = await client.chat.completions.create({
