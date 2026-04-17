@@ -1,0 +1,312 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import type { UserInput, FullReading } from '@/types'
+import { useLang } from '@/contexts/LangContext'
+
+const HOURS = Array.from({ length: 24 }, (_, i) => i)
+function hourLabel(h: number) {
+  const names = ['子', '子', '丑', '丑', '寅', '寅', '卯', '卯', '辰', '辰', '巳', '巳',
+                 '午', '午', '未', '未', '申', '申', '酉', '酉', '戌', '戌', '亥', '亥']
+  return `${String(h).padStart(2, '0')}:00（${names[h]}时）`
+}
+
+export default function FortuneForm() {
+  const router = useRouter()
+  const { tr, lang } = useLang()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [timeUnknown, setTimeUnknown] = useState(false)
+
+  const [form, setForm] = useState<UserInput>({
+    name: '',
+    birthYear: 1990,
+    birthMonth: 1,
+    birthDay: 1,
+    birthHour: 12,
+    gender: 'female',
+    period: 'today',
+    context: '',
+    questions: [],
+  })
+
+  function set<K extends keyof UserInput>(key: K, value: UserInput[K]) {
+    setForm(f => ({ ...f, [key]: value }))
+  }
+
+  // ★ 用户决策点：出生时间不知道时的处理策略
+  // 选择：(a) 用午时(12)作为默认 (b) 完全跳过时柱计算 (c) 提示用户尽量填写
+  function handleTimeUnknown(unknown: boolean) {
+    setTimeUnknown(unknown)
+    set('birthHour', unknown ? null : 12)
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!form.name.trim()) { setError(tr.form.errorName); return }
+    setError('')
+    setLoading(true)
+
+    try {
+      const resp = await fetch('/api/fortune', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, lang }),
+      })
+      if (!resp.ok) throw new Error(tr.form.errorFailed)
+      const data: FullReading = await resp.json()
+      // 将结果存入 sessionStorage，result 页面读取
+      sessionStorage.setItem('fortune_reading', JSON.stringify(data))
+      router.push('/result')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : tr.form.errorRetry)
+      setLoading(false)
+    }
+  }
+
+  const PERIOD_OPTIONS = [
+    { value: 'today', label: tr.form.periods.today.label, icon: tr.form.periods.today.icon },
+    { value: 'month', label: tr.form.periods.month.label, icon: tr.form.periods.month.icon },
+    { value: 'year',  label: tr.form.periods.year.label,  icon: tr.form.periods.year.icon },
+  ] as const
+
+  return (
+    <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto px-4 py-8">
+      <div className="mystic-card p-6 md:p-8 space-y-6">
+        {/* 姓名 */}
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>
+            {tr.form.name} <span style={{ color: 'var(--rose)' }}>*</span>
+          </label>
+          <input
+            className="mystic-input"
+            placeholder={tr.form.namePlaceholder}
+            value={form.name}
+            onChange={e => set('name', e.target.value)}
+          />
+          <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>{tr.form.nameHint}</p>
+        </div>
+
+        {/* 性别 */}
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>{tr.form.gender}</label>
+          <div className="flex gap-3">
+            {(['female', 'male'] as const).map(g => (
+              <button
+                key={g}
+                type="button"
+                onClick={() => set('gender', g)}
+                className="flex-1 py-3 rounded-xl text-sm font-medium transition-all"
+                style={{
+                  background: form.gender === g ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.04)',
+                  border: `1px solid ${form.gender === g ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.1)'}`,
+                  color: form.gender === g ? 'var(--gold)' : 'var(--text-muted)',
+                }}
+              >
+                {g === 'female' ? `♀ ${tr.form.female}` : `♂ ${tr.form.male}`}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 出生日期 */}
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>
+            {tr.form.birthDate} <span style={{ color: 'var(--rose)' }}>*</span>
+          </label>
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <input
+                type="number" className="mystic-input text-center"
+                min={1900} max={2024} value={form.birthYear}
+                onChange={e => set('birthYear', parseInt(e.target.value) || 1990)}
+                placeholder={tr.form.year}
+              />
+              <p className="text-xs text-center mt-1" style={{ color: 'var(--text-muted)' }}>{tr.form.year}</p>
+            </div>
+            <div>
+              <select
+                className="mystic-input"
+                value={form.birthMonth}
+                onChange={e => set('birthMonth', parseInt(e.target.value))}
+              >
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>{i + 1} {tr.form.month}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <select
+                className="mystic-input"
+                value={form.birthDay}
+                onChange={e => set('birthDay', parseInt(e.target.value))}
+              >
+                {Array.from({ length: 31 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>{i + 1} {tr.form.day}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* 出生时辰 */}
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>{tr.form.birthHour}</label>
+          <label className="flex items-center gap-2 mb-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={timeUnknown}
+              onChange={e => handleTimeUnknown(e.target.checked)}
+              className="w-4 h-4 rounded"
+              style={{ accentColor: 'var(--gold)' }}
+            />
+            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{tr.form.timeUnknown}</span>
+          </label>
+          {!timeUnknown && (
+            <select
+              className="mystic-input"
+              value={form.birthHour ?? 12}
+              onChange={e => set('birthHour', parseInt(e.target.value))}
+            >
+              {HOURS.map(h => (
+                <option key={h} value={h}>{hourLabel(h)}</option>
+              ))}
+            </select>
+          )}
+          <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+            {tr.form.timeHint}
+          </p>
+        </div>
+
+        {/* 运势周期 */}
+        <div>
+          <label className="block text-sm font-medium mb-3" style={{ color: 'var(--gold)' }}>{tr.form.period}</label>
+          <div className="grid grid-cols-3 gap-2">
+            {PERIOD_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => set('period', opt.value)}
+                className="py-3 rounded-xl text-sm font-medium transition-all flex flex-col items-center gap-1"
+                style={{
+                  background: form.period === opt.value ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.04)',
+                  border: `1px solid ${form.period === opt.value ? 'rgba(124,58,237,0.6)' : 'rgba(255,255,255,0.1)'}`,
+                  color: form.period === opt.value ? 'var(--purple-light)' : 'var(--text-muted)',
+                }}
+              >
+                <span>{opt.icon}</span>
+                <span>{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 当前状况 */}
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>
+            {tr.form.context} <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>（{tr.form.contextOptional}）</span>
+          </label>
+          <textarea
+            className="mystic-input resize-none"
+            rows={3}
+            maxLength={300}
+            placeholder={tr.form.contextPlaceholder}
+            value={form.context ?? ''}
+            onChange={e => set('context', e.target.value)}
+          />
+          <p className="mt-1 text-xs text-right" style={{ color: 'var(--text-muted)' }}>
+            {(form.context ?? '').length} / 300
+          </p>
+        </div>
+
+        {/* 你想问的问题 */}
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>
+            {tr.form.questions} <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>（{tr.form.questionsOptional}）</span>
+          </label>
+
+          {/* 快速添加建议 */}
+          {(form.questions ?? []).length < 5 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {tr.form.suggestedQ.map((q: string) => {
+                const already = (form.questions ?? []).includes(q)
+                if (already) return null
+                return (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={() => set('questions', [...(form.questions ?? []), q])}
+                    className="text-xs px-2 py-1 rounded-lg transition-opacity hover:opacity-70"
+                    style={{ background: 'rgba(124,58,237,0.1)', color: 'var(--purple-light)', border: '1px solid rgba(124,58,237,0.25)' }}
+                  >
+                    + {q}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          {/* 问题列表 */}
+          <div className="space-y-2">
+            {(form.questions ?? []).map((q, idx) => (
+              <div key={idx} className="flex gap-2">
+                <input
+                  className="mystic-input flex-1"
+                  placeholder={tr.form.questionPlaceholder(idx + 1)}
+                  maxLength={60}
+                  value={q}
+                  onChange={e => set('questions', (form.questions ?? []).map((old, i) => i === idx ? e.target.value : old))}
+                />
+                <button
+                  type="button"
+                  onClick={() => set('questions', (form.questions ?? []).filter((_, i) => i !== idx))}
+                  className="px-3 rounded-xl text-sm transition-opacity hover:opacity-70"
+                  style={{ background: 'rgba(201,123,132,0.1)', color: 'var(--rose)', border: '1px solid rgba(201,123,132,0.2)' }}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* 添加自定义问题 */}
+          {(form.questions ?? []).length < 5 && (
+            <button
+              type="button"
+              onClick={() => set('questions', [...(form.questions ?? []), ''])}
+              className="mt-2 w-full py-2 rounded-xl text-sm transition-opacity hover:opacity-70"
+              style={{ background: 'rgba(255,255,255,0.03)', color: 'var(--text-muted)', border: '1px dashed rgba(255,255,255,0.15)' }}
+            >
+              + {tr.form.addQuestion}
+            </button>
+          )}
+        </div>
+
+        {error && (
+          <p className="text-sm text-center py-2 px-4 rounded-lg" style={{ background: 'rgba(201,123,132,0.1)', color: 'var(--rose)', border: '1px solid rgba(201,123,132,0.2)' }}>
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-4 rounded-xl font-semibold text-base transition-all"
+          style={{
+            background: loading ? 'rgba(212,175,55,0.3)' : 'linear-gradient(135deg, #d4af37 0%, #b8952e 100%)',
+            color: loading ? 'var(--text-muted)' : '#0a0a0a',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            boxShadow: loading ? 'none' : '0 4px 20px rgba(212,175,55,0.3)',
+          }}
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="animate-spin">⟳</span> {tr.form.submitting}
+            </span>
+          ) : tr.form.submit}
+        </button>
+      </div>
+    </form>
+  )
+}
