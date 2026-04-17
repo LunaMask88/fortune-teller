@@ -93,7 +93,12 @@ Return JSON only (no markdown):
     "health":  { "score": integer, "label": "Health",  "trend": "...", "summary": "..." },
     "luck":    { "score": integer, "label": "Overall",  "trend": "...", "summary": "..." }
   },
-  "summary": "4-5 paragraph synthesis blending Eastern & Western divination",${hasQuestions ? `
+  "summary": [
+    { "title": "Overall Energy", "body": "2-3 sentences on the dominant energy pattern across all systems" },
+    { "title": "Eastern & Western Resonance", "body": "Where BaZi / Zi Wei / Vedic / Western systems agree or diverge" },
+    { "title": "Opportunities & Challenges", "body": "Key windows and watch-outs for the period" },
+    { "title": "Guidance", "body": "Practical advice drawn from the divination synthesis" }
+  ],${hasQuestions ? `
   "answers": [
     { "question": "original question", "answer": "2-4 sentence divination-based answer" }
   ],` : ''}
@@ -117,7 +122,12 @@ ${hasQuestions ? '3. 在 answers 数组中逐一回答用户的问题，每题2-
     "health":  { "score": 整数, "label": "健康运", "trend": "...", "summary": "..." },
     "luck":    { "score": 整数, "label": "整体运势","trend": "...", "summary": "..." }
   },
-  "summary": "4-5段综合解读，融合东西方命理，指出体系间的共鸣与差异",${hasQuestions ? `
+  "summary": [
+    { "title": "整体气场", "body": "2-3句，概括本周期主导的能量格局" },
+    { "title": "东西方共鸣", "body": "八字/紫微/吠陀/西洋星座相互印证或矛盾之处" },
+    { "title": "机遇与挑战", "body": "本周期的关键窗口期与需要留意的风险" },
+    { "title": "给你的建议", "body": "结合各体系综合给出的具体行动建议" }
+  ],${hasQuestions ? `
   "answers": [
     { "question": "原题目", "answer": "2-4句命理解答" }
   ],` : ''}

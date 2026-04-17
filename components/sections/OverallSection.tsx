@@ -37,7 +37,7 @@ export default function OverallSection({ fortune }: Props) {
     <section className="space-y-4">
       <h2 className="text-lg font-semibold" style={{ color: 'var(--gold)' }}>{tr.sections.overall}</h2>
 
-      {/* 总分 */}
+      {/* 总分 + 第一条摘要并排 */}
       <div className="mystic-card p-6 flex items-center gap-6">
         <div className="relative flex-shrink-0" style={{ width: 120, height: 120 }}>
           <ScoreRing score={fortune.overallScore} />
@@ -46,12 +46,27 @@ export default function OverallSection({ fortune }: Props) {
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.ui.overall.scoreLabel}</span>
           </div>
         </div>
-        <div className="flex-1">
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)', whiteSpace: 'pre-wrap' }}>
-            {fortune.summary}
-          </p>
-        </div>
+        {fortune.summary[0] && (
+          <div className="flex-1">
+            <p className="text-xs font-semibold mb-1" style={{ color: 'var(--gold)' }}>{fortune.summary[0].title}</p>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{fortune.summary[0].body}</p>
+          </div>
+        )}
       </div>
+
+      {/* 其余 summary 卡片 */}
+      {fortune.summary.slice(1).map((item, idx) => {
+        const icons = ['☯️', '🎯', '💡', '✨']
+        return (
+          <div key={idx} className="gold-card px-4 py-3">
+            <p className="text-xs font-semibold mb-1.5 flex items-center gap-1.5">
+              <span>{icons[idx] ?? '✨'}</span>
+              <span style={{ color: 'var(--gold)' }}>{item.title}</span>
+            </p>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{item.body}</p>
+          </div>
+        )
+      })}
 
       {/* 五维分项 */}
       <div className="grid grid-cols-1 gap-3">

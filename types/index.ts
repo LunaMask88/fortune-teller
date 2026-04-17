@@ -235,6 +235,11 @@ export interface FortuneAnswer {
   answer: string
 }
 
+export interface SummaryItem {
+  title: string
+  body: string
+}
+
 export interface FortuneReading {
   overallScore: number
   categories: {
@@ -244,7 +249,7 @@ export interface FortuneReading {
     health: FortuneCategory
     luck: FortuneCategory
   }
-  summary: string
+  summary: SummaryItem[]
   answers?: FortuneAnswer[]  // 针对用户问题的命理解答
   luckyItems: LuckyItem[]
   generatedAt: string
