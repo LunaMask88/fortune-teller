@@ -219,6 +219,7 @@ export interface LuckyItem {
   reason: string
   searchQuery: string
   category: 'crystal' | 'jewelry' | 'color' | 'number' | 'plant' | 'symbol' | 'other'
+  boosts?: 'career' | 'wealth' | 'love' | 'health' | 'luck'
   images?: string[]
 }
 

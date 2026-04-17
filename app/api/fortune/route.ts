@@ -103,10 +103,10 @@ Return JSON only (no markdown):
     { "question": "original question", "answer": "2-4 sentence divination-based answer" }
   ],` : ''}
   "luckyItems": [
-    { "name": "English name", "nameEN": "English", "reason": "divination-based reason", "searchQuery": "English search term", "category": "crystal"|"jewelry"|"color"|"number"|"plant"|"symbol"|"other" }
+    { "name": "English name", "nameEN": "English", "reason": "divination-based reason", "searchQuery": "English search term", "category": "crystal"|"jewelry"|"color"|"number"|"plant"|"symbol"|"other", "boosts": "career"|"wealth"|"love"|"health"|"luck" }
   ]
 }
-Include 7-9 lucky items covering crystals, runes, colors, numbers, plants, jewelry, aromatherapy etc.`
+Include 7-9 lucky items covering crystals, runes, colors, numbers, plants, jewelry, aromatherapy etc. For boosts, pick the ONE fortune dimension this item most directly enhances.`
   : `请综合以上全部体系，给出${periodLabel}运势分析。注意：
 1. 各体系相互印证或矛盾之处要特别说明
 2. 幸运物件需结合五行缺失+吠陀星宿+人类图类型推荐
@@ -132,10 +132,10 @@ ${hasQuestions ? '3. 在 answers 数组中逐一回答用户的问题，每题2-
     { "question": "原题目", "answer": "2-4句命理解答" }
   ],` : ''}
   "luckyItems": [
-    { "name": "中文名", "nameEN": "English", "reason": "结合命理的具体原因", "searchQuery": "英文商品搜索词", "category": "crystal"|"jewelry"|"color"|"number"|"plant"|"symbol"|"other" }
+    { "name": "中文名", "nameEN": "English", "reason": "结合命理的具体原因", "searchQuery": "英文商品搜索词", "category": "crystal"|"jewelry"|"color"|"number"|"plant"|"symbol"|"other", "boosts": "career"|"wealth"|"love"|"health"|"luck" }
   ]
 }
-luckyItems 需 7-9 个，覆盖水晶/符文/颜色/数字/植物/饰品/香薰等多种类别。`}
+luckyItems 需 7-9 个，覆盖水晶/符文/颜色/数字/植物/饰品/香薰等多种类别。boosts 字段填该物件最直接提升的运势维度（事业/财运/感情/健康/整体择一）。`}
 `
 
   const client = new OpenAI({

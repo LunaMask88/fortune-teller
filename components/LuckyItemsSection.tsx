@@ -25,6 +25,15 @@ const CATEGORY_EMOJI: Record<string, string> = {
   number: '🔢', plant: '🌿', symbol: '✨', other: '🌟',
 }
 
+// ── 运势提升配置 ──────────────────────────────────────────────────────
+const BOOST_CONFIG: Record<string, { color: string; zh: string; en: string; icon: string }> = {
+  career: { color: '#d4af37', zh: '事业运', en: 'Career',  icon: '💼' },
+  wealth: { color: '#22c55e', zh: '财运',   en: 'Wealth',  icon: '💰' },
+  love:   { color: '#f43f5e', zh: '感情运', en: 'Love',    icon: '❤️' },
+  health: { color: '#3b82f6', zh: '健康运', en: 'Health',  icon: '🌿' },
+  luck:   { color: '#a78bfa', zh: '整体运', en: 'Luck',    icon: '✨' },
+}
+
 // ── 类型 ─────────────────────────────────────────────────────────────
 interface FetchedResult { images: string[]; links: string[] }
 
@@ -36,7 +45,7 @@ interface ItemState extends LuckyItem {
 
 // ── 组件 ─────────────────────────────────────────────────────────────
 export default function LuckyItemsSection({ items }: Props) {
-  const { tr } = useLang()
+  const { tr, lang } = useLang()
   const safeItems = items ?? []
   const [platform, setPlatform] = useState<Platform>('pinterest')
   const [enriched, setEnriched] = useState<ItemState[]>(
@@ -216,6 +225,21 @@ export default function LuckyItemsSection({ items }: Props) {
                   }}>
                     {tr.lucky.categories[item.category] ?? item.category}
                   </span>
+                  {/* 运势提升标签 */}
+                  {item.boosts && BOOST_CONFIG[item.boosts] && (() => {
+                    const boost = BOOST_CONFIG[item.boosts!]
+                    const label = tr.lucky.boosts?.[item.boosts!] ?? (lang === 'en' ? boost.en : boost.zh)
+                    return (
+                      <span className="tag text-xs flex items-center gap-0.5" style={{
+                        background: `${boost.color}18`,
+                        color: boost.color,
+                        border: `1px solid ${boost.color}40`,
+                        fontWeight: 600,
+                      }}>
+                        {boost.icon} ↑{label}
+                      </span>
+                    )
+                  })()}
                   {item.nameEN && (
                     <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.nameEN}</span>
                   )}

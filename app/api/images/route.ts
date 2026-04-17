@@ -170,7 +170,11 @@ export async function GET(req: NextRequest) {
         }
         return r.thumbnail
       })
-      const links = results.map(r => r.link)
+      // Pinterest 保留具体 pin 页；购物平台统一跳搜索结果页，避免售罄/下架
+      const searchLink = mockPlatformLink(platform, query)
+      const links = results.map(r =>
+        platform === 'pinterest' ? r.link : searchLink
+      )
 
       return NextResponse.json({ images, links, source: 'serpapi' })
     } catch {
