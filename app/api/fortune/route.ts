@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+
+export const maxDuration = 60
 import OpenAI from 'openai'
 import { calculateBazi } from '@/lib/bazi'
 import { getSunSign } from '@/lib/astrology'

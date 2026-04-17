@@ -5,7 +5,6 @@ import { useLang } from '@/contexts/LangContext'
 
 interface Props { cards: DrawnCard[] }
 
-const POSITION_LABEL = { past: '过去', present: '现在', future: '未来' }
 const POSITION_COLOR = {
   past:    { bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.35)', text: 'var(--purple-light)' },
   present: { bg: 'rgba(212,175,55,0.12)', border: 'rgba(212,175,55,0.35)', text: 'var(--gold)' },
@@ -29,7 +28,7 @@ export default function TarotSection({ cards }: Props) {
             >
               {/* 位置标签 */}
               <span className="tag mb-3 text-xs" style={{ background: `${colors.border}30`, color: colors.text, border: `1px solid ${colors.border}` }}>
-                {POSITION_LABEL[drawn.position]}
+                {tr.ui.tarot.positions[drawn.position]}
               </span>
 
               {/* 牌面 emoji */}
@@ -53,7 +52,7 @@ export default function TarotSection({ cards }: Props) {
                 background: isReversed ? 'rgba(201,123,132,0.1)' : 'rgba(74,222,128,0.1)',
                 color: isReversed ? 'var(--rose)' : '#4ade80',
               }}>
-                {isReversed ? '逆位' : '正位'}
+                {isReversed ? tr.ui.reversed : tr.ui.upright}
               </span>
 
               {/* 含义 */}

@@ -43,7 +43,7 @@ export default function OverallSection({ fortune }: Props) {
           <ScoreRing score={fortune.overallScore} />
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-3xl font-bold" style={{ color: 'var(--gold)' }}>{fortune.overallScore}</span>
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>综合分</span>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.ui.overall.scoreLabel}</span>
           </div>
         </div>
         <div className="flex-1">
@@ -80,7 +80,7 @@ export default function OverallSection({ fortune }: Props) {
                 border: `1px solid ${TREND_COLOR[cat.trend]}40`,
               }}
             >
-              {TREND_ICON[cat.trend]} {cat.trend === 'up' ? '上升' : cat.trend === 'stable' ? '平稳' : '下降'}
+              {TREND_ICON[cat.trend]} {cat.trend === 'up' ? tr.ui.overall.trend.up : cat.trend === 'stable' ? tr.ui.overall.trend.stable : tr.ui.overall.trend.down}
             </span>
           </div>
         ))}
@@ -92,7 +92,7 @@ export default function OverallSection({ fortune }: Props) {
           <div key={cat.label} className="mystic-card p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium text-sm" style={{ color: 'var(--gold)' }}>{cat.label}</span>
-              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{cat.score} 分</span>
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{cat.score}{tr.ui.overall.scoreUnit}</span>
             </div>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{cat.summary}</p>
           </div>

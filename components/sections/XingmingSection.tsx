@@ -13,16 +13,15 @@ const JI_COLOR: Record<GridRating['ji'], { bg: string; text: string; border: str
   '大凶': { bg: 'rgba(248,113,113,0.1)', text: '#f87171',     border: 'rgba(248,113,113,0.3)' },
 }
 
-const GRIDS = [
-  { key: 'tianGe' as const, label: '天格', note: '祖上·先天运' },
-  { key: 'renGe' as const,  label: '人格', note: '主格·主运' },
-  { key: 'diGe' as const,   label: '地格', note: '名字·基础运' },
-  { key: 'zongGe' as const, label: '总格', note: '整体·晚年运' },
-  { key: 'waiGe' as const,  label: '外格', note: '社交·人际运' },
-]
+const GRID_KEYS = ['tianGe', 'renGe', 'diGe', 'zongGe', 'waiGe'] as const
 
 export default function XingmingSection({ xingming }: Props) {
   const { tr } = useLang()
+  const GRIDS = GRID_KEYS.map((key, i) => ({
+    key,
+    label: tr.ui.xingming.grids[i].name,
+    note: tr.ui.xingming.grids[i].note,
+  }))
   if (xingming.strokes.length < 2) return null
 
   return (
@@ -38,7 +37,7 @@ export default function XingmingSection({ xingming }: Props) {
             <div key={i} className="text-center">
               <div className="text-3xl font-bold mb-1" style={{ color: 'var(--gold)' }}>{char}</div>
               <div className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--text-muted)' }}>
-                {xingming.strokes[i]} 画
+                {xingming.strokes[i]}{tr.ui.xingming.strokeSuffix}
               </div>
             </div>
           ))}
@@ -46,7 +45,7 @@ export default function XingmingSection({ xingming }: Props) {
 
         {/* 三才 */}
         <div className="text-center mb-4">
-          <span className="text-sm" style={{ color: 'var(--text-muted)' }}>三才格局：</span>
+          <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{tr.ui.xingming.sancai}</span>
           <span className="text-sm font-bold ml-1" style={{ color: 'var(--purple-light)' }}>{xingming.sancai}</span>
         </div>
 
@@ -75,7 +74,7 @@ export default function XingmingSection({ xingming }: Props) {
       {/* 人格详解（最重要的格） */}
       <div className="gold-card p-4">
         <div className="flex items-center gap-2 mb-2">
-          <span className="font-medium text-sm" style={{ color: 'var(--gold)' }}>人格（主格）详解</span>
+          <span className="font-medium text-sm" style={{ color: 'var(--gold)' }}>{tr.ui.xingming.rengeDetail}</span>
           <span className="tag text-xs" style={{
             background: JI_COLOR[xingming.ratings.renGe.ji].bg,
             color: JI_COLOR[xingming.ratings.renGe.ji].text,

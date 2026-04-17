@@ -28,7 +28,7 @@ export default function HumanDesignSection({ hd }: Props) {
       <h2 className="text-lg font-semibold" style={{ color: 'var(--gold)' }}>
         {tr.sections.humanDesign}
         <span className="text-xs font-normal ml-2" style={{ color: 'var(--text-muted)' }}>
-          易经 + 占星 + 卡巴拉 + 脉轮的现代合成体系
+          {tr.ui.hd.subtitle}
         </span>
       </h2>
 
@@ -45,9 +45,9 @@ export default function HumanDesignSection({ hd }: Props) {
             </div>
             <div>
               <div className="font-bold text-lg" style={{ color: typeColor }}>{hd.typeCN}</div>
-              <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{hd.type} · 占人口 {hd.percent}</div>
+              <div className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{hd.type} · {tr.ui.hd.population}{hd.percent}</div>
               <span className="tag text-xs" style={{ background: `${typeColor}15`, color: typeColor, border: `1px solid ${typeColor}30` }}>
-                灵魂场域：{hd.aura}
+                {tr.ui.hd.aura}{hd.aura}
               </span>
             </div>
           </div>
@@ -58,15 +58,15 @@ export default function HumanDesignSection({ hd }: Props) {
 
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium w-14 flex-shrink-0" style={{ color: 'var(--gold)' }}>人生策略</span>
+              <span className="text-xs font-medium w-14 flex-shrink-0" style={{ color: 'var(--gold)' }}>{tr.ui.hd.strategy}</span>
               <span className="text-xs" style={{ color: 'var(--text-primary)' }}>{hd.strategy}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium w-14 flex-shrink-0" style={{ color: 'var(--gold)' }}>非自我主题</span>
+              <span className="text-xs font-medium w-14 flex-shrink-0" style={{ color: 'var(--gold)' }}>{tr.ui.hd.notSelf}</span>
               <span className="text-xs" style={{ color: 'var(--rose)' }}>{hd.notSelf}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium w-14 flex-shrink-0" style={{ color: 'var(--gold)' }}>内在权威</span>
+              <span className="text-xs font-medium w-14 flex-shrink-0" style={{ color: 'var(--gold)' }}>{tr.ui.hd.authority}</span>
               <span className="text-xs" style={{ color: 'var(--purple-light)' }}>{hd.authority}</span>
             </div>
           </div>
@@ -76,7 +76,7 @@ export default function HumanDesignSection({ hd }: Props) {
         <div className="mystic-card p-5 space-y-4">
           {/* Profile */}
           <div>
-            <div className="text-sm font-medium mb-1" style={{ color: 'var(--gold)' }}>人生角色</div>
+            <div className="text-sm font-medium mb-1" style={{ color: 'var(--gold)' }}>{tr.ui.hd.profile}</div>
             <div className="font-bold text-base mb-1" style={{ color: 'var(--text-primary)' }}>{hd.profile}</div>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{hd.profileDesc}</p>
           </div>
@@ -84,9 +84,9 @@ export default function HumanDesignSection({ hd }: Props) {
           {/* 能量中心 */}
           <div>
             <div className="text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>
-              九大能量中心
+              {tr.ui.hd.centers}
               <span className="text-xs font-normal ml-2" style={{ color: 'var(--text-muted)' }}>
-                {hd.definedCenters} 个已定义
+                {hd.definedCenters}{tr.ui.hd.definedSuffix}
               </span>
             </div>
             <div className="grid grid-cols-3 gap-1.5">

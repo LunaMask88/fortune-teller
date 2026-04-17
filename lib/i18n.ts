@@ -101,6 +101,77 @@ const zh = {
       number:  '数字', plant:   '植物', symbol: '符号', other: '物件',
     },
   },
+
+  ui: {
+    upright: '正位', reversed: '逆位',
+    overall: {
+      scoreLabel: '综合分',
+      scoreUnit: ' 分',
+      trend: { up: '上升', stable: '平稳', down: '下降' },
+    },
+    bazi: {
+      pillars: [
+        { name: '年柱', note: '祖上/社会运' },
+        { name: '月柱', note: '父母/工作运' },
+        { name: '日柱', note: '本命/婚姻宫' },
+        { name: '时柱', note: '子女/晚年运' },
+      ],
+      zodiac: '生肖：',
+      elements: '五行能量分布',
+      weak: '偏弱', dominant: '旺',
+    },
+    tarot: {
+      positions: { past: '过去', present: '现在', future: '未来' },
+    },
+    runes: {
+      subtitle: 'Elder Futhark 古符文，源自北欧神话奥丁悬挂世界树所获得的智慧',
+    },
+    zodiac: {
+      western: '西洋星座', ruler: '守护星：', element: '元素属性：',
+      chinese: '中国生肖', yearSuffix: '年',
+      lifePathNum: '生命数字', destinyNum: '命运数字：', destinyPalace: '命宫：',
+    },
+    hd: {
+      subtitle: '易经 + 占星 + 卡巴拉 + 脉轮的现代合成体系',
+      population: '占人口 ', aura: '灵魂场域：',
+      strategy: '人生策略', notSelf: '非自我主题',
+      authority: '内在权威', profile: '人生角色',
+      centers: '九大能量中心', definedSuffix: ' 个已定义',
+    },
+    vedic: {
+      subtitle: '印度恒星黄道体系，与西洋星座相差约23°',
+      intro: (sunSign: string) => `你的西洋太阳星座是 ${sunSign}，但吠陀占星重视月亮宫位（Rashi），且使用恒星黄道，结果通常相差一个星座。两套体系都有其传承，各有侧重。`,
+      moonSign: '月亮宫位：', ruler: ' · 守护星 ',
+      elementSuffix: ' 属性', qualitySuffix: ' 宫位',
+      nakshatra: '星宿（Nakshatra）：', deity: '主神：',
+      dashaTitle: '当前大运（Dasha）',
+      dashaYears: (years: number) => ` · 此大运持续 ${years} 年`,
+      karmaTitle: '业力轴（Rahu-Ketu）',
+      rahu: 'Rahu 北交 ↗', rahuDesc: '（今生渴望）',
+      ketu: 'Ketu 南交 ↙', ketuDesc: '（前世遗留）',
+    },
+    liuyao: {
+      changing: '动',
+      title: '六爻铜钱法',
+      benGua: '本卦', guaSuffix: '卦',
+      bianGua: '变卦',
+      meihuaTitle: '梅花易数（邵雍体系）',
+      changingLine: (n: number) => `动爻第${n}爻`,
+      tiGua: '体卦：', yongGua: '用卦：',
+    },
+    xingming: {
+      grids: [
+        { name: '天格', note: '祖上·先天运' },
+        { name: '人格', note: '主格·主运' },
+        { name: '地格', note: '名字·基础运' },
+        { name: '总格', note: '整体·晚年运' },
+        { name: '外格', note: '社交·人际运' },
+      ],
+      strokeSuffix: ' 画',
+      sancai: '三才格局：',
+      rengeDetail: '人格（主格）详解',
+    },
+  },
 }
 
 const en: typeof zh = {
@@ -202,6 +273,77 @@ const en: typeof zh = {
     categories: {
       crystal: 'Crystal', jewelry: 'Jewelry', color: 'Color',
       number:  'Number',  plant:   'Plant',   symbol: 'Symbol', other: 'Item',
+    },
+  },
+
+  ui: {
+    upright: 'Upright', reversed: 'Reversed',
+    overall: {
+      scoreLabel: 'Score',
+      scoreUnit: ' pts',
+      trend: { up: 'Rising', stable: 'Stable', down: 'Falling' },
+    },
+    bazi: {
+      pillars: [
+        { name: 'Year Pillar', note: 'Ancestors / Society' },
+        { name: 'Month Pillar', note: 'Parents / Career' },
+        { name: 'Day Pillar', note: 'Self / Marriage' },
+        { name: 'Hour Pillar', note: 'Children / Later Life' },
+      ],
+      zodiac: 'Zodiac Animal: ',
+      elements: 'Five Elements Distribution',
+      weak: 'Weak', dominant: 'Strong',
+    },
+    tarot: {
+      positions: { past: 'Past', present: 'Present', future: 'Future' },
+    },
+    runes: {
+      subtitle: 'Elder Futhark runes — wisdom Odin received from the World Tree',
+    },
+    zodiac: {
+      western: 'Western Astrology', ruler: 'Ruling Planet: ', element: 'Element: ',
+      chinese: 'Chinese Zodiac', yearSuffix: '',
+      lifePathNum: 'Life Path Number', destinyNum: 'Destiny Number: ', destinyPalace: 'Destiny Palace: ',
+    },
+    hd: {
+      subtitle: 'Modern synthesis of I Ching · Astrology · Kabbalah · Chakras',
+      population: 'Population: ', aura: 'Aura: ',
+      strategy: 'Strategy', notSelf: 'Not-Self Theme',
+      authority: 'Inner Authority', profile: 'Profile',
+      centers: 'Nine Energy Centers', definedSuffix: ' defined',
+    },
+    vedic: {
+      subtitle: 'Indian sidereal zodiac system, ~23° offset from Western astrology',
+      intro: (sunSign: string) => `Your Western Sun sign is ${sunSign}, but Vedic astrology focuses on the Moon sign (Rashi) using the sidereal zodiac — results often differ by one sign. Both systems have deep roots and distinct insights.`,
+      moonSign: 'Moon Sign: ', ruler: ' · Ruler ',
+      elementSuffix: ' element', qualitySuffix: ' quality',
+      nakshatra: 'Nakshatra: ', deity: 'Deity: ',
+      dashaTitle: 'Current Dasha Period',
+      dashaYears: (years: number) => ` · This dasha lasts ${years} years`,
+      karmaTitle: 'Karmic Axis (Rahu-Ketu)',
+      rahu: 'Rahu ↗', rahuDesc: '(Soul Desire)',
+      ketu: 'Ketu ↙', ketuDesc: '(Past Life)',
+    },
+    liuyao: {
+      changing: 'C',
+      title: 'Six Lines Divination',
+      benGua: 'Primary', guaSuffix: '',
+      bianGua: 'Derived',
+      meihuaTitle: 'Plum Blossom Numerology (Shao Yong)',
+      changingLine: (n: number) => `Changing Line ${n}`,
+      tiGua: 'Ti Gua: ', yongGua: 'Yong Gua: ',
+    },
+    xingming: {
+      grids: [
+        { name: 'Heaven Grid', note: 'Ancestors · Destiny' },
+        { name: 'Person Grid', note: 'Core · Main Luck' },
+        { name: 'Earth Grid', note: 'Name · Foundation' },
+        { name: 'Total Grid', note: 'Overall · Later Life' },
+        { name: 'Outer Grid', note: 'Social · Relations' },
+      ],
+      strokeSuffix: ' strokes',
+      sancai: 'Three Talents: ',
+      rengeDetail: 'Person Grid (Core) Detail',
     },
   },
 }

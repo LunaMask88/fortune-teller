@@ -165,3 +165,49 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.2); border-radius: 3px; }
+
+/* ── 亮色主题 ── */
+[data-theme="light"] {
+  --bg-deep: #f5f0ff;
+  --bg-card: #ffffff;
+  --bg-card2: #ede8ff;
+  --gold: #a07820;
+  --gold-light: #c89a30;
+  --rose: #b55b65;
+  --purple: #6d28d9;
+  --purple-light: #5b21b6;
+  --text-primary: #1a0533;
+  --text-muted: #5c4d78;
+  --border: rgba(160, 120, 32, 0.25);
+}
+
+[data-theme="light"] body {
+  background: var(--bg-deep);
+}
+
+[data-theme="light"] .mystic-card {
+  box-shadow: 0 2px 16px rgba(109,40,217,0.08);
+}
+
+[data-theme="light"] .mystic-card::before {
+  background: linear-gradient(135deg, rgba(212,175,55,0.05) 0%, transparent 60%);
+}
+
+[data-theme="light"] .star-bg::before {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(109,40,217,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(181,91,101,0.04) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 80%, rgba(160,120,32,0.04) 0%, transparent 50%),
+    var(--bg-deep);
+}
+
+[data-theme="light"] .mystic-input {
+  background: rgba(255,255,255,0.9);
+  border-color: rgba(160,120,32,0.3);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] select option {
+  background: #fff;
+  color: #1a0533;
+}

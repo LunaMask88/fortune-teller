@@ -36,12 +36,12 @@ export default function ZodiacSection({ sunSign, chineseZodiac, lifePathNumber, 
             <span className="text-4xl">{SIGN_EMOJI[sunSign]}</span>
             <div>
               <div className="font-bold" style={{ color: 'var(--gold)' }}>{sunSign}</div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>西洋星座</div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.ui.zodiac.western}</div>
             </div>
           </div>
           <div className="space-y-1 text-xs" style={{ color: 'var(--text-muted)' }}>
-            <div>守护星：<span style={{ color: 'var(--purple-light)' }}>{SIGN_RULER[sunSign]}</span></div>
-            <div>元素属性：<span style={{ color: 'var(--gold)' }}>{SIGN_WESTERN_ELEMENT[sunSign]}</span></div>
+            <div>{tr.ui.zodiac.ruler}<span style={{ color: 'var(--purple-light)' }}>{SIGN_RULER[sunSign]}</span></div>
+            <div>{tr.ui.zodiac.element}<span style={{ color: 'var(--gold)' }}>{SIGN_WESTERN_ELEMENT[sunSign]}</span></div>
           </div>
         </div>
 
@@ -50,8 +50,8 @@ export default function ZodiacSection({ sunSign, chineseZodiac, lifePathNumber, 
           <div className="flex items-center gap-3 mb-3">
             <span className="text-4xl">{ZODIAC_EMOJI[chineseZodiac] ?? '🐾'}</span>
             <div>
-              <div className="font-bold" style={{ color: 'var(--gold)' }}>{chineseZodiac}年</div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>中国生肖</div>
+              <div className="font-bold" style={{ color: 'var(--gold)' }}>{chineseZodiac}{tr.ui.zodiac.yearSuffix}</div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.ui.zodiac.chinese}</div>
             </div>
           </div>
         </div>
@@ -64,8 +64,8 @@ export default function ZodiacSection({ sunSign, chineseZodiac, lifePathNumber, 
               {lifePathNumber}
             </div>
             <div>
-              <div className="font-bold text-sm" style={{ color: 'var(--gold)' }}>生命数字</div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>命运数字：{destinyNumber}</div>
+              <div className="font-bold text-sm" style={{ color: 'var(--gold)' }}>{tr.ui.zodiac.lifePathNum}</div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.ui.zodiac.destinyNum}{destinyNumber}</div>
             </div>
           </div>
           <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{numerologyDesc}</p>
@@ -77,7 +77,7 @@ export default function ZodiacSection({ sunSign, chineseZodiac, lifePathNumber, 
             <span className="text-3xl">🏛️</span>
             <div>
               <div className="font-bold" style={{ color: 'var(--gold)' }}>{ziwei.mainStar}</div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>命宫：{ziwei.palaceName}</div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{tr.ui.zodiac.destinyPalace}{ziwei.palaceName}</div>
             </div>
           </div>
           <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{ziwei.description}</p>

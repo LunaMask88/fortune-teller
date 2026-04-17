@@ -12,7 +12,7 @@ export default function VedicSection({ vedic, sunSign }: Props) {
       <h2 className="text-lg font-semibold" style={{ color: 'var(--gold)' }}>
         {tr.sections.vedic}
         <span className="text-xs font-normal ml-2" style={{ color: 'var(--text-muted)' }}>
-          印度恒星黄道体系，与西洋星座相差约23°
+          {tr.ui.vedic.subtitle}
         </span>
       </h2>
 
@@ -20,9 +20,7 @@ export default function VedicSection({ vedic, sunSign }: Props) {
       <div className="gold-card p-3 flex items-center gap-3">
         <span className="text-lg">⚠️</span>
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-          你的西洋太阳星座是 <span style={{ color: 'var(--gold)' }}>{sunSign}</span>，
-          但吠陀占星重视<span style={{ color: 'var(--purple-light)' }}>月亮宫位（Rashi）</span>，
-          且使用恒星黄道，结果通常相差一个星座。两套体系都有其传承，各有侧重。
+          {tr.ui.vedic.intro(sunSign)}
         </p>
       </div>
 
@@ -33,32 +31,32 @@ export default function VedicSection({ vedic, sunSign }: Props) {
             <span className="text-3xl">🌙</span>
             <div>
               <div className="font-bold" style={{ color: 'var(--gold)' }}>
-                月亮宫位：{vedic.moonRashi.nameCN}
+                {tr.ui.vedic.moonSign}{vedic.moonRashi.nameCN}
               </div>
               <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                {vedic.moonRashi.name} · 守护星 {vedic.moonRashi.ruler}
+                {vedic.moonRashi.name}{tr.ui.vedic.ruler}{vedic.moonRashi.ruler}
               </div>
             </div>
           </div>
 
           <div className="flex gap-2 flex-wrap">
             <span className="tag text-xs" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.3)' }}>
-              {vedic.moonRashi.element} 属性
+              {vedic.moonRashi.element}{tr.ui.vedic.elementSuffix}
             </span>
             <span className="tag text-xs" style={{ background: 'rgba(124,58,237,0.1)', color: 'var(--purple-light)', border: '1px solid rgba(124,58,237,0.3)' }}>
-              {vedic.moonRashi.quality} 宫位
+              {vedic.moonRashi.quality}{tr.ui.vedic.qualitySuffix}
             </span>
           </div>
 
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12 }}>
             <div className="font-medium text-sm mb-1" style={{ color: 'var(--gold)' }}>
-              星宿（Nakshatra）：{vedic.nakshatra.nameCN}
+              {tr.ui.vedic.nakshatra}{vedic.nakshatra.nameCN}
             </div>
             <div className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>
-              {vedic.nakshatra.name} · 守护星 {vedic.nakshatra.ruler}
+              {vedic.nakshatra.name}{tr.ui.vedic.ruler}{vedic.nakshatra.ruler}
             </div>
             <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              主神：{vedic.nakshatra.deity}
+              {tr.ui.vedic.deity}{vedic.nakshatra.deity}
             </div>
             <div className="mt-1">
               <span className="tag text-xs" style={{ background: 'rgba(201,123,132,0.1)', color: 'var(--rose)', border: '1px solid rgba(201,123,132,0.25)' }}>
@@ -72,34 +70,34 @@ export default function VedicSection({ vedic, sunSign }: Props) {
         <div className="mystic-card p-4 space-y-3">
           <div>
             <div className="font-medium text-sm mb-2" style={{ color: 'var(--gold)' }}>
-              当前大运（Dasha）
+              {tr.ui.vedic.dashaTitle}
             </div>
             <div className="gold-card p-3">
               <div className="font-bold" style={{ color: 'var(--text-primary)' }}>
                 {vedic.currentDasha.nameCN}
               </div>
               <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-                {vedic.currentDasha.planet} · 此大运持续 {vedic.currentDasha.years} 年
+                {vedic.currentDasha.planet}{tr.ui.vedic.dashaYears(vedic.currentDasha.years)}
               </div>
             </div>
           </div>
 
           <div>
             <div className="font-medium text-sm mb-2" style={{ color: 'var(--gold)' }}>
-              业力轴（Rahu-Ketu）
+              {tr.ui.vedic.karmaTitle}
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="tag text-xs" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.3)' }}>
-                  Rahu 北交 ↗
+                  {tr.ui.vedic.rahu}
                 </span>
-                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{vedic.rahuSign}（今生渴望）</span>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{vedic.rahuSign}{tr.ui.vedic.rahuDesc}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="tag text-xs" style={{ background: 'rgba(201,123,132,0.1)', color: 'var(--rose)', border: '1px solid rgba(201,123,132,0.3)' }}>
-                  Ketu 南交 ↙
+                  {tr.ui.vedic.ketu}
                 </span>
-                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{vedic.ketuSign}（前世遗留）</span>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{vedic.ketuSign}{tr.ui.vedic.ketuDesc}</span>
               </div>
             </div>
           </div>

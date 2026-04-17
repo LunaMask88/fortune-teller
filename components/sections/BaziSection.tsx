@@ -15,10 +15,10 @@ const ELEMENT_EMOJI: Record<string, string> = {
 export default function BaziSection({ bazi }: Props) {
   const { tr } = useLang()
   const pillars = [
-    { label: '年柱', pillar: bazi.yearPillar, note: '祖上/社会运' },
-    { label: '月柱', pillar: bazi.monthPillar, note: '父母/工作运' },
-    { label: '日柱', pillar: bazi.dayPillar, note: '本命/婚姻宫' },
-    { label: '时柱', pillar: bazi.hourPillar, note: '子女/晚年运' },
+    { label: tr.ui.bazi.pillars[0].name, pillar: bazi.yearPillar, note: tr.ui.bazi.pillars[0].note },
+    { label: tr.ui.bazi.pillars[1].name, pillar: bazi.monthPillar, note: tr.ui.bazi.pillars[1].note },
+    { label: tr.ui.bazi.pillars[2].name, pillar: bazi.dayPillar, note: tr.ui.bazi.pillars[2].note },
+    { label: tr.ui.bazi.pillars[3].name, pillar: bazi.hourPillar, note: tr.ui.bazi.pillars[3].note },
   ]
 
   const elements = Object.entries(bazi.elements) as [string, number][]
@@ -56,14 +56,14 @@ export default function BaziSection({ bazi }: Props) {
           ))}
         </div>
         <div className="mt-3 pt-3 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <span className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>生肖：</span>
+          <span className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{tr.ui.bazi.zodiac}</span>
           <span className="text-sm font-bold" style={{ color: 'var(--gold)' }}>{bazi.chineseZodiac}</span>
         </div>
       </div>
 
       {/* 五行能量条 */}
       <div className="mystic-card p-4 space-y-3">
-        <div className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>五行能量分布</div>
+        <div className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>{tr.ui.bazi.elements}</div>
         {elements.map(([elem, val]) => (
           <div key={elem} className="flex items-center gap-3">
             <span className="text-base w-6">{ELEMENT_EMOJI[elem]}</span>
@@ -76,10 +76,10 @@ export default function BaziSection({ bazi }: Props) {
             </div>
             <span className="text-xs w-6 text-right" style={{ color: 'var(--text-muted)' }}>{val}</span>
             {bazi.weakElements.includes(elem as never) && (
-              <span className="tag text-xs" style={{ background: 'rgba(201,123,132,0.1)', color: 'var(--rose)', border: '1px solid rgba(201,123,132,0.3)' }}>偏弱</span>
+              <span className="tag text-xs" style={{ background: 'rgba(201,123,132,0.1)', color: 'var(--rose)', border: '1px solid rgba(201,123,132,0.3)' }}>{tr.ui.bazi.weak}</span>
             )}
             {bazi.dominantElement === elem && (
-              <span className="tag text-xs" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.3)' }}>旺</span>
+              <span className="tag text-xs" style={{ background: 'rgba(212,175,55,0.1)', color: 'var(--gold)', border: '1px solid rgba(212,175,55,0.3)' }}>{tr.ui.bazi.dominant}</span>
             )}
           </div>
         ))}

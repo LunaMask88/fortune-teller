@@ -17,7 +17,7 @@ export default function RunesSection({ runes }: Props) {
     <section className="space-y-4">
       <h2 className="text-lg font-semibold" style={{ color: 'var(--gold)' }}>{tr.sections.runes}</h2>
       <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-        Elder Futhark 古符文，源自北欧神话奥丁悬挂世界树所获得的智慧
+        {tr.ui.runes.subtitle}
       </p>
 
       <div className="grid grid-cols-3 gap-3">
@@ -56,7 +56,7 @@ export default function RunesSection({ runes }: Props) {
                 background: draw.reversed ? 'rgba(201,123,132,0.1)' : 'rgba(74,222,128,0.1)',
                 color: draw.reversed ? 'var(--rose)' : '#4ade80',
               }}>
-                {draw.reversed ? '逆位' : '正位'}
+                {draw.reversed ? tr.ui.reversed : tr.ui.upright}
               </span>
 
               {/* 含义 */}
