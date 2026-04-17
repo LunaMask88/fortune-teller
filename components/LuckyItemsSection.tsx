@@ -7,12 +7,11 @@ import { useLang } from '@/contexts/LangContext'
 interface Props { items?: LuckyItem[] }
 
 // ── 平台配置 ──────────────────────────────────────────────────────────
-type Platform = 'pinterest' | 'shein' | 'taobao' | 'amazon'
+type Platform = 'pinterest' | 'shein' | 'amazon'
 
-const PLATFORMS: { id: Platform; label: string; color: string; badge: string }[] = [
+const PLATFORMS: { id: Platform; label: string; color: string; badge: string; badgeBg?: string; badgeColor?: string }[] = [
   { id: 'pinterest', label: 'Pinterest', color: '#e60023', badge: 'P' },
-  { id: 'shein',     label: 'SHEIN',     color: '#e41e3f', badge: 'S' },
-  { id: 'taobao',    label: '淘宝',      color: '#ff6200', badge: 'T' },
+  { id: 'shein',     label: 'SHEIN',     color: '#222222', badge: 'S', badgeBg: '#000000', badgeColor: '#ffffff' },
   { id: 'amazon',    label: 'Amazon',    color: '#ff9900', badge: 'A' },
 ]
 
@@ -129,8 +128,12 @@ export default function LuckyItemsSection({ items }: Props) {
               }}
             >
               <span
-                className="w-4 h-4 rounded-full flex items-center justify-center text-white font-bold"
-                style={{ background: active ? p.color : 'rgba(255,255,255,0.2)', fontSize: 9 }}
+                className="w-4 h-4 rounded-full flex items-center justify-center font-bold"
+                style={{
+                  background: active ? (p.badgeBg ?? p.color) : 'rgba(255,255,255,0.2)',
+                  color: p.badgeColor ?? '#ffffff',
+                  fontSize: 9,
+                }}
               >
                 {p.badge}
               </span>
@@ -248,8 +251,12 @@ export default function LuckyItemsSection({ items }: Props) {
 function PlatformBadge({ platform }: { platform: typeof PLATFORMS[number] }) {
   return (
     <span
-      className="absolute top-1 right-1 rounded-full flex items-center justify-center text-white font-bold"
-      style={{ width: 18, height: 18, background: platform.color, fontSize: 10, lineHeight: 1 }}
+      className="absolute top-1 right-1 rounded-full flex items-center justify-center font-bold"
+      style={{
+        width: 18, height: 18, fontSize: 10, lineHeight: 1,
+        background: platform.badgeBg ?? platform.color,
+        color: platform.badgeColor ?? '#ffffff',
+      }}
     >
       {platform.badge}
     </span>
@@ -259,9 +266,8 @@ function PlatformBadge({ platform }: { platform: typeof PLATFORMS[number] }) {
 function buildFallbackLink(platform: Platform, query: string): string {
   const q = encodeURIComponent(query)
   switch (platform) {
-    case 'shein':   return `https://www.shein.com/search?keyword=${q}`
-    case 'taobao':  return `https://s.taobao.com/search?q=${q}`
-    case 'amazon':  return `https://www.amazon.com/s?k=${q}`
-    default:        return `https://www.pinterest.com/search/pins/?q=${q}`
+    case 'shein':  return `https://www.shein.com/search?keyword=${q}`
+    case 'amazon': return `https://www.amazon.com/s?k=${q}`
+    default:       return `https://www.pinterest.com/search/pins/?q=${q}`
   }
 }

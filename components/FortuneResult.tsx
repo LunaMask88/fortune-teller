@@ -78,88 +78,24 @@ export default function FortuneResult() {
     }
   }
 
-  async function handleExportHTML() {
-    if (!exportRef.current || !reading) return
-    setExportingHtml(true)
-    try {
-      const { input, fortune } = reading
-      const date = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'zh-CN').replace(/\//g, '-')
-      const title = lang === 'en'
-        ? `${input.name}'s Destiny Report`
-        : `${input.name} 命理报告`
+  async function buildReportHTML(displayName: string): Promise<{ html: string; filename: string }> {
+    if (!exportRef.current || !reading) throw new Error('not ready')
+    const { input } = reading
+    const date = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'zh-CN').replace(/\//g, '-')
+    const title = lang === 'en' ? `${displayName}'s Destiny Report` : `${displayName} 命理报告`
+    const filename = `${displayName}_${lang === 'en' ? 'destiny_report' : '命理报告'}_${date}.html`
 
-      const html = `<!DOCTYPE html>
+    // 生成二维码 data URL
+    const { toDataURL } = await import('qrcode')
+    const siteUrl = 'https://fortune-teller-ten-theta.vercel.app'
+    const qrDataUrl = await toDataURL(siteUrl, { width: 100, margin: 1, color: { dark: '#d4af37', light: '#060412' } })
+
+    const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title}</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg-deep:#060412;--bg-card:#0f0a1e;--bg-card2:#150e28;
-  --gold:#d4af37;--gold-light:#f0d060;--rose:#c97b84;
-  --purple:#7c3aed;--purple-light:#a78bfa;
-  --text-primary:#f0e8ff;--text-muted:#9080b0;
-  --border:rgba(212,175,55,0.2);
-}
-body{background:var(--bg-deep);color:var(--text-primary);font-family:'PingFang SC','Microsoft YaHei',sans-serif;padding:32px 20px;line-height:1.6}
-.mystic-card{background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-card2) 100%);border:1px solid var(--border);border-radius:16px;position:relative;overflow:hidden}
-.mystic-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,175,55,0.03) 0%,transparent 60%);pointer-events:none}
-.gold-card{background:linear-gradient(135deg,rgba(212,175,55,0.05) 0%,rgba(124,58,237,0.05) 100%);border:1px solid rgba(212,175,55,0.3);border-radius:12px}
-.text-gold-gradient{background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 50%,var(--rose) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.score-ring{filter:drop-shadow(0 0 8px rgba(212,175,55,0.4))}
-.fortune-bar{height:6px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden}
-.fortune-bar-fill{height:100%;border-radius:3px}
-.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:.75rem;font-weight:500}
-.space-y-4>*+*{margin-top:1rem}
-.space-y-3>*+*{margin-top:.75rem}
-.space-y-2>*+*{margin-top:.5rem}
-.space-y-8>*+*{margin-top:2rem}
-.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.flex-col{flex-direction:column}
-.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}
-.flex-1{flex:1}.flex-shrink-0{flex-shrink:0}.flex-wrap{flex-wrap:wrap}
-.grid{display:grid}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}
-@media(min-width:768px){.md\\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.p-4{padding:1rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-4{padding-left:1rem;padding-right:1rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.pb-4{padding-bottom:1rem}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}
-.text-xs{font-size:.75rem}.text-sm{font-size:.875rem}.text-base{font-size:1rem}.text-lg{font-size:1.125rem}.text-3xl{font-size:1.875rem}
-.font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}
-.leading-relaxed{line-height:1.625}.text-center{text-align:center}.text-right{text-align:right}
-.w-16{width:4rem}.w-8{width:2rem}.w-full{width:100%}.relative{position:relative}.absolute{position:absolute}.inset-0{inset:0}
-.overflow-hidden{overflow:hidden}.whitespace-pre-wrap{white-space:pre-wrap}
-</style>
-</head>
-<body>
-<div style="max-width:760px;margin:0 auto">
-${exportRef.current.innerHTML}
-</div>
-</body>
-</html>`
-
-      const filename = `${input.name}_${lang === 'en' ? 'destiny_report' : '命理报告'}_${date}.html`
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = filename
-      a.click()
-      URL.revokeObjectURL(url)
-    } finally {
-      setExportingHtml(false)
-    }
-  }
-
-  async function handleShare() {
-    if (!exportRef.current || !reading) return
-    const { input, fortune } = reading
-    const date = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'zh-CN').replace(/\//g, '-')
-    const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : input.name
-    const title = lang === 'en' ? `${displayName}'s Destiny Report` : `${displayName} 命理报告`
-
-    // 生成 HTML 内容（复用导出逻辑的 CSS，但用 exportRef 内容）
-    const htmlContent = `<!DOCTYPE html>
-<html lang="${lang}">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${title}</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg-deep:#060412;--bg-card:#0f0a1e;--bg-card2:#150e28;--gold:#d4af37;--gold-light:#f0d060;--rose:#c97b84;--purple:#7c3aed;--purple-light:#a78bfa;--text-primary:#f0e8ff;--text-muted:#9080b0;--border:rgba(212,175,55,0.2)}
@@ -181,12 +117,49 @@ body{background:var(--bg-deep);color:var(--text-primary);font-family:'PingFang S
 .leading-relaxed{line-height:1.625}.text-center{text-align:center}.text-right{text-align:right}
 .w-16{width:4rem}.w-8{width:2rem}.w-full{width:100%}.relative{position:relative}.absolute{position:absolute}.inset-0{inset:0}
 .overflow-hidden{overflow:hidden}.whitespace-pre-wrap{white-space:pre-wrap}
-</style></head><body>
-<div style="max-width:760px;margin:0 auto">${exportRef.current.innerHTML}</div>
-</body></html>`
+</style>
+</head>
+<body>
+<div style="max-width:760px;margin:0 auto">
+${exportRef.current.innerHTML}
+<div style="margin-top:40px;padding-top:24px;border-top:1px solid rgba(212,175,55,0.2);display:flex;align-items:center;gap:20px">
+  <img src="${qrDataUrl}" alt="QR" style="width:80px;height:80px;border-radius:8px" />
+  <div>
+    <div style="font-size:13px;color:#d4af37;font-weight:600;margin-bottom:4px">🔮 MysticOracle</div>
+    <div style="font-size:12px;color:#9080b0">${lang === 'en' ? 'Scan to get your own reading' : '扫码获取你的专属命理解读'}</div>
+    <div style="font-size:11px;color:#6060a0;margin-top:2px">${siteUrl}</div>
+  </div>
+</div>
+</div>
+</body>
+</html>`
 
-    const filename = `${displayName}_${lang === 'en' ? 'destiny_report' : '命理报告'}_${date}.html`
-    const file = new File([htmlContent], filename, { type: 'text/html' })
+    return { html, filename }
+  }
+
+  async function handleExportHTML() {
+    if (!exportRef.current || !reading) return
+    setExportingHtml(true)
+    try {
+      const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : reading.input.name
+      const { html, filename } = await buildReportHTML(displayName)
+
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url; a.download = filename; a.click()
+      URL.revokeObjectURL(url)
+    } finally {
+      setExportingHtml(false)
+    }
+  }
+
+  async function handleShare() {
+    if (!exportRef.current || !reading) return
+    const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : reading.input.name
+    const title = lang === 'en' ? `${displayName}'s Destiny Report` : `${displayName} 命理报告`
+    const { html, filename } = await buildReportHTML(displayName)
+    const file = new File([html], filename, { type: 'text/html' })
 
     try {
       if (navigator.canShare?.({ files: [file] })) {

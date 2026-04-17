@@ -125,7 +125,6 @@ function findMockImages(query: string, category?: string): string[] {
 const PLATFORM_SITE: Record<string, string> = {
   pinterest: 'pinterest.com',
   shein:     'shein.com',
-  temu:      'temu.com',
   amazon:    'amazon.com',
 }
 
@@ -133,10 +132,9 @@ const PLATFORM_SITE: Record<string, string> = {
 function mockPlatformLink(platform: string, query: string): string {
   const q = encodeURIComponent(query)
   switch (platform) {
-    case 'shein':    return `https://www.shein.com/search?keyword=${q}`
-    case 'temu':     return `https://www.temu.com/search_result.html?search_key=${q}`
-    case 'amazon':   return `https://www.amazon.com/s?k=${q}`
-    default:         return `https://www.pinterest.com/search/pins/?q=${q}`
+    case 'shein':  return `https://www.shein.com/search?keyword=${q}`
+    case 'amazon': return `https://www.amazon.com/s?k=${q}`
+    default:       return `https://www.pinterest.com/search/pins/?q=${q}`
   }
 }
 
