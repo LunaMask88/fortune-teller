@@ -39,8 +39,14 @@ export default function FortuneResult() {
   useEffect(() => {
     const raw = sessionStorage.getItem('fortune_reading')
     if (!raw) { router.replace('/reading'); return }
-    try { setReading(JSON.parse(raw)) }
-    catch { router.replace('/reading') }
+    try {
+      const parsed = JSON.parse(raw)
+      // 兼容旧格式：summary 曾是字符串
+      if (typeof parsed.fortune?.summary === 'string') {
+        parsed.fortune.summary = [{ title: '综合解读', body: parsed.fortune.summary }]
+      }
+      setReading(parsed)
+    } catch { router.replace('/reading') }
   }, [router])
 
   async function handleExport() {
