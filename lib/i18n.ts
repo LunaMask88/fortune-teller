@@ -98,7 +98,7 @@ const zh = {
     empty: '暂无幸运物件推荐',
     categories: {
       crystal: '水晶', jewelry: '饰品', color: '颜色',
-      number:  '数字', plant:   '植物', symbol: '符号', other: '物件',
+      number:  '数字', plant:   '植物', symbol: '符号', clothing: '穿搭', other: '物件',
     },
     boosts: {
       career: '事业运', wealth: '财运', love: '感情运', health: '健康运', luck: '整体运',
@@ -275,7 +275,7 @@ const en: typeof zh = {
     empty: 'No lucky items recommended yet',
     categories: {
       crystal: 'Crystal', jewelry: 'Jewelry', color: 'Color',
-      number:  'Number',  plant:   'Plant',   symbol: 'Symbol', other: 'Item',
+      number:  'Number',  plant:   'Plant',   symbol: 'Symbol', clothing: 'Outfit', other: 'Item',
     },
     boosts: {
       career: 'Career', wealth: 'Wealth', love: 'Love', health: 'Health', luck: 'Luck',

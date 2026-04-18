@@ -7,37 +7,48 @@ interface Props { items?: LuckyItem[] }
 
 // ── 平台配置 ──────────────────────────────────────────────────────────
 const PLATFORMS = [
-  { id: 'pinterest', label: 'Pinterest', color: '#e60023', badge: 'P', emoji: '📌' },
-  { id: 'etsy',      label: 'Etsy',      color: '#f1641e', badge: 'E', emoji: '🛍️' },
-  { id: 'amazon',    label: 'Amazon',    color: '#ff9900', badge: 'A', emoji: '📦' },
+  { id: 'pinterest', label: 'Pinterest', color: '#e60023', badge: 'P' },
+  { id: 'shein',     label: 'SHEIN',     color: '#111111', badge: 'S', badgeBg: '#000', badgeColor: '#fff' },
+  { id: 'etsy',      label: 'Etsy',      color: '#f1641e', badge: 'E' },
+  { id: 'amazon',    label: 'Amazon',    color: '#ff9900', badge: 'A' },
 ]
+
+// 服装类优先展示 SHEIN，其余优先 Etsy
+function platformsForItem(category: string) {
+  if (category === 'clothing') {
+    return [PLATFORMS[1], PLATFORMS[0], PLATFORMS[3]] // SHEIN, Pinterest, Amazon
+  }
+  return PLATFORMS
+}
 
 function platformLink(platform: string, query: string): string {
   const q = encodeURIComponent(query)
   switch (platform) {
-    case 'etsy':      return `https://www.etsy.com/search?q=${q}`
-    case 'amazon':    return `https://www.amazon.com/s?k=${q}`
-    default:          return `https://www.pinterest.com/search/pins/?q=${q}`
+    case 'shein':  return `https://www.shein.com/search?keyword=${q}`
+    case 'etsy':   return `https://www.etsy.com/search?q=${q}`
+    case 'amazon': return `https://www.amazon.com/s?k=${q}`
+    default:       return `https://www.pinterest.com/search/pins/?q=${q}`
   }
 }
 
 // ── 物件类别配置 ──────────────────────────────────────────────────────
 const CATEGORY_COLOR: Record<string, string> = {
   crystal: '#a78bfa', jewelry: '#d4af37', color: '#f97316',
-  number: '#3b82f6', plant: '#22c55e', symbol: '#ec4899', other: '#9ca3af',
+  number: '#3b82f6', plant: '#22c55e', symbol: '#ec4899', clothing: '#f43f5e', other: '#9ca3af',
 }
 const CATEGORY_EMOJI: Record<string, string> = {
   crystal: '💎', jewelry: '💍', color: '🎨',
-  number: '🔢', plant: '🌿', symbol: '✨', other: '🌟',
+  number: '🔢', plant: '🌿', symbol: '✨', clothing: '👗', other: '🌟',
 }
 const CATEGORY_BG: Record<string, [string, string]> = {
-  crystal: ['#3b0764', '#6d28d9'],
-  jewelry: ['#3d2a00', '#92650a'],
-  color:   ['#431407', '#c2410c'],
-  number:  ['#172554', '#1d4ed8'],
-  plant:   ['#052e16', '#15803d'],
-  symbol:  ['#500724', '#be185d'],
-  other:   ['#111827', '#374151'],
+  crystal:  ['#3b0764', '#6d28d9'],
+  jewelry:  ['#3d2a00', '#92650a'],
+  color:    ['#431407', '#c2410c'],
+  number:   ['#172554', '#1d4ed8'],
+  plant:    ['#052e16', '#15803d'],
+  symbol:   ['#500724', '#be185d'],
+  clothing: ['#4c0519', '#be123c'],
+  other:    ['#111827', '#374151'],
 }
 
 // ── 运势提升配置 ──────────────────────────────────────────────────────
@@ -131,7 +142,7 @@ export default function LuckyItemsSection({ items }: Props) {
 
               {/* 平台按钮区 */}
               <div className="px-4 pb-4 flex gap-2 flex-wrap">
-                {PLATFORMS.map(p => (
+                {platformsForItem(item.category).map(p => (
                   <a
                     key={p.id}
                     href={platformLink(p.id, query)}
@@ -145,8 +156,8 @@ export default function LuckyItemsSection({ items }: Props) {
                     }}
                   >
                     <span
-                      className="w-4 h-4 rounded-full flex items-center justify-center text-white font-bold"
-                      style={{ background: p.color, fontSize: 9 }}
+                      className="w-4 h-4 rounded-full flex items-center justify-center font-bold"
+                      style={{ background: p.badgeBg ?? p.color, color: p.badgeColor ?? '#fff', fontSize: 9 }}
                     >
                       {p.badge}
                     </span>

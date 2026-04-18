@@ -92,10 +92,10 @@ Return JSON only:
   ],${hasQuestions ? `
   "answers": [{"question":"q","answer":"2-3 sentences"}],` : ''}
   "luckyItems": [
-    {"name":"en","nameEN":"en","reason":"1-2 sentences","searchQuery":"en term","category":"crystal|jewelry|color|number|plant|symbol|other","boosts":"career|wealth|love|health|luck"}
+    {"name":"en","nameEN":"en","reason":"1-2 sentences","searchQuery":"en search term for shopping","category":"crystal|jewelry|color|number|plant|symbol|clothing|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-Include 7 lucky items. All text in English.`
+Include 7-8 lucky items. Must include 1-2 clothing items (category:"clothing") recommending a specific outfit color/style based on the user's Five Elements needs — e.g. "forest green blouse", "deep blue dress", "gold accessories set". searchQuery should be SHEIN/fashion-friendly (e.g. "green floral dress women"). All text in English.`
         : `
 === 命理档案 ===
 姓名：${name} | 出生：${birthYear}-${birthMonth}-${birthDay}${birthHour !== null ? ` ${birthHour}时` : ''} | ${gender === 'male' ? '男' : '女'}
@@ -127,10 +127,10 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
   ],${hasQuestions ? `
   "answers": [{"question":"原题","answer":"2-3句命理解答"}],` : ''}
   "luckyItems": [
-    {"name":"中文名","nameEN":"English","reason":"1-2句命理原因","searchQuery":"英文搜索词","category":"crystal|jewelry|color|number|plant|symbol|other","boosts":"career|wealth|love|health|luck"}
+    {"name":"中文名","nameEN":"English","reason":"1-2句命理原因","searchQuery":"英文购物搜索词","category":"crystal|jewelry|color|number|plant|symbol|clothing|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-luckyItems 需 7 个，覆盖水晶/饰品/颜色/数字/植物/符号等类别。`
+luckyItems 需 7-8 个，必须包含 1-2 个穿搭类（category:"clothing"），根据用户五行缺失推荐具体颜色和款式的服装，如"森系绿色上衣"、"深蓝色连衣裙"、"金色配饰套装"。searchQuery 用适合 SHEIN 搜索的英文词（如 "green floral dress women"）。`
 
         // ── Step 3: DeepSeek 流式调用 ─────────────────────
         const client = new OpenAI({
