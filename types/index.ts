@@ -6,7 +6,7 @@ export interface UserInput {
   birthDay: number
   birthHour: number | null
   gender: 'male' | 'female'
-  period: 'today' | 'month' | 'year'
+  period: 'today' | 'month' | 'year' | 'life'
   context?: string      // 当前状况 / 补充背景
   questions?: string[]  // 用户想问的具体问题（最多 5 个）
   lang?: 'zh' | 'en'   // 界面与 AI 回复语言

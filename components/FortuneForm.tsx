@@ -95,6 +95,7 @@ export default function FortuneForm() {
     { value: 'month', label: tr.form.periods.month.label, icon: tr.form.periods.month.icon },
     { value: 'year',  label: tr.form.periods.year.label,  icon: tr.form.periods.year.icon },
   ] as const
+  const isLife = form.period === 'life'
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto px-4 py-8">
@@ -207,7 +208,7 @@ export default function FortuneForm() {
         {/* 运势周期 */}
         <div>
           <label className="block text-sm font-medium mb-3" style={{ color: 'var(--gold)' }}>{tr.form.period}</label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2 mb-2">
             {PERIOD_OPTIONS.map(opt => (
               <button
                 key={opt.value}
@@ -225,6 +226,24 @@ export default function FortuneForm() {
               </button>
             ))}
           </div>
+          {/* 人生报告 — 全宽高级选项 */}
+          <button
+            type="button"
+            onClick={() => set('period', 'life')}
+            className="w-full py-3 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
+            style={{
+              background: isLife ? 'linear-gradient(135deg, #d4af37 0%, #b8952e 100%)' : 'rgba(212,175,55,0.06)',
+              border: `1px solid ${isLife ? 'transparent' : 'rgba(212,175,55,0.4)'}`,
+              color: isLife ? '#0a0a0a' : 'var(--gold)',
+              boxShadow: isLife ? '0 4px 16px rgba(212,175,55,0.3)' : 'none',
+            }}
+          >
+            <span>✨</span>
+            <span>{tr.form.periods.life.label}</span>
+            <span className="text-xs font-normal opacity-70 ml-1">
+              {lang === 'en' ? '· Lifetime destiny reading' : '· 终生命格深度解读'}
+            </span>
+          </button>
         </div>
 
         {/* 当前状况 */}

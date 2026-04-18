@@ -42,6 +42,7 @@ const zh = {
       today: { label: '今日运势', icon: '☀️' },
       month: { label: '本月运势', icon: '🌙' },
       year:  { label: '今年运势', icon: '🌟' },
+      life:  { label: '人生报告', icon: '🌟' },
     },
     context: '当前状况', contextOptional: '（选填）',
     contextPlaceholder: '描述你目前的状况、困惑或关注点，例如：最近在考虑换工作，感情方面有些迷茫……',
@@ -57,7 +58,7 @@ const zh = {
   },
 
   result: {
-    periodLabels: { today: '今日', month: '本月', year: '今年' } as Record<string, string>,
+    periodLabels: { today: '今日', month: '本月', year: '今年', life: '终生' } as Record<string, string>,
     subtitle: (name: string, period: string) => `${name} 的${period}命理解读`,
     info12: '综合12大命理体系',
     tabs: {
@@ -216,9 +217,10 @@ const en: typeof zh = {
     timeHint: 'Known birth hour greatly improves BaZi & Zi Wei accuracy',
     period: 'Fortune Period',
     periods: {
-      today: { label: 'Today',      icon: '☀️' },
-      month: { label: 'This Month', icon: '🌙' },
-      year:  { label: 'This Year',  icon: '🌟' },
+      today: { label: 'Today',       icon: '☀️' },
+      month: { label: 'This Month',  icon: '🌙' },
+      year:  { label: 'This Year',   icon: '🌟' },
+      life:  { label: 'Life Report', icon: '🌟' },
     },
     context: 'Current Situation', contextOptional: '(Optional)',
     contextPlaceholder: 'Describe your current situation, concerns, or focus areas…',
@@ -234,7 +236,7 @@ const en: typeof zh = {
   },
 
   result: {
-    periodLabels: { today: 'Daily', month: 'Monthly', year: 'Annual' },
+    periodLabels: { today: 'Daily', month: 'Monthly', year: 'Annual', life: 'Lifetime' },
     subtitle: (name: string, period: string) => `${name}'s ${period} Reading`,
     info12: 'Integrating 12 divination systems',
     tabs: {
