@@ -68,12 +68,25 @@ export async function GET(req: NextRequest) {
   const platform = searchParams.get('platform') ?? 'pinterest'
   const searchLink = platformSearchLink(platform, query)
 
+  // 按类别追加修饰词，让 Unsplash 返回更像产品图的结果
+  const CATEGORY_SUFFIX: Record<string, string> = {
+    crystal:  'crystal gemstone healing jewelry',
+    jewelry:  'jewelry accessory product',
+    clothing: 'fashion outfit style women',
+    plant:    'aromatherapy botanical product bottle',
+    symbol:   'spiritual mystical charm',
+    color:    'fashion lifestyle aesthetic',
+    number:   'minimal design art',
+    other:    'product lifestyle',
+  }
+  const enhancedQuery = query + ' ' + (CATEGORY_SUFFIX[category] ?? 'product')
+
   // ── Unsplash API（免费 50 req/hr，需 UNSPLASH_ACCESS_KEY）───────────
   const unsplashKey = process.env.UNSPLASH_ACCESS_KEY
   if (unsplashKey && query) {
     try {
       const url = new URL('https://api.unsplash.com/search/photos')
-      url.searchParams.set('query', query)
+      url.searchParams.set('query', enhancedQuery)
       url.searchParams.set('per_page', '4')
       url.searchParams.set('orientation', 'squarish')
       url.searchParams.set('order_by', 'relevant')

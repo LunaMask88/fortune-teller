@@ -92,10 +92,17 @@ Return JSON only:
   ],${hasQuestions ? `
   "answers": [{"question":"q","answer":"2-3 sentences"}],` : ''}
   "luckyItems": [
-    {"name":"en","nameEN":"en","reason":"1-2 sentences","searchQuery":"en search term for shopping","category":"crystal|jewelry|color|number|plant|symbol|clothing|other","boosts":"career|wealth|love|health|luck"}
+    {"name":"en","nameEN":"en","reason":"1-2 sentences","searchQuery":"product-specific English search term","category":"crystal|jewelry|color|number|plant|symbol|clothing|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-Include 7-8 lucky items. Must include 1-2 clothing items (category:"clothing") recommending a specific outfit color/style based on the user's Five Elements needs — e.g. "forest green blouse", "deep blue dress", "gold accessories set". searchQuery should be SHEIN/fashion-friendly (e.g. "green floral dress women"). All text in English.`
+Include 7-8 lucky items. Must include 1-2 clothing items (category:"clothing").
+CRITICAL — searchQuery must describe the SPECIFIC PRODUCT FORM, not just the material/ingredient:
+- crystal → "amethyst crystal healing bracelet" not "amethyst"
+- plant → "lavender essential oil roller bottle" not "lavender"
+- jewelry → "gold sun pendant necklace women" not "gold necklace"
+- clothing → "forest green flowy midi dress women" not "green dress"
+- symbol → "evil eye protection bracelet charm" not "evil eye"
+The searchQuery is used for both image search and shopping — make it specific enough to return actual buyable products. All text in English.`
         : `
 === 命理档案 ===
 姓名：${name} | 出生：${birthYear}-${birthMonth}-${birthDay}${birthHour !== null ? ` ${birthHour}时` : ''} | ${gender === 'male' ? '男' : '女'}
@@ -130,7 +137,13 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
     {"name":"中文名","nameEN":"English","reason":"1-2句命理原因","searchQuery":"英文购物搜索词","category":"crystal|jewelry|color|number|plant|symbol|clothing|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-luckyItems 需 7-8 个，必须包含 1-2 个穿搭类（category:"clothing"），根据用户五行缺失推荐具体颜色和款式的服装，如"森系绿色上衣"、"深蓝色连衣裙"、"金色配饰套装"。searchQuery 用适合 SHEIN 搜索的英文词（如 "green floral dress women"）。`
+luckyItems 需 7-8 个，必须包含 1-2 个穿搭类（category:"clothing"），根据用户五行缺失推荐具体颜色和款式的服装，如"森系绿色上衣"、"深蓝色连衣裙"、"金色配饰套装"。
+关键：searchQuery 必须描述具体的商品形态，不能只写材料或颜色，示例：
+- 水晶 → "amethyst crystal healing bracelet women" 而非 "amethyst"
+- 植物/香薰 → "lavender essential oil roller bottle" 而非 "lavender"
+- 饰品 → "gold crescent moon pendant necklace" 而非 "gold necklace"
+- 服装 → "forest green flowy midi dress women" 而非 "green dress"
+searchQuery 用于图片搜索和购物跳转，必须精准到可购买的具体商品。`
 
         // ── Step 3: DeepSeek 流式调用 ─────────────────────
         const client = new OpenAI({
