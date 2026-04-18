@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { LuckyItem } from '@/types'
 import { useLang } from '@/contexts/LangContext'
 
@@ -111,6 +111,15 @@ export default function LuckyItemsSection({ items }: Props) {
 
   const pinterestPlatform = PLATFORMS[0]
 
+  // 复制搜索词到剪贴板
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null)
+  const handleCopy = useCallback((text: string, idx: number) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedIdx(idx)
+      setTimeout(() => setCopiedIdx(null), 2000)
+    })
+  }, [])
+
   return (
     <section className="space-y-4">
       <h2 className="text-lg font-semibold" style={{ color: 'var(--gold)' }}>{tr.lucky.title}</h2>
@@ -204,6 +213,25 @@ export default function LuckyItemsSection({ items }: Props) {
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                   {item.reason}
                 </p>
+              </div>
+
+              {/* 搜索词 + 复制 */}
+              <div className="px-4 pb-2 flex items-center gap-2">
+                <span className="text-xs font-mono truncate flex-1 px-2 py-1 rounded-lg"
+                  style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', maxWidth: '70%' }}>
+                  {query}
+                </span>
+                <button
+                  onClick={() => handleCopy(query, idx)}
+                  className="text-xs px-2 py-1 rounded-lg transition-all flex-shrink-0"
+                  style={{
+                    background: copiedIdx === idx ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.06)',
+                    color: copiedIdx === idx ? '#22c55e' : 'var(--text-muted)',
+                    border: `1px solid ${copiedIdx === idx ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.1)'}`,
+                  }}
+                >
+                  {copiedIdx === idx ? (lang === 'en' ? '✓ Copied' : '✓ 已复制') : (lang === 'en' ? 'Copy' : '复制')}
+                </button>
               </div>
 
               {/* 平台按钮区（统一格式） */}
