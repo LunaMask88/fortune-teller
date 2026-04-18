@@ -100,11 +100,18 @@ export default function HomePage() {
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {tr.home.systems.map(s => (
-            <div key={s.title} className="mystic-card p-4 text-center">
+            <Link
+              key={s.title}
+              href={`/systems/${s.slug}`}
+              className="mystic-card p-4 text-center block hover:opacity-80 transition-opacity active:scale-95"
+            >
               <div className="text-3xl mb-2">{s.icon}</div>
               <div className="font-semibold mb-1 text-sm" style={{ color: 'var(--gold)' }}>{s.title}</div>
               <div className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{s.desc}</div>
-            </div>
+              <div className="mt-2 text-xs" style={{ color: 'var(--purple-light)', opacity: 0.7 }}>
+                {tr.lang === 'zh' ? '了解更多 →' : 'Learn more →'}
+              </div>
+            </Link>
           ))}
         </div>
       </section>
