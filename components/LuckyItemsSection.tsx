@@ -88,11 +88,16 @@ function getPlatforms(category: string, country = 'other') {
 }
 
 function platformLink(id: string, query: string, queryZH: string, country = 'other'): string {
-  const q  = encodeURIComponent(query)
-  const qz = encodeURIComponent(queryZH)
+  const q   = encodeURIComponent(query)
+  const qzh = encodeURIComponent(queryZH || query)
+  const c   = encodeURIComponent(country)
+  // 淘宝和 Amazon 走联盟跳转 API（自动附加追踪参数）
+  if (id === 'taobao') return `/api/aff?platform=taobao&q=${q}&qzh=${qzh}&country=${c}`
+  if (id === 'amazon') return `/api/aff?platform=amazon&q=${q}&qzh=${qzh}&country=${c}`
+  // 其余平台暂时直链
+  const qz = qzh
   switch (id) {
     case 'xiachufang': return `https://www.xiachufang.com/search/?keyword=${qz}`
-    case 'taobao':     return `https://s.taobao.com/search?q=${qz}`
     case 'xiaohongshu':return `https://www.xiaohongshu.com/search_result/?keyword=${qz}&type=54`
     case 'shopee': {
       const shopeeMap: Record<string, string> = { TW: 'shopee.tw', HK: 'shopee.hk', SG: 'shopee.sg', MY: 'shopee.com.my' }
@@ -103,11 +108,6 @@ function platformLink(id: string, query: string, queryZH: string, country = 'oth
       const lazadaMap: Record<string, string> = { SG: 'lazada.sg', MY: 'www.lazada.com.my' }
       const domain = lazadaMap[country] ?? 'lazada.sg'
       return `https://${domain}/catalog/?q=${q}`
-    }
-    case 'amazon': {
-      const amazonMap: Record<string, string> = { GB: 'amazon.co.uk', AU: 'amazon.com.au', JP: 'amazon.co.jp', CA: 'amazon.ca' }
-      const domain = amazonMap[country] ?? 'amazon.com'
-      return `https://www.${domain}/s?k=${q}`
     }
     case 'etsy':    return `https://www.etsy.com/search?q=${q}`
     case 'shein':   return `https://www.shein.com/search?keyword=${q}`
