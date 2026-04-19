@@ -100,15 +100,20 @@ Return JSON only:
     {"name":"en","nameEN":"en","reason":"1-2 sentences","searchQuery":"product-specific English search term","category":"crystal|jewelry|color|number|plant|symbol|clothing|food|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-Include 8-10 lucky items. Must include 1-2 clothing items (category:"clothing") AND 1-2 food items (category:"food").
-For food items: recommend a specific food to eat regularly that nourishes the user's weak element and boosts a fortune dimension. reason = which element it replenishes and how it helps (e.g. "Rich in iron and warmth, nourishes the Fire element, boosts vitality and love luck"). searchQuery = recipe or ingredient keyword (e.g. "red date longan tea recipe").
-CRITICAL — searchQuery must describe the SPECIFIC PRODUCT FORM, not just the material/ingredient:
+STRICT RULES for luckyItems:
+1. EXACTLY 6 items total — no more, no less.
+2. MANDATORY categories: exactly 1 "clothing" + exactly 1 "food". Remaining 4 from other categories.
+3. DIVERSITY: each item must target a DIFFERENT "boosts" value — no two items share the same boosts. Cover career/wealth/love/health/luck spread across the 6.
+4. NO redundancy: no two items of the same element color theme (e.g. don't recommend both green crystal and green clothing).
+5. "boosts" field is REQUIRED on every item — never omit it.
+6. For food items: a specific dish/ingredient to eat regularly that nourishes the weak element. reason = which element + how it boosts fortune. searchQuery = dish/recipe keyword.
+CRITICAL — searchQuery must describe the SPECIFIC PRODUCT FORM:
 - crystal → "amethyst crystal healing bracelet" not "amethyst"
 - plant → "lavender essential oil roller bottle" not "lavender"
 - jewelry → "gold sun pendant necklace women" not "gold necklace"
 - clothing → "forest green flowy midi dress women" not "green dress"
 - food → "red date longan wolfberry tea recipe" not "red date"
-The searchQuery is used for both image search and shopping — make it specific enough to return actual buyable products. All text in English.`
+All text in English.`
         : `
 === 命理档案 ===
 姓名：${name} | 出生：${birthYear}-${birthMonth}-${birthDay}${birthHour !== null ? ` ${birthHour}时` : ''} | ${gender === 'male' ? '男' : gender === 'female' ? '女' : '不披露'}${locationStr ? ` | 所在地：${locationStr}` : ''}
@@ -143,16 +148,20 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
     {"name":"中文名","nameEN":"English","reason":"1-2句命理原因","searchQuery":"英文购物搜索词","category":"crystal|jewelry|color|number|plant|symbol|clothing|food|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-luckyItems 需 8-10 个，必须包含：
-- 1-2 个穿搭类（category:"clothing"），根据五行缺失推荐具体颜色款式，如"森系绿色上衣"、"深蓝色连衣裙"
-- 1-2 个食补类（category:"food"），推荐适合多吃的具体食物，说明补充哪个五行、提升哪方面运势，如"红枣枸杞茶"（补火、提升感情运）、"核桃黑芝麻糊"（补水、增强事业专注力）
-关键：searchQuery 必须描述具体的商品或菜谱形态，示例：
+luckyItems 严格规则：
+1. 恰好 6 个，不多不少。
+2. 必须包含：恰好 1 个穿搭类（category:"clothing"）+ 恰好 1 个食补类（category:"food"）。其余 4 个从其他类别选择。
+3. 多样性：每个物件的 boosts 值必须不同，6 个 boosts 覆盖 career/wealth/love/health/luck 中的 5 个，剩余 1 个可重复。
+4. 不重复：不允许两个物件颜色五行高度雷同（如同时推荐绿水晶和绿色服装）。
+5. boosts 字段每个物件都必须填写，不得省略。
+6. 食补类：推荐一种具体食物或饮品，说明补充哪个五行元素以及如何提升运势，例如"红枣枸杞茶（补火，提升感情运）"、"核桃黑芝麻糊（补水，增强事业专注力）"。
+关键：searchQuery 必须描述具体商品或菜谱：
 - 水晶 → "amethyst crystal healing bracelet women" 而非 "amethyst"
-- 植物/香薰 → "lavender essential oil roller bottle" 而非 "lavender"
+- 香薰 → "lavender essential oil roller bottle" 而非 "lavender"
 - 饰品 → "gold crescent moon pendant necklace" 而非 "gold necklace"
 - 服装 → "forest green flowy midi dress women" 而非 "green dress"
 - 食补 → "red date longan wolfberry tea recipe" 而非 "red date"
-searchQuery 用于图片搜索和购物跳转，必须精准到具体商品或菜谱。${country && ['CN','TW','HK','MO','SG','MY'].includes(country) ? '\n注意：用户在中文市场，食补类 searchQuery 优先使用中文食材名（如"红枣枸杞茶"、"核桃黑芝麻糊做法"）。' : ''}`
+searchQuery 用于图片搜索和购物跳转，必须精准。${country && ['CN','TW','HK','MO','SG','MY'].includes(country) ? '\n注意：用户在中文市场，食补类 searchQuery 使用中文食材名（如"红枣枸杞茶做法"、"核桃黑芝麻糊"）。' : ''}`
 
         // ── 人生报告模式：追加专属指令 ────────────────────
         const lifeAppendZH = `
