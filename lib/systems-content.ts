@@ -529,7 +529,6 @@ const content: Record<string, { zh: SystemContent; en: SystemContent }> = {
       ],
     },
   },
-}
 
   liuyao: {
     zh: {
@@ -812,6 +811,7 @@ const content: Record<string, { zh: SystemContent; en: SystemContent }> = {
       ],
     },
   },
+}
 
 export function getSystemContent(slug: string, lang: 'zh' | 'en'): SystemContent | null {
   return content[slug]?.[lang] ?? null
