@@ -52,7 +52,7 @@ export default function ShareCard({ reading, lang, periodLabel }: Props) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>
-            MysticOracle
+            MysticPalantir
           </div>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#d4af37' }}>
             {isZH ? `${input.name} 的${periodLabel}命理` : `${input.name}'s ${periodLabel} Reading`}
@@ -127,7 +127,7 @@ export default function ShareCard({ reading, lang, periodLabel }: Props) {
 
       {/* 底部水印 */}
       <div style={{ textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>
-        mysticoracle · {isZH ? '命理仅供参考' : 'For reference only'}
+        mysticpalantir · {isZH ? '命理仅供参考' : 'For reference only'}
       </div>
     </div>
   )

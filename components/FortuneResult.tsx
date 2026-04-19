@@ -139,7 +139,7 @@ ${exportRef.current.innerHTML}
 <div style="margin-top:40px;padding-top:24px;border-top:1px solid rgba(212,175,55,0.2);display:flex;align-items:center;gap:20px">
   <img src="${qrDataUrl}" alt="QR" style="width:80px;height:80px;border-radius:8px" />
   <div>
-    <div style="font-size:13px;color:#d4af37;font-weight:600;margin-bottom:4px">🔮 MysticOracle</div>
+    <div style="font-size:13px;color:#d4af37;font-weight:600;margin-bottom:4px">🔮 MysticPalantir</div>
     <div style="font-size:12px;color:#9080b0">${lang === 'en' ? 'Scan to get your own reading' : '扫码获取你的专属命理解读'}</div>
     <div style="font-size:11px;color:#6060a0;margin-top:2px">${siteUrl}</div>
   </div>
@@ -211,8 +211,8 @@ ${exportRef.current.innerHTML}
         await navigator.share({ files: [file], title })
       } else if (navigator.share) {
         await navigator.share({ title, text: lang === 'en'
-          ? `Check out this destiny reading from MysticOracle!`
-          : `来自 MysticOracle 的命理解读报告` })
+          ? `Check out this destiny reading from MysticPalantir!`
+          : `来自 MysticPalantir 的命理解读报告` })
       } else {
         // 降级：下载文件
         const url = URL.createObjectURL(file)

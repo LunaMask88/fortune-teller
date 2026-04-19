@@ -13,7 +13,7 @@ const zh = {
     cta: '✨ 开启命理解读',
     hint: '输入基本信息 · AI 深度分析 · 约 30 秒出结果',
     systemsTitle: '六大命理体系，全方位解读',
-    footer: '命理仅供参考，人生掌握在自己手中 · MysticOracle © 2025',
+    footer: '命理仅供参考，人生掌握在自己手中 · MysticPalantir © 2025',
     systems: [
       { icon: '☯️', title: '八字五行', desc: '天干地支，四柱命盘，五行平衡分析', slug: 'bazi' },
       { icon: '⭐', title: '西洋星座', desc: '太阳星座·守护星·元素属性解读', slug: 'astrology' },
@@ -191,7 +191,7 @@ const en: typeof zh = {
     cta: '✨ Start My Reading',
     hint: 'Enter info · AI deep analysis · Results in ~30s',
     systemsTitle: 'Six Divination Systems, Full Spectrum',
-    footer: 'For reference only. Your life is in your hands · MysticOracle © 2025',
+    footer: 'For reference only. Your life is in your hands · MysticPalantir © 2025',
     systems: [
       { icon: '☯️', title: 'BaZi · Five Elements',    desc: 'Four Pillars, heavenly stems & earthly branches', slug: 'bazi' },
       { icon: '⭐', title: 'Western Astrology',        desc: 'Sun sign, ruling planet, elemental traits', slug: 'astrology' },

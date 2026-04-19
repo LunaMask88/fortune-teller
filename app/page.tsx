@@ -69,7 +69,7 @@ export default function HomePage() {
         </div>
 
         <h1 className="text-5xl font-bold mb-3" style={{ lineHeight: 1.2 }}>
-          <span className="text-gold-gradient">MysticOracle</span>
+          <span className="text-gold-gradient">MysticPalantir</span>
         </h1>
         <p className="text-xl mb-3" style={{ color: 'var(--purple-light)' }}>{tr.home.tagline}</p>
         <p className="text-base mb-10 leading-relaxed" style={{ color: 'var(--text-muted)', maxWidth: 480 }}>
