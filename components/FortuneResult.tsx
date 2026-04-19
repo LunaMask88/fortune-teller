@@ -43,10 +43,15 @@ export default function FortuneResult() {
   ]
 
   useEffect(() => {
+    // sessionStorage 优先（刚完成解读），否则 fallback 到 localStorage（直接访问 /result）
     const raw = sessionStorage.getItem('fortune_reading')
-    if (!raw) { router.replace('/reading'); return }
+    let source: string | null = raw
+    if (!source) {
+      try { source = localStorage.getItem('mystic_last_reading') } catch { /* ignore */ }
+    }
+    if (!source) { router.replace('/reading'); return }
     try {
-      const parsed = JSON.parse(raw)
+      const parsed = JSON.parse(source)
       // 兼容旧格式：summary 曾是字符串
       if (typeof parsed.fortune?.summary === 'string') {
         parsed.fortune.summary = [{ title: '综合解读', body: parsed.fortune.summary }]
@@ -109,7 +114,7 @@ export default function FortuneResult() {
 
     // 生成二维码 data URL
     const { toDataURL } = await import('qrcode')
-    const siteUrl = 'https://fortune-teller-ten-theta.vercel.app'
+    const siteUrl = 'https://mysticpalantir.com'
     const qrDataUrl = await toDataURL(siteUrl, { width: 100, margin: 1, color: { dark: '#d4af37', light: '#060412' } })
 
     const html = `<!DOCTYPE html>
