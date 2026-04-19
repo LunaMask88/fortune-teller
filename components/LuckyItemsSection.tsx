@@ -4,31 +4,102 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { LuckyItem } from '@/types'
 import { useLang } from '@/contexts/LangContext'
 
-interface Props { items?: LuckyItem[] }
+interface Props { items?: LuckyItem[]; country?: string }
 
-// ── 平台配置（统一格式：单色，无特殊 badge 样式）────────────────────────
-const PLATFORMS = [
-  { id: 'pinterest', label: 'Pinterest', color: '#e60023', badge: 'P' },
-  { id: 'shein',     label: 'SHEIN',     color: '#9ca3af', badge: 'S' },
-  { id: 'etsy',      label: 'Etsy',      color: '#f1641e', badge: 'E' },
-  { id: 'amazon',    label: 'Amazon',    color: '#ff9900', badge: 'A' },
-]
-
-// 服装类：SHEIN 置首；其余：Etsy 置首（最适合幸运物）
-function platformsForItem(category: string) {
-  if (category === 'clothing') {
-    return [PLATFORMS[1], PLATFORMS[0], PLATFORMS[3]] // SHEIN, Pinterest, Amazon
-  }
-  return [PLATFORMS[0], PLATFORMS[2], PLATFORMS[3], PLATFORMS[1]] // Pinterest, Etsy, Amazon, SHEIN
+// ── 平台定义 ──────────────────────────────────────────────────────────
+const P = {
+  pinterest: { id: 'pinterest', label: 'Pinterest', color: '#e60023', badge: 'P' },
+  taobao:    { id: 'taobao',    label: '淘宝',       color: '#ff5000', badge: '淘' },
+  xiaohongshu:{ id: 'xiaohongshu', label: '小红书',  color: '#fe2c55', badge: '红' },
+  shopee:    { id: 'shopee',    label: 'Shopee',    color: '#ee4d2d', badge: 'S' },
+  lazada:    { id: 'lazada',    label: 'Lazada',    color: '#0f146d', badge: 'L' },
+  amazon:    { id: 'amazon',    label: 'Amazon',    color: '#ff9900', badge: 'A' },
+  etsy:      { id: 'etsy',      label: 'Etsy',      color: '#f1641e', badge: 'E' },
+  shein:     { id: 'shein',     label: 'SHEIN',     color: '#9ca3af', badge: 'S' },
+  asos:      { id: 'asos',      label: 'ASOS',      color: '#2d2d2d', badge: 'A' },
+  rakuten:   { id: 'rakuten',   label: '楽天',       color: '#bf0000', badge: '楽' },
+  coupang:   { id: 'coupang',   label: 'Coupang',   color: '#00bbd8', badge: 'C' },
 }
 
-function platformLink(platform: string, query: string): string {
-  const q = encodeURIComponent(query)
-  switch (platform) {
-    case 'shein':  return `https://www.shein.com/search?keyword=${q}`
-    case 'etsy':   return `https://www.etsy.com/search?q=${q}`
-    case 'amazon': return `https://www.amazon.com/s?k=${q}`
-    default:       return `https://www.pinterest.com/search/pins/?q=${q}`
+// 国家分组
+const CN_GROUP  = ['CN']
+const CHT_GROUP = ['TW', 'HK', 'MO']  // 繁中市场
+const SEA_GROUP = ['SG', 'MY']         // 东南亚
+const JP_GROUP  = ['JP']
+const KR_GROUP  = ['KR']
+const UK_GROUP  = ['GB']
+const WEST_GROUP = ['US', 'CA', 'AU', 'NZ']
+
+function getPlatforms(category: string, country = 'other') {
+  const isClothing = category === 'clothing'
+  if (CN_GROUP.includes(country)) {
+    return isClothing
+      ? [P.taobao, P.xiaohongshu, P.pinterest]
+      : [P.taobao, P.xiaohongshu, P.etsy, P.pinterest]
+  }
+  if (CHT_GROUP.includes(country)) {
+    return isClothing
+      ? [P.shopee, P.shein, P.pinterest]
+      : [P.shopee, P.etsy, P.pinterest]
+  }
+  if (SEA_GROUP.includes(country)) {
+    return isClothing
+      ? [P.shopee, P.lazada, P.pinterest]
+      : [P.shopee, P.lazada, P.etsy, P.pinterest]
+  }
+  if (JP_GROUP.includes(country)) {
+    return isClothing
+      ? [P.rakuten, P.amazon, P.pinterest]
+      : [P.rakuten, P.etsy, P.amazon, P.pinterest]
+  }
+  if (KR_GROUP.includes(country)) {
+    return isClothing
+      ? [P.coupang, P.shein, P.pinterest]
+      : [P.coupang, P.etsy, P.pinterest]
+  }
+  if (UK_GROUP.includes(country)) {
+    return isClothing
+      ? [P.asos, P.amazon, P.pinterest]
+      : [P.etsy, P.amazon, P.pinterest]
+  }
+  if (WEST_GROUP.includes(country)) {
+    return isClothing
+      ? [P.amazon, P.etsy, P.shein, P.pinterest]
+      : [P.etsy, P.amazon, P.pinterest]
+  }
+  // 默认
+  return isClothing
+    ? [P.shein, P.etsy, P.amazon, P.pinterest]
+    : [P.etsy, P.amazon, P.pinterest]
+}
+
+function platformLink(id: string, query: string, queryZH: string, country = 'other'): string {
+  const q  = encodeURIComponent(query)
+  const qz = encodeURIComponent(queryZH)
+  switch (id) {
+    case 'taobao':     return `https://s.taobao.com/search?q=${qz}`
+    case 'xiaohongshu':return `https://www.xiaohongshu.com/search_result/?keyword=${qz}&type=54`
+    case 'shopee': {
+      const shopeeMap: Record<string, string> = { TW: 'shopee.tw', HK: 'shopee.hk', SG: 'shopee.sg', MY: 'shopee.com.my' }
+      const domain = shopeeMap[country] ?? 'shopee.sg'
+      return `https://${domain}/search?keyword=${q}`
+    }
+    case 'lazada': {
+      const lazadaMap: Record<string, string> = { SG: 'lazada.sg', MY: 'www.lazada.com.my' }
+      const domain = lazadaMap[country] ?? 'lazada.sg'
+      return `https://${domain}/catalog/?q=${q}`
+    }
+    case 'amazon': {
+      const amazonMap: Record<string, string> = { GB: 'amazon.co.uk', AU: 'amazon.com.au', JP: 'amazon.co.jp', CA: 'amazon.ca' }
+      const domain = amazonMap[country] ?? 'amazon.com'
+      return `https://www.${domain}/s?k=${q}`
+    }
+    case 'etsy':    return `https://www.etsy.com/search?q=${q}`
+    case 'shein':   return `https://www.shein.com/search?keyword=${q}`
+    case 'asos':    return `https://www.asos.com/search/?q=${q}`
+    case 'rakuten': return `https://search.rakuten.co.jp/search/mall/${qz}/`
+    case 'coupang': return `https://www.coupang.com/np/search?q=${q}`
+    default:        return `https://www.pinterest.com/search/pins/?q=${q}`
   }
 }
 
@@ -65,7 +136,7 @@ const BOOST_CONFIG: Record<string, { color: string; zh: string; en: string; icon
 interface ImgState { urls: string[]; loading: boolean }
 
 // ── 组件 ─────────────────────────────────────────────────────────────
-export default function LuckyItemsSection({ items }: Props) {
+export default function LuckyItemsSection({ items, country }: Props) {
   const { tr, lang } = useLang()
   const safeItems = items ?? []
 
@@ -109,7 +180,7 @@ export default function LuckyItemsSection({ items }: Props) {
     )
   }
 
-  const pinterestPlatform = PLATFORMS[0]
+  const pinterestPlatform = P.pinterest
 
   // 复制搜索词到剪贴板
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null)
@@ -134,8 +205,11 @@ export default function LuckyItemsSection({ items }: Props) {
           const [bgFrom, bgTo] = CATEGORY_BG[item.category] ?? CATEGORY_BG.other
           const boost      = item.boosts ? BOOST_CONFIG[item.boosts] : null
           const boostLabel = boost ? (tr.lucky.boosts?.[item.boosts!] ?? (lang === 'en' ? boost.en : boost.zh)) : null
-          const query      = item.searchQuery ?? (lang === 'en' ? item.nameEN : item.name) ?? item.name
+          const queryEN    = item.searchQuery ?? item.nameEN ?? item.name ?? ''
+          const queryZH    = item.name ?? item.nameEN ?? ''
+          const query      = queryEN  // 用于图片搜索和非中文平台
           const imgs       = imgMap[idx]
+          const platforms  = getPlatforms(item.category, country)
 
           return (
             <div key={idx} className="mystic-card overflow-hidden">
@@ -186,7 +260,7 @@ export default function LuckyItemsSection({ items }: Props) {
                   imgs.urls.map((url, i) => (
                     <a
                       key={i}
-                      href={platformLink('pinterest', query)}
+                      href={platformLink('pinterest', queryEN, queryZH, country)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="relative w-24 h-24 rounded-xl flex-shrink-0 overflow-hidden block hover:opacity-85 transition-opacity"
@@ -236,10 +310,10 @@ export default function LuckyItemsSection({ items }: Props) {
 
               {/* 平台按钮区（统一格式） */}
               <div className="px-4 pb-4 flex gap-2 flex-wrap">
-                {platformsForItem(item.category).map(p => (
+                {platforms.map(p => (
                   <a
                     key={p.id}
-                    href={platformLink(p.id, query)}
+                    href={platformLink(p.id, queryEN, queryZH, country)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all hover:opacity-80 active:scale-95"

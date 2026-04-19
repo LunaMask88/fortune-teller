@@ -17,6 +17,27 @@ function hourLabel(h: number) {
   return `${String(h).padStart(2, '0')}:00（${names[h]}时）`
 }
 
+// 常用国家/地区列表，优先中文市场
+const COUNTRIES = [
+  { code: 'CN', zh: '中国大陆', en: 'China (Mainland)' },
+  { code: 'TW', zh: '台湾',     en: 'Taiwan' },
+  { code: 'HK', zh: '香港',     en: 'Hong Kong' },
+  { code: 'MO', zh: '澳门',     en: 'Macao' },
+  { code: 'SG', zh: '新加坡',   en: 'Singapore' },
+  { code: 'MY', zh: '马来西亚', en: 'Malaysia' },
+  { code: 'US', zh: '美国',     en: 'United States' },
+  { code: 'CA', zh: '加拿大',   en: 'Canada' },
+  { code: 'AU', zh: '澳大利亚', en: 'Australia' },
+  { code: 'NZ', zh: '新西兰',   en: 'New Zealand' },
+  { code: 'GB', zh: '英国',     en: 'United Kingdom' },
+  { code: 'JP', zh: '日本',     en: 'Japan' },
+  { code: 'KR', zh: '韩国',     en: 'South Korea' },
+  { code: 'DE', zh: '德国',     en: 'Germany' },
+  { code: 'FR', zh: '法国',     en: 'France' },
+  { code: 'NL', zh: '荷兰',     en: 'Netherlands' },
+  { code: 'other', zh: '其他',  en: 'Other' },
+] as const
+
 export default function FortuneForm() {
   const router = useRouter()
   const { tr, lang } = useLang()
@@ -33,6 +54,8 @@ export default function FortuneForm() {
     birthDay: 1,
     birthHour: 12,
     gender: 'female',
+    country: 'CN',
+    city: '',
     period: 'today',
     context: '',
     questions: [],
@@ -54,6 +77,8 @@ export default function FortuneForm() {
       birthDay: profile.birthDay,
       birthHour: profile.birthHour,
       gender: profile.gender,
+      country: profile.country ?? 'CN',
+      city: profile.city ?? '',
     }))
     if (profile.birthHour === null) setTimeUnknown(true)
 
@@ -114,6 +139,7 @@ export default function FortuneForm() {
             const profile: UserProfile = {
               name: form.name, birthYear: form.birthYear, birthMonth: form.birthMonth,
               birthDay: form.birthDay, birthHour: form.birthHour, gender: form.gender,
+              country: form.country, city: form.city || undefined,
               lang,
             }
             saveProfile(profile)
@@ -158,23 +184,58 @@ export default function FortuneForm() {
         {/* 性别 */}
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>{tr.form.gender}</label>
-          <div className="flex gap-3">
-            {(['female', 'male'] as const).map(g => (
+          <div className="flex gap-2">
+            {([
+              { value: 'female',     label: `♀ ${tr.form.female}` },
+              { value: 'male',       label: `♂ ${tr.form.male}` },
+              { value: 'undisclosed', label: lang === 'en' ? '— N/A' : '— 不披露' },
+            ] as const).map(g => (
               <button
-                key={g}
+                key={g.value}
                 type="button"
-                onClick={() => set('gender', g)}
+                onClick={() => set('gender', g.value)}
                 className="flex-1 py-3 rounded-xl text-sm font-medium transition-all"
                 style={{
-                  background: form.gender === g ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${form.gender === g ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                  color: form.gender === g ? 'var(--gold)' : 'var(--text-muted)',
+                  background: form.gender === g.value ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.04)',
+                  border: `1px solid ${form.gender === g.value ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.1)'}`,
+                  color: form.gender === g.value ? 'var(--gold)' : 'var(--text-muted)',
                 }}
               >
-                {g === 'female' ? `♀ ${tr.form.female}` : `♂ ${tr.form.male}`}
+                {g.label}
               </button>
             ))}
           </div>
+        </div>
+
+        {/* 所在地区 */}
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>
+            {lang === 'en' ? 'Country / Region' : '所在国家/地区'}
+            <span className="text-xs font-normal ml-2" style={{ color: 'var(--text-muted)' }}>
+              {lang === 'en' ? '(affects shopping recommendations)' : '（影响幸运物购买平台推荐）'}
+            </span>
+          </label>
+          <select
+            className="mystic-input"
+            value={form.country ?? 'CN'}
+            onChange={e => set('country', e.target.value)}
+          >
+            <option value="undisclosed">{lang === 'en' ? '— Prefer not to say' : '— 不披露'}</option>
+            {COUNTRIES.map(c => (
+              <option key={c.code} value={c.code}>
+                {lang === 'en' ? c.en : c.zh}
+              </option>
+            ))}
+          </select>
+          {form.country && form.country !== 'undisclosed' && (
+            <input
+              className="mystic-input mt-2"
+              placeholder={lang === 'en' ? 'City (optional)' : '城市（选填）'}
+              value={form.city ?? ''}
+              onChange={e => set('city', e.target.value)}
+              maxLength={40}
+            />
+          )}
         </div>
 
         {/* 出生日期 */}

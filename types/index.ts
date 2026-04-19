@@ -5,7 +5,9 @@ export interface UserInput {
   birthMonth: number
   birthDay: number
   birthHour: number | null
-  gender: 'male' | 'female'
+  gender: 'male' | 'female' | 'undisclosed'
+  country?: string   // ISO country code, e.g. 'CN', 'US'
+  city?: string
   period: 'today' | 'month' | 'year' | 'life'
   context?: string      // 当前状况 / 补充背景
   questions?: string[]  // 用户想问的具体问题（最多 5 个）

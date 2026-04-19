@@ -15,7 +15,7 @@ import VedicSection from './sections/VedicSection'
 import XingmingSection from './sections/XingmingSection'
 import LuckyItemsSection from './LuckyItemsSection'
 import ShareCard from './ShareCard'
-import { saveLastReading } from '@/lib/user-profile'
+import { saveLastReading, loadProfile } from '@/lib/user-profile'
 
 type TabId = 'overview' | 'eastern' | 'western' | 'lucky'
 
@@ -23,6 +23,7 @@ export default function FortuneResult() {
   const router = useRouter()
   const { tr, lang } = useLang()
   const [reading, setReading] = useState<FullReading | null>(null)
+  const [userCountry, setUserCountry] = useState<string | undefined>(undefined)
   const [activeTab, setActiveTab] = useState<TabId>('overview')
   const [exporting, setExporting] = useState(false)
   const [exportingHtml, setExportingHtml] = useState(false)
@@ -51,6 +52,8 @@ export default function FortuneResult() {
       }
       setReading(parsed)
       saveLastReading(parsed)
+      const profile = loadProfile()
+      if (profile?.country && profile.country !== 'undisclosed') setUserCountry(profile.country)
     } catch { router.replace('/reading') }
   }, [router])
 
@@ -327,7 +330,7 @@ ${exportRef.current.innerHTML}
           )}
 
           {activeTab === 'lucky' && (
-            <LuckyItemsSection items={fortune.luckyItems} />
+            <LuckyItemsSection items={fortune.luckyItems} country={userCountry} />
           )}
         </div>
 

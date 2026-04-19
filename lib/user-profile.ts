@@ -10,7 +10,9 @@ export interface UserProfile {
   birthMonth: number
   birthDay: number
   birthHour: number | null
-  gender: 'male' | 'female'
+  gender: 'male' | 'female' | 'undisclosed'
+  country?: string
+  city?: string
   lang?: 'zh' | 'en'
 }
 

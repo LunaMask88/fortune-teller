@@ -29,7 +29,7 @@ export default function MatchForm() {
 
   const [person1, setPerson1] = useState<MatchPersonInput>(() => {
     const p = loadProfile()
-    if (p) return { name: p.name, birthYear: p.birthYear, birthMonth: p.birthMonth, birthDay: p.birthDay, birthHour: p.birthHour, gender: p.gender }
+    if (p) return { name: p.name, birthYear: p.birthYear, birthMonth: p.birthMonth, birthDay: p.birthDay, birthHour: p.birthHour, gender: p.gender === 'undisclosed' ? 'female' : p.gender }
     return EMPTY_PERSON
   })
   const [person2, setPerson2] = useState<MatchPersonInput>({ ...EMPTY_PERSON, gender: 'male' })
