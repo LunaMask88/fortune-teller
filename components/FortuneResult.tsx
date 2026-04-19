@@ -32,6 +32,7 @@ export default function FortuneResult() {
   const [shareToast, setShareToast] = useState('')
   const [sharingImg, setSharingImg] = useState(false)
   const [shareQrUrl, setShareQrUrl] = useState<string>('')
+  const [fromCache, setFromCache] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
   const shareCardRef = useRef<HTMLDivElement>(null)
 
@@ -48,6 +49,7 @@ export default function FortuneResult() {
     let source: string | null = raw
     if (!source) {
       try { source = localStorage.getItem('mystic_last_reading') } catch { /* ignore */ }
+      if (source) setFromCache(true)
     }
     if (!source) { router.replace('/reading'); return }
     try {
@@ -212,32 +214,6 @@ ${exportRef.current.innerHTML}
     }
   }
 
-  async function handleShareOld() {
-    if (!exportRef.current || !reading) return
-    const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : reading.input.name
-    const title = lang === 'en' ? `${displayName}'s Destiny Report` : `${displayName} 命理报告`
-    const { html, filename } = await buildReportHTML(displayName)
-    const file = new File([html], filename, { type: 'text/html' })
-
-    try {
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title })
-      } else if (navigator.share) {
-        await navigator.share({ title, text: lang === 'en'
-          ? `Check out this destiny reading from MysticPalantir!`
-          : `来自 MysticPalantir 的命理解读报告` })
-      } else {
-        // 降级：下载文件
-        const url = URL.createObjectURL(file)
-        const a = document.createElement('a'); a.href = url; a.download = filename; a.click()
-        URL.revokeObjectURL(url)
-        setShareToast(lang === 'en' ? 'Report downloaded!' : '报告已下载')
-        setTimeout(() => setShareToast(''), 2500)
-      }
-    } catch {
-      // 用户取消，不处理
-    }
-  }
 
   if (!reading) {
     return (
@@ -274,6 +250,22 @@ ${exportRef.current.innerHTML}
   return (
     <div className="min-h-screen relative z-10 pb-16">
       <div className="max-w-2xl mx-auto px-4 pt-8">
+        {/* 缓存提示条 */}
+        {fromCache && (
+          <div
+            className="flex items-center justify-between mb-4 px-4 py-2 rounded-xl text-xs"
+            style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: 'var(--text-muted)' }}
+          >
+            <span>📅 {lang === 'en' ? 'Showing your last reading' : '显示上次解读结果'}</span>
+            <button
+              onClick={() => router.push('/reading')}
+              className="font-medium"
+              style={{ color: 'var(--gold)' }}
+            >
+              {lang === 'en' ? 'New reading →' : '重新测算 →'}
+            </button>
+          </div>
+        )}
         {/* 头部 */}
         <div className="text-center mb-4">
           <div className="text-4xl mb-2">🔮</div>
