@@ -31,6 +31,7 @@ export default function FortuneResult() {
   const [hideBirth, setHideBirth] = useState(false)
   const [shareToast, setShareToast] = useState('')
   const [sharingImg, setSharingImg] = useState(false)
+  const [shareQrUrl, setShareQrUrl] = useState<string>('')
   const exportRef = useRef<HTMLDivElement>(null)
   const shareCardRef = useRef<HTMLDivElement>(null)
 
@@ -54,6 +55,13 @@ export default function FortuneResult() {
       saveLastReading(parsed)
       const profile = loadProfile()
       if (profile?.country && profile.country !== 'undisclosed') setUserCountry(profile.country)
+      // 预生成分享图 QR 码
+      import('qrcode').then(({ toDataURL }) =>
+        toDataURL('https://mysticpalantir.com', {
+          width: 120, margin: 1,
+          color: { dark: '#d4af37', light: '#060412' },
+        })
+      ).then(setShareQrUrl).catch(() => {})
     } catch { router.replace('/reading') }
   }, [router])
 
@@ -474,7 +482,7 @@ ${exportRef.current.innerHTML}
         ref={shareCardRef}
         style={{ position: 'absolute', left: -9999, top: 0, pointerEvents: 'none' }}
       >
-        <ShareCard reading={reading} lang={lang} periodLabel={periodLabel} />
+        <ShareCard reading={reading} lang={lang} periodLabel={periodLabel} qrUrl={shareQrUrl} />
       </div>
     </div>
   )

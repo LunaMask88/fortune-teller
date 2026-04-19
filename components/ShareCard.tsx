@@ -4,6 +4,7 @@ interface Props {
   reading: FullReading
   lang: 'zh' | 'en'
   periodLabel: string
+  qrUrl?: string
 }
 
 const CAT_COLORS: Record<string, string> = {
@@ -19,7 +20,7 @@ const CAT_LABELS_EN: Record<string, string> = {
 }
 
 /** 分享图卡片 — 纯 inline 样式，供 html2canvas 渲染 */
-export default function ShareCard({ reading, lang, periodLabel }: Props) {
+export default function ShareCard({ reading, lang, periodLabel, qrUrl }: Props) {
   const { input, fortune } = reading
   const isZH = lang === 'zh'
   const cats = Object.entries(fortune.categories) as [string, { score: number; label: string }][]
@@ -125,9 +126,37 @@ export default function ShareCard({ reading, lang, periodLabel }: Props) {
         </div>
       )}
 
-      {/* 底部水印 */}
-      <div style={{ textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>
-        mysticpalantir · {isZH ? '命理仅供参考' : 'For reference only'}
+      {/* 底部：QR码 + 引导文案 */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        marginTop: 4, paddingTop: 14,
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+      }}>
+        {/* QR 码 */}
+        {qrUrl && (
+          <div style={{
+            width: 58, height: 58, flexShrink: 0,
+            borderRadius: 8, overflow: 'hidden',
+            border: '1px solid rgba(212,175,55,0.3)',
+            background: '#060412',
+            padding: 3,
+          }}>
+            <img src={qrUrl} alt="QR" width={52} height={52} style={{ display: 'block' }} />
+          </div>
+        )}
+        {/* 引导文案 */}
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#d4af37', marginBottom: 3 }}>
+            {isZH ? '扫码获取你的专属命理' : 'Scan for your own reading'}
+          </div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', lineHeight: 1.5 }}>
+            mysticpalantir.com
+          </div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 2 }}>
+            {isZH ? '命理仅供参考' : 'For reference only'}
+          </div>
+        </div>
+        <div style={{ fontSize: 28, flexShrink: 0 }}>🔮</div>
       </div>
     </div>
   )
