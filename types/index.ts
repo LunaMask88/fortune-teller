@@ -184,6 +184,7 @@ export interface VedicResult {
   currentDasha: VedicDasha
   rahuSign: string
   ketuSign: string
+  moonDegree?: string
   summary: string
 }
 

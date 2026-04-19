@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
           Promise.resolve(drawMeihua(birthYear, birthMonth, birthDay, birthHour)),
           Promise.resolve(drawRunes(3)),
           Promise.resolve(calculateHumanDesign(birthYear, birthMonth, birthDay, birthHour)),
-          Promise.resolve(calculateVedic(birthYear, birthMonth, birthDay)),
+          Promise.resolve(calculateVedic(birthYear, birthMonth, birthDay, birthHour)),
         ])
 
         const sunSign    = getSunSign(birthMonth, birthDay)

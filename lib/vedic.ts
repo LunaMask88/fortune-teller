@@ -2,25 +2,25 @@ import type { VedicResult } from '@/types'
 
 // 吠陀占星（Jyotish）简化版
 // 与西洋占星的核心差异：
-// 1. 用恒星黄道（Sidereal）而非回归黄道，当前差约23度（差将近一个星座）
+// 1. 用恒星黄道（Sidereal）而非回归黄道，当前差约23-24度（差将近一个星座）
 // 2. 重视月亮星座（Rashi）多于太阳星座
 // 3. Rahu（北交）/ Ketu（南交）作为独立天体有极大影响
 // 4. 大运系统（Dasha）预测具体人生阶段
 
 // 12 宫（Rashi）
 const RASHIS = [
-  { name: 'Mesha',     nameCN: '白羊宫（摩羯）', ruler: '火星', element: '火', quality: '基本' },
-  { name: 'Vrishabha', nameCN: '金牛宫（水瓶）', ruler: '金星', element: '土', quality: '固定' },
-  { name: 'Mithuna',   nameCN: '双子宫（双鱼）', ruler: '水星', element: '风', quality: '变动' },
-  { name: 'Karka',     nameCN: '巨蟹宫（白羊）', ruler: '月亮', element: '水', quality: '基本' },
-  { name: 'Simha',     nameCN: '狮子宫（金牛）', ruler: '太阳', element: '火', quality: '固定' },
-  { name: 'Kanya',     nameCN: '处女宫（双子）', ruler: '水星', element: '土', quality: '变动' },
-  { name: 'Tula',      nameCN: '天秤宫（巨蟹）', ruler: '金星', element: '风', quality: '基本' },
-  { name: 'Vrischika', nameCN: '天蝎宫（狮子）', ruler: '火星', element: '水', quality: '固定' },
-  { name: 'Dhanu',     nameCN: '射手宫（处女）', ruler: '木星', element: '火', quality: '变动' },
-  { name: 'Makara',    nameCN: '摩羯宫（天秤）', ruler: '土星', element: '土', quality: '基本' },
-  { name: 'Kumbha',    nameCN: '水瓶宫（天蝎）', ruler: '土星', element: '风', quality: '固定' },
-  { name: 'Meena',     nameCN: '双鱼宫（射手）', ruler: '木星', element: '水', quality: '变动' },
+  { name: 'Mesha',     nameCN: '白羊宫', ruler: '火星', element: '火', quality: '基本' },
+  { name: 'Vrishabha', nameCN: '金牛宫', ruler: '金星', element: '土', quality: '固定' },
+  { name: 'Mithuna',   nameCN: '双子宫', ruler: '水星', element: '风', quality: '变动' },
+  { name: 'Karka',     nameCN: '巨蟹宫', ruler: '月亮', element: '水', quality: '基本' },
+  { name: 'Simha',     nameCN: '狮子宫', ruler: '太阳', element: '火', quality: '固定' },
+  { name: 'Kanya',     nameCN: '处女宫', ruler: '水星', element: '土', quality: '变动' },
+  { name: 'Tula',      nameCN: '天秤宫', ruler: '金星', element: '风', quality: '基本' },
+  { name: 'Vrischika', nameCN: '天蝎宫', ruler: '火星', element: '水', quality: '固定' },
+  { name: 'Dhanu',     nameCN: '射手宫', ruler: '木星', element: '火', quality: '变动' },
+  { name: 'Makara',    nameCN: '摩羯宫', ruler: '土星', element: '土', quality: '基本' },
+  { name: 'Kumbha',    nameCN: '水瓶宫', ruler: '土星', element: '风', quality: '固定' },
+  { name: 'Meena',     nameCN: '双鱼宫', ruler: '木星', element: '水', quality: '变动' },
 ]
 
 // 27 Nakshatra（星宿）
@@ -67,20 +67,93 @@ const DASHA_SEQUENCE = [
   { planet: 'Mercury（水星）', years: 17, nameCN: '水星大运' },
 ]
 
+/** 计算儒略日（Julian Day Number），精确到小时 */
+function julianDay(year: number, month: number, day: number, hour = 12): number {
+  const a = Math.floor((14 - month) / 12)
+  const y = year + 4800 - a
+  const m = month + 12 * a - 3
+  const jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y
+    + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045
+  return jdn - 0.5 + hour / 24
+}
+
+function toRad(deg: number) { return deg * Math.PI / 180 }
+function norm360(deg: number) { return ((deg % 360) + 360) % 360 }
+
+/**
+ * 计算月亮回归黄经（Meeus 简化公式，精度约 ±1°）
+ * 参考: Jean Meeus "Astronomical Algorithms" Ch.22
+ */
+function moonTropicalLongitude(jd: number): number {
+  const T = (jd - 2451545.0) / 36525  // J2000.0 起的儒略世纪
+
+  // 月亮平均黄经 L'
+  const Lp = norm360(218.3164477 + 481267.88123421 * T)
+  // 太阳平均异点角 M
+  const M  = norm360(357.5291092 + 35999.0502909  * T)
+  // 月亮平均异点角 Mp
+  const Mp = norm360(134.9633964 + 477198.8675055  * T)
+  // 月亮与太阳升交点的平均角距（平均角距）D
+  const D  = norm360(297.8501921 + 445267.1114034  * T)
+  // 月亮轨道升交点平均黄经 F（用于纬度，这里仅用于改正）
+  const F  = norm360(93.2720950  + 483202.0175233  * T)
+
+  // 主要摄动改正项（Meeus Table 22.A 前若干项）
+  const dL =
+      6.289 * Math.sin(toRad(Mp))
+    - 1.274 * Math.sin(toRad(2 * D - Mp))
+    + 0.658 * Math.sin(toRad(2 * D))
+    - 0.214 * Math.sin(toRad(2 * Mp))
+    - 0.110 * Math.sin(toRad(D))
+    + 0.057 * Math.sin(toRad(2 * D - 2 * Mp))  // 额外项，提升精度
+    - 0.056 * Math.sin(toRad(2 * D + Mp))
+    + 0.053 * Math.sin(toRad(2 * D + M - Mp))
+    + 0.046 * Math.sin(toRad(2 * D - M))
+    + 0.041 * Math.sin(toRad(Mp - M))
+    - 0.035 * Math.sin(toRad(D))
+    - 0.031 * Math.sin(toRad(Mp + M))
+    - 0.015 * Math.sin(toRad(2 * F - 2 * D))
+    + 0.011 * Math.sin(toRad(2 * Mp - 2 * D))
+
+  return norm360(Lp + dL)
+}
+
+/**
+ * Lahiri 恒星黄道差（Ayanamsha），单位度
+ * 近似公式：J2000.0 时约 23.856°，每年增加约 0.01397°
+ */
+function lahiriAyanamsha(year: number, month: number, day: number): number {
+  const jd = julianDay(year, month, day, 0)
+  const T = (jd - 2451545.0) / 36525
+  return 23.856 + 0.01397 * T * 100  // T是世纪，乘100得年
+}
+
 export function calculateVedic(
-  birthYear: number, birthMonth: number, birthDay: number
+  birthYear: number, birthMonth: number, birthDay: number,
+  birthHour: number | null = null
 ): VedicResult {
-  // 吠陀月亮星座近似：将西洋太阳星座向前推约一个星座（23度差）
-  const approxSunDeg = (birthMonth - 1) * 30 + (birthDay - 1) * (30 / 30.5)
-  const siderealDeg = (approxSunDeg - 23 + 360) % 360
+  const hour = birthHour ?? 12  // 不知道出生时间默认正午
+
+  // 1. 计算儒略日
+  const jd = julianDay(birthYear, birthMonth, birthDay, hour)
+
+  // 2. 月亮回归黄经
+  const tropicalMoon = moonTropicalLongitude(jd)
+
+  // 3. 转换为恒星黄经（减去 Lahiri 岁差）
+  const ayanamsha = lahiriAyanamsha(birthYear, birthMonth, birthDay)
+  const siderealDeg = norm360(tropicalMoon - ayanamsha)
+
+  // 4. 确定 Rashi 和宫内度数
   const rashiIndex = Math.floor(siderealDeg / 30)
+  const degreeInSign = siderealDeg - rashiIndex * 30
   const rashi = RASHIS[rashiIndex]
 
-  // Nakshatra（每个27.25度，但简化为13.33度每宿）
+  // 5. 确定 Nakshatra（每宿 13°20' = 13.333°，共27宿）
   const nakshatraIndex = Math.floor((siderealDeg * 27) / 360) % 27
   const nakshatra = NAKSHATRAS[nakshatraIndex]
 
-  // 当前大运（简化：基于Nakshatra主星决定大运起点）
+  // 6. 当前大运（基于 Nakshatra 主星决定大运起点）
   const dashaStart = DASHA_SEQUENCE.findIndex(d => d.planet.includes(nakshatra.ruler.split('（')[0]))
   const currentAge = new Date().getFullYear() - birthYear
   let accumulated = 0
@@ -94,8 +167,10 @@ export function calculateVedic(
     }
   }
 
-  // Rahu/Ketu 轴（固定18年周期，简化）
+  // 7. Rahu/Ketu 轴（与月亮相对的宫位）
   const rahuSign = RASHIS[(rashiIndex + 6) % 12]
+
+  const degStr = `${Math.floor(degreeInSign)}°${Math.round((degreeInSign % 1) * 60)}'`
 
   return {
     moonRashi: rashi,
@@ -103,6 +178,7 @@ export function calculateVedic(
     currentDasha,
     rahuSign: rahuSign.nameCN,
     ketuSign: rashi.nameCN,
-    summary: `你的月亮落在${rashi.nameCN}（${rashi.name}），守护星为${rashi.ruler}，${rashi.quality}属性。生命能量运行在${nakshatra.nameCN}（${nakshatra.name}），代表「${nakshatra.quality}」，守护神为${nakshatra.deity}。当前处于${currentDasha.nameCN}（${currentDasha.planet}），此阶段将持续${currentDasha.years}年。`,
+    moonDegree: degStr,
+    summary: `你的月亮落在${rashi.nameCN}（${rashi.name}）${degStr}，守护星为${rashi.ruler}，${rashi.quality}属性。生命能量运行在${nakshatra.nameCN}（${nakshatra.name}），代表「${nakshatra.quality}」，守护神为${nakshatra.deity}。当前处于${currentDasha.nameCN}（${currentDasha.planet}），此阶段将持续${currentDasha.years}年。`,
   }
 }

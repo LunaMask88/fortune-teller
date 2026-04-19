@@ -32,6 +32,7 @@ export default function VedicSection({ vedic, sunSign }: Props) {
             <div>
               <div className="font-bold" style={{ color: 'var(--gold)' }}>
                 {tr.ui.vedic.moonSign}{vedic.moonRashi.nameCN}
+                {vedic.moonDegree && <span className="text-sm font-normal ml-1" style={{ color: 'var(--text-muted)' }}>{vedic.moonDegree}</span>}
               </div>
               <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 {vedic.moonRashi.name}{tr.ui.vedic.ruler}{vedic.moonRashi.ruler}
