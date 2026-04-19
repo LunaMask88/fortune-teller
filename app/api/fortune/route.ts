@@ -97,23 +97,15 @@ Return JSON only:
   ],${hasQuestions ? `
   "answers": [{"question":"q","answer":"2-3 sentences"}],` : ''}
   "luckyItems": [
-    {"name":"en","nameEN":"en","reason":"1-2 sentences","searchQuery":"product-specific English search term","category":"crystal|jewelry|color|number|plant|symbol|clothing|food|other","boosts":"career|wealth|love|health|luck"}
+    {"name":"Amethyst Bracelet","nameEN":"Amethyst Bracelet","reason":"Calms the mind and attracts wisdom, strengthening the Metal element to boost career focus.","searchQuery":"amethyst crystal healing bracelet women","category":"crystal","boosts":"career"},
+    {"name":"Forest Green Dress","nameEN":"Forest Green Dress","reason":"Wood-element green revitalizes growth energy and attracts new connections.","searchQuery":"forest green flowy midi dress women","category":"clothing","boosts":"luck"},
+    {"name":"Red Date Longan Tea","nameEN":"Red Date Longan Tea","reason":"Nourishes the Fire element, warms the heart, and enhances emotional warmth and love luck.","searchQuery":"red date longan wolfberry tea recipe","category":"food","boosts":"love"},
+    {"name":"...","nameEN":"...","reason":"...","searchQuery":"...","category":"jewelry|plant|symbol|number|color|other","boosts":"wealth"},
+    {"name":"...","nameEN":"...","reason":"...","searchQuery":"...","category":"jewelry|plant|symbol|number|color|other","boosts":"health"},
+    {"name":"...","nameEN":"...","reason":"...","searchQuery":"...","category":"jewelry|plant|symbol|number|color|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-STRICT RULES for luckyItems:
-1. EXACTLY 6 items total — no more, no less.
-2. MANDATORY categories: exactly 1 "clothing" + exactly 1 "food". Remaining 4 from other categories.
-3. DIVERSITY: each item must target a DIFFERENT "boosts" value — no two items share the same boosts. Cover career/wealth/love/health/luck spread across the 6.
-4. NO redundancy: no two items of the same element color theme (e.g. don't recommend both green crystal and green clothing).
-5. "boosts" field is REQUIRED on every item — never omit it.
-6. For food items: a specific dish/ingredient to eat regularly that nourishes the weak element. reason = which element + how it boosts fortune. searchQuery = dish/recipe keyword.
-CRITICAL — searchQuery must describe the SPECIFIC PRODUCT FORM:
-- crystal → "amethyst crystal healing bracelet" not "amethyst"
-- plant → "lavender essential oil roller bottle" not "lavender"
-- jewelry → "gold sun pendant necklace women" not "gold necklace"
-- clothing → "forest green flowy midi dress women" not "green dress"
-- food → "red date longan wolfberry tea recipe" not "red date"
-All text in English.`
+Replace ALL 6 items with real personalized recommendations based on the user's BaZi and weak elements. Keep exactly this structure: 6 items, including exactly 1 "clothing" and exactly 1 "food". Every item must have "boosts" filled. No two items should share the same boosts value if possible. searchQuery must be a specific product or recipe name, not just a material.`
         : `
 === 命理档案 ===
 姓名：${name} | 出生：${birthYear}-${birthMonth}-${birthDay}${birthHour !== null ? ` ${birthHour}时` : ''} | ${gender === 'male' ? '男' : gender === 'female' ? '女' : '不披露'}${locationStr ? ` | 所在地：${locationStr}` : ''}
@@ -145,23 +137,15 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
   ],${hasQuestions ? `
   "answers": [{"question":"原题","answer":"2-3句命理解答"}],` : ''}
   "luckyItems": [
-    {"name":"中文名","nameEN":"English","reason":"1-2句命理原因","searchQuery":"英文购物搜索词","category":"crystal|jewelry|color|number|plant|symbol|clothing|food|other","boosts":"career|wealth|love|health|luck"}
+    {"name":"紫水晶手链","nameEN":"Amethyst Bracelet","reason":"镇定心神，强化金属元素，提升事业专注力。","searchQuery":"amethyst crystal healing bracelet women","category":"crystal","boosts":"career"},
+    {"name":"森系绿色连衣裙","nameEN":"Forest Green Dress","reason":"木行绿色激活生长能量，吸引新机缘。","searchQuery":"forest green flowy midi dress women","category":"clothing","boosts":"luck"},
+    {"name":"红枣桂圆茶","nameEN":"Red Date Longan Tea","reason":"补火行，温暖心脉，增强感情缘分与桃花运。","searchQuery":"红枣桂圆茶做法","category":"food","boosts":"love"},
+    {"name":"...","nameEN":"...","reason":"...","searchQuery":"...","category":"jewelry|plant|symbol|number|color|other","boosts":"wealth"},
+    {"name":"...","nameEN":"...","reason":"...","searchQuery":"...","category":"jewelry|plant|symbol|number|color|other","boosts":"health"},
+    {"name":"...","nameEN":"...","reason":"...","searchQuery":"...","category":"jewelry|plant|symbol|number|color|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-luckyItems 严格规则：
-1. 恰好 6 个，不多不少。
-2. 必须包含：恰好 1 个穿搭类（category:"clothing"）+ 恰好 1 个食补类（category:"food"）。其余 4 个从其他类别选择。
-3. 多样性：每个物件的 boosts 值必须不同，6 个 boosts 覆盖 career/wealth/love/health/luck 中的 5 个，剩余 1 个可重复。
-4. 不重复：不允许两个物件颜色五行高度雷同（如同时推荐绿水晶和绿色服装）。
-5. boosts 字段每个物件都必须填写，不得省略。
-6. 食补类：推荐一种具体食物或饮品，说明补充哪个五行元素以及如何提升运势，例如"红枣枸杞茶（补火，提升感情运）"、"核桃黑芝麻糊（补水，增强事业专注力）"。
-关键：searchQuery 必须描述具体商品或菜谱：
-- 水晶 → "amethyst crystal healing bracelet women" 而非 "amethyst"
-- 香薰 → "lavender essential oil roller bottle" 而非 "lavender"
-- 饰品 → "gold crescent moon pendant necklace" 而非 "gold necklace"
-- 服装 → "forest green flowy midi dress women" 而非 "green dress"
-- 食补 → "red date longan wolfberry tea recipe" 而非 "red date"
-searchQuery 用于图片搜索和购物跳转，必须精准。${country && ['CN','TW','HK','MO','SG','MY'].includes(country) ? '\n注意：用户在中文市场，食补类 searchQuery 使用中文食材名（如"红枣枸杞茶做法"、"核桃黑芝麻糊"）。' : ''}`
+将以上 6 个物件全部替换为根据用户八字和五行弱项个性化定制的真实推荐，保持完全相同的结构：恰好 6 个，其中必须有且仅有 1 个 category:"clothing"（穿搭）和 1 个 category:"food"（食补）。每个物件的 boosts 必须填写，6 个物件尽量覆盖不同的 boosts 维度。searchQuery 写具体商品名或菜谱名，不能只写食材。${country && ['CN','TW','HK','MO','SG','MY'].includes(country) ? '食补类 searchQuery 使用中文菜名（如"核桃黑芝麻糊做法"）。' : 'Food searchQuery should be English recipe name.'}`
 
         // ── 人生报告模式：追加专属指令 ────────────────────
         const lifeAppendZH = `
