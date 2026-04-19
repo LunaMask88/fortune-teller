@@ -421,15 +421,20 @@ export default function MatchForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 rounded-2xl font-bold text-lg transition-all"
+            className="w-full py-5 rounded-2xl font-bold text-lg transition-all"
             style={{
               background: loading
-                ? 'rgba(244,63,94,0.08)'
-                : 'linear-gradient(135deg, #f43f5e 0%, #a78bfa 100%)',
-              color: loading ? 'var(--text-muted)' : '#fff',
+                ? 'rgba(255,255,255,0.04)'
+                : 'linear-gradient(135deg, #ff2d55 0%, #ff6b9d 50%, #c084fc 100%)',
+              color: loading ? 'rgba(255,255,255,0.3)' : '#fff',
               cursor: loading ? 'not-allowed' : 'pointer',
-              boxShadow: loading ? 'none' : '0 6px 24px rgba(244,63,94,0.35)',
-              border: loading ? '1px solid rgba(244,63,94,0.15)' : 'none',
+              border: loading
+                ? '1px solid rgba(255,255,255,0.1)'
+                : '1px solid rgba(255,255,255,0.25)',
+              boxShadow: loading
+                ? 'none'
+                : '0 0 0 1px rgba(255,45,85,0.4), 0 8px 32px rgba(255,45,85,0.5), 0 2px 8px rgba(0,0,0,0.4)',
+              textShadow: loading ? 'none' : '0 1px 4px rgba(0,0,0,0.3)',
             }}
           >
             {loading
