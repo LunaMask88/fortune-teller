@@ -28,10 +28,10 @@ const ELDER_FUTHARK: RuneCard[] = [
   { symbol: 'ᛟ', name: 'Othala', nameCN: '传承',   upright: '遗产、家园、价值观', reversed: '失去、保守、排外' },
 ]
 
-export function drawRunes(count: 3 | 1 = 3): RuneResult {
-  const shuffled = [...ELDER_FUTHARK].sort(() => Math.random() - 0.5)
+export function drawRunes(count: 3 | 1 = 3, rng: () => number = Math.random): RuneResult {
+  const shuffled = [...ELDER_FUTHARK].sort(() => rng() - 0.5)
   const drawn = shuffled.slice(0, count).map(rune => {
-    const reversed = Math.random() > 0.6
+    const reversed = rng() > 0.6
     return {
       rune,
       reversed,

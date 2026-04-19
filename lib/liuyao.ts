@@ -70,8 +70,8 @@ const GUAS: Record<string, { name: string; namePY: string; summary: string }> = 
 
 // 六爻：上中下三爻×2层 = 六条线
 // 铜钱法：每爻投3枚，正面=3，背面=2，3枚合计
-function throwCoin(): number {
-  return [1, 2, 3].reduce(acc => acc + (Math.random() > 0.5 ? 3 : 2), 0)
+function throwCoin(rng: () => number): number {
+  return [1, 2, 3].reduce(acc => acc + (rng() > 0.5 ? 3 : 2), 0)
 }
 
 function coinToLine(val: number): { yao: 0 | 1; changing: boolean } {
@@ -79,8 +79,8 @@ function coinToLine(val: number): { yao: 0 | 1; changing: boolean } {
   return { yao: val % 2 === 1 ? 1 : 0, changing: val === 6 || val === 9 }
 }
 
-export function drawLiuyao(): LiuyaoResult {
-  const throws = Array.from({ length: 6 }, throwCoin)
+export function drawLiuyao(rng: () => number = Math.random): LiuyaoResult {
+  const throws = Array.from({ length: 6 }, () => throwCoin(rng))
   const lines = throws.map(coinToLine)
 
   // 构建本卦（下→上，索引0=初爻）

@@ -56,11 +56,11 @@ for (const suit of SUITS) {
 
 export const ALL_CARDS = [...MAJOR_ARCANA, ...MINOR_ARCANA]
 
-export function drawThreeCards(): DrawnCard[] {
-  const shuffled = [...ALL_CARDS].sort(() => Math.random() - 0.5)
+export function drawThreeCards(rng: () => number = Math.random): DrawnCard[] {
+  const shuffled = [...ALL_CARDS].sort(() => rng() - 0.5)
   const positions: DrawnCard['position'][] = ['past', 'present', 'future']
   return shuffled.slice(0, 3).map((card, i) => {
-    const orientation: DrawnCard['orientation'] = Math.random() > 0.3 ? 'upright' : 'reversed'
+    const orientation: DrawnCard['orientation'] = rng() > 0.3 ? 'upright' : 'reversed'
     return {
       card,
       orientation,

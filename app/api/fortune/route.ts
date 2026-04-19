@@ -13,6 +13,7 @@ import { drawRunes } from '@/lib/runes'
 import { calculateHumanDesign } from '@/lib/humandesign'
 import { calculateVedic } from '@/lib/vedic'
 import { analyzeXingming } from '@/lib/xingming'
+import { createRng, buildSeed } from '@/lib/seeded-random'
 import type { UserInput, FullReading } from '@/types'
 
 const PERIOD_TEXT    = { today: '今日', month: '本月', year: '今年', life: '终生人生' }
@@ -33,18 +34,21 @@ export async function POST(req: NextRequest) {
         // ── Step 1: 本地命理计算（约 <1s）─────────────────
         send({ type: 'progress', step: isEN ? 'Calculating charts…' : '命盘排盘中…', pct: 15 })
 
+        // 种子 RNG：同一天同一人同一周期 → 牌面完全一致
+        const rng = createRng(buildSeed(birthYear, birthMonth, birthDay, period))
+
         const [bazi, liuyao, meihua, runes, humanDesign, vedic] = await Promise.all([
           calculateBazi(birthYear, birthMonth, birthDay, birthHour),
-          Promise.resolve(drawLiuyao()),
+          Promise.resolve(drawLiuyao(rng)),
           Promise.resolve(drawMeihua(birthYear, birthMonth, birthDay, birthHour)),
-          Promise.resolve(drawRunes(3)),
+          Promise.resolve(drawRunes(3, rng)),
           Promise.resolve(calculateHumanDesign(birthYear, birthMonth, birthDay, birthHour)),
           Promise.resolve(calculateVedic(birthYear, birthMonth, birthDay, birthHour)),
         ])
 
         const sunSign    = getSunSign(birthMonth, birthDay)
         const numerology = calcNumerology(birthYear, birthMonth, birthDay)
-        const tarotCards = drawThreeCards()
+        const tarotCards = drawThreeCards(rng)
         const ziwei      = calculateZiwei(birthMonth, birthHour, gender === 'undisclosed' ? 'female' : gender)
         const xingming   = analyzeXingming(name)
 
@@ -178,6 +182,7 @@ searchQuery 用于图片搜索和购物跳转，必须精准到可购买的具�
         const aiStream = await client.chat.completions.create({
           model: 'deepseek-chat',
           max_tokens: period === 'life' ? 4000 : 3000,
+          temperature: 0.7,
           response_format: { type: 'json_object' },
           stream: true,
           messages: [

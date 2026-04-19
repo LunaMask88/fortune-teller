@@ -1,0 +1,47 @@
+{
+  "name": "Mystic Palantir — 东西方命理解读",
+  "short_name": "MysticPalantir",
+  "description": "融合八字、紫微、星座、塔罗、人类图的AI命理解读",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060412",
+  "theme_color": "#060412",
+  "orientation": "portrait-primary",
+  "lang": "zh-CN",
+  "categories": ["lifestyle", "entertainment"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "今日运势",
+      "short_name": "今日",
+      "url": "/reading",
+      "description": "查看今日运势"
+    },
+    {
+      "name": "合盘配对",
+      "short_name": "配对",
+      "url": "/match",
+      "description": "星盘合盘分析"
+    }
+  ],
+  "screenshots": []
+}
