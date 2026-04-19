@@ -214,6 +214,30 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
 
         const fortune = JSON.parse(rawJson)
 
+        // ── 兜底：确保 luckyItems 中有且仅有一个 food 类 ────
+        const FOOD_BY_WEAK: Record<string, { name: string; nameEN: string; reason: string; searchQuery: string; boosts: string }> = {
+          木: { name: '菠菜猪肝汤', nameEN: 'Spinach Liver Soup', reason: '菠菜补木行生发之气，猪肝养血明目，助提升整体运势与健康。', searchQuery: '菠菜猪肝汤做法', boosts: 'health' },
+          火: { name: '红枣桂圆茶', nameEN: 'Red Date Longan Tea', reason: '红枣桂圆补火行，温暖心脉，增强桃花缘分与感情运。', searchQuery: '红枣桂圆茶做法', boosts: 'love' },
+          土: { name: '山药小米粥', nameEN: 'Yam Millet Porridge', reason: '山药健脾补土，小米养胃，稳固根基，助财运积累。', searchQuery: '山药小米粥做法', boosts: 'wealth' },
+          金: { name: '白萝卜排骨汤', nameEN: 'Radish Pork Rib Soup', reason: '白色食材补金行，润肺清气，提升事业清晰度与决断力。', searchQuery: '白萝卜排骨汤做法', boosts: 'career' },
+          水: { name: '黑芝麻核桃糊', nameEN: 'Black Sesame Walnut Paste', reason: '黑色食材滋补水行，益肾健脑，增强智慧与整体运势。', searchQuery: '黑芝麻核桃糊做法', boosts: 'luck' },
+        }
+        const FOOD_BY_WEAK_EN: Record<string, { name: string; nameEN: string; reason: string; searchQuery: string; boosts: string }> = {
+          木: { name: 'Spinach & Liver Soup', nameEN: 'Spinach Liver Soup', reason: 'Spinach nourishes the Wood element, boosting vitality and overall health luck.', searchQuery: 'spinach liver soup recipe', boosts: 'health' },
+          火: { name: 'Red Date Longan Tea', nameEN: 'Red Date Longan Tea', reason: 'Warms the Fire element, nourishes the heart, enhances love luck and emotional warmth.', searchQuery: 'red date longan tea recipe', boosts: 'love' },
+          土: { name: 'Yam Millet Porridge', nameEN: 'Yam Millet Porridge', reason: 'Yam strengthens the Earth element, stabilizes energy and supports wealth accumulation.', searchQuery: 'yam millet congee recipe', boosts: 'wealth' },
+          金: { name: 'White Radish Rib Soup', nameEN: 'White Radish Rib Soup', reason: 'White foods tonify the Metal element, clearing mental fog and boosting career clarity.', searchQuery: 'daikon radish pork rib soup recipe', boosts: 'career' },
+          水: { name: 'Black Sesame Walnut Paste', nameEN: 'Black Sesame Walnut Paste', reason: 'Black foods replenish the Water element, nourish the kidneys and sharpen wisdom.', searchQuery: 'black sesame walnut paste recipe', boosts: 'luck' },
+        }
+        const items: { category?: string }[] = fortune.luckyItems ?? []
+        const hasFood = items.some(i => i.category === 'food')
+        if (!hasFood) {
+          const map = isEN ? FOOD_BY_WEAK_EN : FOOD_BY_WEAK
+          const weakEl = bazi.weakElements[0] ?? '水'
+          const food = map[weakEl] ?? map['水']
+          fortune.luckyItems = [...items, { ...food, category: 'food' }]
+        }
+
         const fullReading: FullReading = {
           input,
           bazi,
