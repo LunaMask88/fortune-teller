@@ -230,24 +230,42 @@ export default function LuckyItemsSection({ items, country }: Props) {
                   {item.nameEN && item.nameEN !== item.name && (
                     <div className="text-xs text-white/60 mb-1.5">{item.nameEN}</div>
                   )}
-                  <div className="flex flex-wrap gap-1.5">
-                    <span className="tag text-xs" style={{
-                      background: `${itemColor}30`, color: '#fff',
-                      border: `1px solid ${itemColor}50`, fontSize: 10,
-                    }}>
-                      {tr.lucky.categories[item.category] ?? item.category}
-                    </span>
-                    {boost && boostLabel && (
-                      <span className="tag text-xs flex items-center gap-0.5" style={{
-                        background: `${boost.color}30`, color: '#fff',
-                        border: `1px solid ${boost.color}50`, fontWeight: 600, fontSize: 10,
-                      }}>
-                        {boost.icon} ↑{boostLabel}
-                      </span>
-                    )}
-                  </div>
+                  <span className="tag text-xs" style={{
+                    background: `${itemColor}30`, color: '#fff',
+                    border: `1px solid ${itemColor}50`, fontSize: 10,
+                  }}>
+                    {tr.lucky.categories[item.category] ?? item.category}
+                  </span>
                 </div>
               </div>
+
+              {/* 运势提升条 */}
+              {boost && boostLabel && (
+                <div
+                  className="mx-4 mt-3 rounded-xl px-3 py-2 flex items-center gap-2"
+                  style={{
+                    background: `linear-gradient(90deg, ${boost.color}22 0%, ${boost.color}10 100%)`,
+                    border: `1px solid ${boost.color}60`,
+                    boxShadow: `0 0 12px ${boost.color}25`,
+                  }}
+                >
+                  <span style={{ fontSize: 18 }}>{boost.icon}</span>
+                  <div className="flex flex-col leading-tight">
+                    <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)' }}>
+                      {lang === 'en' ? 'Boosts' : '提升运势'}
+                    </span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: boost.color }}>
+                      {boostLabel}
+                    </span>
+                  </div>
+                  <div className="flex-1 ml-1">
+                    <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: '75%', borderRadius: 2, background: `linear-gradient(90deg, ${boost.color}, ${boost.color}88)` }} />
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: boost.color }}>↑</span>
+                </div>
+              )}
 
               {/* Pinterest 图片条 */}
               <div className="flex gap-2 px-3 pt-3 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
