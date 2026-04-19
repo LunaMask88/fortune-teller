@@ -210,6 +210,47 @@ export default function MatchForm() {
     setPerson2(p => ({ ...p, [k]: v }))
   }
 
+  async function attemptMatch(payload: object): Promise<void> {
+    const resp = await fetch('/api/match', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    if (!resp.ok) throw new Error(isZH ? '请求失败' : 'Request failed')
+
+    const reader = resp.body!.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+    let gotResult = false
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue
+        const event = JSON.parse(line.slice(6))
+        if (event.type === 'progress') setProgress({ step: event.step, pct: event.pct })
+        else if (event.type === 'result') {
+          gotResult = true
+          setResult(event.data)
+          setLoading(false)
+          setProgress(null)
+          import('qrcode').then(({ toDataURL }) =>
+            toDataURL('https://mysticpalantir.com/match', {
+              width: 120, margin: 1,
+              color: { dark: '#f43f5e', light: '#060412' },
+            })
+          ).then(setQrUrl).catch(() => {})
+        }
+        else if (event.type === 'error') throw new Error(event.message)
+      }
+    }
+    if (!gotResult) throw new Error('no result')
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!person1.name.trim() || !person2.name.trim()) {
@@ -221,46 +262,19 @@ export default function MatchForm() {
     setResult(null)
     setProgress({ step: isZH ? '启动中…' : 'Starting…', pct: 5 })
 
+    const payload = { person1, person2, lang }
     try {
-      const resp = await fetch('/api/match', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ person1, person2, lang }),
-      })
-      if (!resp.ok) throw new Error(isZH ? '请求失败' : 'Request failed')
-
-      const reader = resp.body!.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() ?? ''
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue
-          const event = JSON.parse(line.slice(6))
-          if (event.type === 'progress') setProgress({ step: event.step, pct: event.pct })
-          else if (event.type === 'result') {
-            setResult(event.data)
-            setLoading(false)
-            setProgress(null)
-            import('qrcode').then(({ toDataURL }) =>
-              toDataURL('https://mysticpalantir.com/match', {
-                width: 120, margin: 1,
-                color: { dark: '#f43f5e', light: '#060412' },
-              })
-            ).then(setQrUrl).catch(() => {})
-          }
-          else if (event.type === 'error') throw new Error(event.message)
-        }
+      await attemptMatch(payload)
+    } catch {
+      // 冷启动失败 → 静默重试一次
+      try {
+        setProgress({ step: isZH ? '正在重连…' : 'Reconnecting…', pct: 8 })
+        await attemptMatch(payload)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : (isZH ? '分析失败，请重试' : 'Analysis failed'))
+        setLoading(false)
+        setProgress(null)
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : (isZH ? '分析失败，请重试' : 'Analysis failed'))
-      setLoading(false)
-      setProgress(null)
     }
   }
 

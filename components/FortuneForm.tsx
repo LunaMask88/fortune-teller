@@ -101,6 +101,52 @@ export default function FortuneForm() {
     set('birthHour', unknown ? null : 12)
   }
 
+  // 单次 SSE 请求，抛出即失败
+  async function attemptFortune(payload: object): Promise<void> {
+    const resp = await fetch('/api/fortune', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    if (!resp.ok) throw new Error(tr.form.errorFailed)
+
+    const reader = resp.body!.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+    let gotResult = false
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue
+        const event = JSON.parse(line.slice(6))
+        if (event.type === 'progress') {
+          setProgress({ step: event.step, pct: event.pct })
+        } else if (event.type === 'result') {
+          gotResult = true
+          sessionStorage.setItem('fortune_reading', JSON.stringify(event.data))
+          const profile: UserProfile = {
+            name: form.name, birthYear: form.birthYear, birthMonth: form.birthMonth,
+            birthDay: form.birthDay, birthHour: form.birthHour, gender: form.gender,
+            country: form.country, city: form.city || undefined,
+            lang,
+          }
+          saveProfile(profile)
+          saveLastReading(event.data as FullReading)
+          router.push('/result')
+        } else if (event.type === 'error') {
+          throw new Error(event.message)
+        }
+      }
+    }
+    if (!gotResult) throw new Error('no result')
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.name.trim()) { setError(tr.form.errorName); return }
@@ -108,52 +154,20 @@ export default function FortuneForm() {
     setLoading(true)
     setProgress({ step: lang === 'en' ? 'Starting…' : '启动中…', pct: 5 })
 
+    const payload = { ...form, lang }
+
     try {
-      const resp = await fetch('/api/fortune', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, lang }),
-      })
-      if (!resp.ok) throw new Error(tr.form.errorFailed)
-
-      // 读取 SSE 流
-      const reader = resp.body!.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        buffer += decoder.decode(value, { stream: true })
-        const lines = buffer.split('\n')
-        buffer = lines.pop() ?? ''
-
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue
-          const event = JSON.parse(line.slice(6))
-          if (event.type === 'progress') {
-            setProgress({ step: event.step, pct: event.pct })
-          } else if (event.type === 'result') {
-            sessionStorage.setItem('fortune_reading', JSON.stringify(event.data))
-            // 保存档案和上次解读到 localStorage
-            const profile: UserProfile = {
-              name: form.name, birthYear: form.birthYear, birthMonth: form.birthMonth,
-              birthDay: form.birthDay, birthHour: form.birthHour, gender: form.gender,
-              country: form.country, city: form.city || undefined,
-              lang,
-            }
-            saveProfile(profile)
-            saveLastReading(event.data as FullReading)
-            router.push('/result')
-          } else if (event.type === 'error') {
-            throw new Error(event.message)
-          }
-        }
+      await attemptFortune(payload)
+    } catch {
+      // 第一次失败（冷启动 / 瞬断）→ 静默重试一次
+      try {
+        setProgress({ step: lang === 'en' ? 'Reconnecting…' : '正在重连…', pct: 8 })
+        await attemptFortune(payload)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : tr.form.errorRetry)
+        setLoading(false)
+        setProgress(null)
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : tr.form.errorRetry)
-      setLoading(false)
-      setProgress(null)
     }
   }
 
