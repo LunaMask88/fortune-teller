@@ -531,6 +531,288 @@ const content: Record<string, { zh: SystemContent; en: SystemContent }> = {
   },
 }
 
+  liuyao: {
+    zh: {
+      slug: 'liuyao', icon: '卦',
+      title: '六爻占卜',
+      subtitle: '本卦变卦，六爻动变，吉凶推演',
+      intro: '六爻，又称"文王卦"，是中国易学中最精密的占卜体系之一。通过投掷铜钱六次，得出六条爻线，组成一个卦象（本卦）；若有动爻则变为另一卦（变卦），由此判断事物的走势与吉凶。',
+      howItWorks: [
+        { heading: '起卦方式', body: '传统以铜钱三枚投掷六次，每次三枚：三正为老阳（动爻），三反为老阴（动爻），两正一反为少阳，两反一正为少阴。六次投掷依次形成初爻至上爻。' },
+        { heading: '六亲与六神', body: '每一爻都对应"六亲"关系（父母、兄弟、子孙、官鬼、妻财），以及"六神"配属（青龙、朱雀、勾陈、腾蛇、白虎、玄武），共同决定爻的力量与含义。' },
+        { heading: '动爻与变卦', body: '有动爻的本卦可变为变卦，动爻所在位置往往是事件的核心。本卦代表现状，变卦代表结果。两卦互参，推演全程。' },
+      ],
+      howToRead: [
+        { heading: '看世爻与应爻', body: '世爻代表问卦者，应爻代表对方或结果。两者的五行生克关系，直接判断事情走向是否顺利。' },
+        { heading: '月建日辰影响', body: '爻的旺衰还受当月月建和当日日辰制约。月建生爻则旺，克爻则弱，是判断吉凶的重要参考。' },
+        { heading: '用神专取', body: '占问不同事项，取不同的用神：问感情取妻财爻，问工作取官鬼爻，问子嗣取子孙爻。用神旺相则吉。' },
+      ],
+      keyTerms: [
+        { term: '世爻', explanation: '代表问卦者本人的爻位，是分析吉凶的出发点。' },
+        { term: '应爻', explanation: '代表对方、事件结果或目标，与世爻的关系决定事情走向。' },
+        { term: '用神', explanation: '针对所问之事专门选取的核心爻，用神旺则事成，用神衰则事难。' },
+        { term: '动爻', explanation: '老阴老阳变化的爻，是卦中推动事件发展的关键力量。' },
+      ],
+    },
+    en: {
+      slug: 'liuyao', icon: '卦',
+      title: 'Liu Yao · I Ching',
+      subtitle: 'Six-line hexagram, changing lines, fortune reading',
+      intro: 'Liu Yao (Six Lines), also called "King Wen Divination," is one of the most precise fortune-telling systems in Chinese I Ching studies. By tossing coins six times, a hexagram is formed; changing lines transform it into a second hexagram, together mapping the trajectory and outcome of any situation.',
+      howItWorks: [
+        { heading: 'Casting the Hexagram', body: 'Three coins are thrown six times. Three heads = old yang (changing), three tails = old yin (changing), two heads + one tail = young yang, two tails + one head = young yin. Six throws build the hexagram from the bottom up.' },
+        { heading: 'Six Relatives & Six Gods', body: 'Each line maps to a "Six Relatives" role (Parents, Siblings, Offspring, Officers, Wealth) and a "Six Gods" archetype (Azure Dragon, Red Phoenix, Hook Chen, Flying Serpent, White Tiger, Black Tortoise), determining each line\'s power and meaning.' },
+        { heading: 'Changing Lines & Transformed Hexagram', body: 'Changing lines transform the primary hexagram into a second. The primary shows the current situation; the transformed shows the outcome. Together they trace the full arc of events.' },
+      ],
+      howToRead: [
+        { heading: 'Self & Response Lines', body: 'The Self line represents the querent; the Response line represents the other party or outcome. Their Five-Element relationship directly indicates whether things will go smoothly.' },
+        { heading: 'Month & Day Influences', body: 'The monthly branch and daily stem either strengthen or weaken each line. A line supported by the month branch is powerful; one clashed by the day stem is weakened.' },
+        { heading: 'Subject God', body: 'Different questions require different Subject Gods: romance → Wealth line, career → Officer line, children → Offspring line. A strong Subject God means success.' },
+      ],
+      keyTerms: [
+        { term: 'Self Line', explanation: 'The line representing the querent — the anchor point for all analysis.' },
+        { term: 'Response Line', explanation: 'Represents the other party or outcome; its relationship to the Self Line determines the direction of events.' },
+        { term: 'Subject God', explanation: 'The key line chosen based on what is being asked; its strength determines whether the matter succeeds.' },
+        { term: 'Changing Line', explanation: 'Old yin or old yang lines that transform the hexagram — the driving force of the reading.' },
+      ],
+    },
+  },
+
+  meihua: {
+    zh: {
+      slug: 'meihua', icon: '🌸',
+      title: '梅花易数',
+      subtitle: '先后天卦数，体用生克，瞬间起卦',
+      intro: '梅花易数由宋代邵雍所创，以数字起卦、以时间起卦，随时随地皆可占问。其核心是将万事万物化为数字，通过八卦的体用生克关系，直接洞察事物的本质与走向，以简驭繁，化复杂为直觉。',
+      howItWorks: [
+        { heading: '起卦方法', body: '常见方法有"年月日时"起卦和"数字"起卦。以年月日相加除以八取余为上卦，加上时辰除以八取余为下卦；年月日时之和除以六取余为动爻。' },
+        { heading: '体卦与用卦', body: '六爻中，含世爻的卦为体卦（代表问者本身），另一卦为用卦（代表对方或事件）。体用的五行生克是判断吉凶的核心。' },
+        { heading: '五行生克判断', body: '用生体为吉（对方助我），体生用次吉（我助对方，略有耗损），体克用为吉（我能掌控），用克体为凶（受到压制），体用比和中平。' },
+      ],
+      howToRead: [
+        { heading: '快速起卦', body: '任何数字、时间、观察到的现象都可以转化为卦象。无需铜钱，心有所感即可占。' },
+        { heading: '互卦与变卦', body: '取二三四爻为下互卦，三四五爻为上互卦，构成互卦；动爻变化后形成变卦，三卦合参，层次分明。' },
+        { heading: '物应与外应', body: '梅花易数非常重视"外应"，即占卦时周围出现的事物（声音、动物、颜色）往往是卦象的具体印证，需同步观察。' },
+      ],
+      keyTerms: [
+        { term: '体卦', explanation: '含世爻的卦，代表问卦者自身的状态与能量。' },
+        { term: '用卦', explanation: '另一卦，代表所问事项或对方，是变化与结果的来源。' },
+        { term: '互卦', explanation: '由本卦中间四爻重新组合而成，揭示事物内在的隐藏过程。' },
+        { term: '外应', explanation: '起卦时所观察到的外部现象，是卦象在现实中的映射与印证。' },
+      ],
+    },
+    en: {
+      slug: 'meihua', icon: '🌸',
+      title: 'Meihua Yi Shu',
+      subtitle: 'Plum Blossom Numerology — instant I Ching divination',
+      intro: 'Meihua Yi Shu (Plum Blossom Numerology) was created by Shao Yong of the Song Dynasty. It allows divination anytime, anywhere — using numbers or the current moment to cast a hexagram. Its core insight is that everything can be expressed as numbers, and through the Five-Element relationship between body and use trigrams, the nature and outcome of any situation becomes clear.',
+      howItWorks: [
+        { heading: 'Casting the Hexagram', body: 'Common methods use date/time or any number. Add year + month + day, divide by 8, take the remainder as the upper trigram; add the hour, divide by 8 for the lower trigram; divide the total by 6 for the changing line.' },
+        { heading: 'Body & Use Trigrams', body: 'The trigram containing the Self line is the Body Trigram (representing the querent); the other is the Use Trigram (representing the other party or situation). Their Five-Element relationship is the core of the reading.' },
+        { heading: 'Five-Element Relationships', body: 'Use generates Body = auspicious (help arrives). Body generates Use = slightly auspicious (giving more than receiving). Body overcomes Use = auspicious (in control). Use overcomes Body = inauspicious (under pressure). Equal = neutral.' },
+      ],
+      howToRead: [
+        { heading: 'Instant Casting', body: 'Any number, time, or observed phenomenon can become a hexagram. No coins needed — a sincere intention is enough to begin.' },
+        { heading: 'Nuclear & Transformed Hexagrams', body: 'Lines 2-3-4 form the lower nuclear trigram; lines 3-4-5 form the upper nuclear trigram. The changing line produces a transformed hexagram. All three levels are read together.' },
+        { heading: 'External Omens', body: 'Meihua places great emphasis on omens appearing at the moment of divination — sounds, animals, colors nearby often mirror the hexagram\'s message and should be noted.' },
+      ],
+      keyTerms: [
+        { term: 'Body Trigram', explanation: 'The trigram containing the Self line; represents the querent\'s own state and energy.' },
+        { term: 'Use Trigram', explanation: 'The other trigram; represents the situation or other party — the source of change and outcome.' },
+        { term: 'Nuclear Hexagram', explanation: 'Formed from the middle four lines of the primary hexagram; reveals hidden internal processes.' },
+        { term: 'External Omen', explanation: 'Phenomena observed at the moment of casting; real-world reflections that confirm the hexagram\'s message.' },
+      ],
+    },
+  },
+
+  runes: {
+    zh: {
+      slug: 'runes', icon: '᛭',
+      title: '北欧符文',
+      subtitle: '古日耳曼文字，命运之书，三符展开',
+      intro: '符文（Runes）是古日耳曼族群使用的文字系统，同时也是一套神圣的占卜工具。北欧神话中，主神奥丁倒悬于世界之树九日九夜，以自身为祭，领悟了符文的奥义。每个符文字母都承载着独特的能量与含义，被用于冥想、魔法与命运探询。',
+      howItWorks: [
+        { heading: '古长符文表', body: '最常用的是"老弗萨克"（Elder Futhark），共24个符文，分为三组各八个，称为"阿特"（Ætt）。每个符文有正位与逆位之分，含义相对或反转。' },
+        { heading: '抽取与展开', body: '问卦者以专注的意念从符文袋中随机抽取，通常用"三符展开"：第一符代表过去/原因，第二符代表当下/挑战，第三符代表未来/建议。' },
+        { heading: '正位与逆位', body: '符文正位代表该能量的顺畅表达；逆位则暗示阻碍、内化或阴暗面。并非所有符文都有逆位——部分符文正逆位形状相同，读法不变。' },
+      ],
+      howToRead: [
+        { heading: '关注直觉', body: '抽到符文时，首先注意第一反应与身体感受。符文的解读是直觉与知识的结合，不宜过度理性分析。' },
+        { heading: '结合问题语境', body: '同一符文在不同问题下含义侧重不同。例如"费胡"（Fehu）在感情问题中代表付出与丰盈，在财务问题中则代表动态财富与流动资金。' },
+        { heading: '三符整体关联', body: '三张符文不是孤立的，需要看它们之间的能量流动：前两者如何影响第三者，是否形成呼应或对比。' },
+      ],
+      keyTerms: [
+        { term: 'Elder Futhark', explanation: '最古老的符文系统，24个符文，约公元2-8世纪使用，是现代符文占卜的主流基础。' },
+        { term: '逆位', explanation: '符文上下颠倒时的状态，通常代表能量受阻、内化或需要注意的警示。' },
+        { term: '阿特（Ætt）', explanation: '24个符文分为三组，每组8个，各由北欧神明守护，主题各有侧重（创造、变化、终结）。' },
+        { term: '问卦意图', explanation: '抽符文前的专注冥想与意图设定，被认为是符文感应正确问题的关键。' },
+      ],
+    },
+    en: {
+      slug: 'runes', icon: '᛭',
+      title: 'Nordic Runes',
+      subtitle: 'Elder Futhark — the alphabet of fate',
+      intro: 'Runes are the sacred writing system of the ancient Germanic peoples and a powerful divination tool. In Norse mythology, the god Odin hung upside down from Yggdrasil (the World Tree) for nine days and nights, sacrificing himself to himself, to receive the wisdom of the runes. Each rune carries its own energy and meaning, used for meditation, magic, and the exploration of fate.',
+      howItWorks: [
+        { heading: 'The Elder Futhark', body: 'The most commonly used system is the Elder Futhark, comprising 24 runes divided into three groups of eight called "Ætts." Each rune has an upright and a reversed meaning, which either amplify or invert the core energy.' },
+        { heading: 'Drawing & Spreads', body: 'With focused intention, runes are drawn randomly from a pouch. The classic "Three Rune Spread" is most common: the first rune represents the past/cause, the second the present/challenge, the third the future/guidance.' },
+        { heading: 'Upright & Reversed', body: 'An upright rune indicates the energy flowing freely. A reversed rune suggests blockage, internalization, or a shadow aspect. Some runes look the same upright and reversed and are read identically regardless of orientation.' },
+      ],
+      howToRead: [
+        { heading: 'Trust Your Intuition', body: 'Note your first feeling when you draw a rune. Rune reading is a blend of knowledge and intuition — avoid over-analyzing with pure logic.' },
+        { heading: 'Context Matters', body: 'The same rune has different emphases depending on your question. "Fehu" in a love reading speaks of generosity and abundance; in a financial reading, it suggests fluid, dynamic wealth.' },
+        { heading: 'Read the Three as One', body: 'The three runes are not isolated — observe the energy flow between them. How do the first two shape the third? Do they echo or contrast each other?' },
+      ],
+      keyTerms: [
+        { term: 'Elder Futhark', explanation: 'The oldest runic alphabet, 24 symbols used roughly 2nd–8th centuries CE, the foundation of modern rune divination.' },
+        { term: 'Reversed', explanation: 'A rune drawn upside-down; typically indicates blocked energy, internalization, or a cautionary message.' },
+        { term: 'Ætt', explanation: 'Each of the three groups of 8 runes, guarded by a Norse deity, each with its own thematic focus: creation, transformation, and completion.' },
+        { term: 'Intention Setting', explanation: 'The focused meditation before drawing runes; considered essential for the runes to attune to your actual question.' },
+      ],
+    },
+  },
+
+  humandesign: {
+    zh: {
+      slug: 'humandesign', icon: '⬡',
+      title: '人类图',
+      subtitle: '能量中心·策略·内在权威，你的人生蓝图',
+      intro: '人类图（Human Design）诞生于1987年，由Ra Uru Hu所创。它融合了中国易经、西方占星、卡巴拉生命之树、印度脉轮体系与量子物理，根据精确的出生时间绘制出独特的"人类图表"，揭示一个人天生的决策方式、能量类型与人生策略。',
+      howItWorks: [
+        { heading: '五种人类型', body: '显示者（Manifestor）、生成者（Generator）、显示生成者（Manifesting Generator）、投射者（Projector）、反映者（Reflector）。每种类型有其特定的能量特征、人生策略与不自我主题（当你违背本性时的信号）。' },
+        { heading: '九大能量中心', body: '类似印度脉轮，人类图有九个能量中心。"有定义"（彩色填充）的中心代表稳定的内在资源；"开放"（白色/空心）的中心代表接收与放大外部能量的区域，也是最容易受影响的地方。' },
+        { heading: '内在权威', body: '决策的核心依据：情感权威（等待情绪浪潮平息再决定）、骶骨权威（即时的肠胃反应）、脾脏权威（当下直觉）等，每人只有一种，是做出正确选择的内在指南针。' },
+      ],
+      howToRead: [
+        { heading: '了解你的类型与策略', body: '生成者策略是"等待回应"，投射者策略是"等待邀请"，显示者策略是"告知"，反映者策略是"等待月亮周期（28天）"。遵循策略能减少阻力，顺势而为。' },
+        { heading: '观察开放中心', body: '开放中心是接收能量的门户，也是容易"不自我"的来源。例如开放头脑中心的人容易因他人的问题而焦虑，认识这点有助于辨别哪些感受是"你的"、哪些只是临时吸收的。' },
+        { heading: '廓线（Profile）', body: '由两个数字组成（如1/3、2/4、5/1），代表你在这一生扮演的"角色"与成长模式，是理解人际关系与人生主题的重要维度。' },
+      ],
+      keyTerms: [
+        { term: '不自我主题', explanation: '当你违背本性行事时出现的信号：生成者是沮丧，投射者是苦涩，显示者是愤怒，反映者是失望。' },
+        { term: '通道', explanation: '连接两个能量中心的线路，当两端均有定义时形成通道，代表稳定的能量特质与天赋。' },
+        { term: '廓线', explanation: '由出生信息计算得出的两位数字，描述你在世界上的"角色"与学习方式。' },
+        { term: '内在权威', explanation: '每人天生的最可靠决策机制，超越头脑的理性判断，是人类图实践的核心。' },
+      ],
+    },
+    en: {
+      slug: 'humandesign', icon: '⬡',
+      title: 'Human Design',
+      subtitle: 'Energy centers · strategy · inner authority — your life blueprint',
+      intro: 'Human Design emerged in 1987 through Ra Uru Hu. It synthesizes the Chinese I Ching, Western astrology, the Kabbalistic Tree of Life, Hindu chakra system, and quantum physics to produce a unique "bodygraph" based on your precise birth data — revealing your innate decision-making style, energy type, and life strategy.',
+      howItWorks: [
+        { heading: 'Five Types', body: 'Manifestor, Generator, Manifesting Generator, Projector, and Reflector. Each type has a distinct energy signature, life strategy, and "not-self theme" — a signal that you\'re living out of alignment with your nature.' },
+        { heading: 'Nine Energy Centers', body: 'Similar to chakras, the nine centers are either "Defined" (filled with color — consistent internal resources) or "Open" (white — receptive to and amplifying external energy, and most susceptible to outside influence).' },
+        { heading: 'Inner Authority', body: 'Your most reliable decision-making guide: Emotional Authority (wait for the emotional wave to settle), Sacral Authority (instant gut response), Splenic Authority (in-the-moment intuition), and others. Each person has only one.' },
+      ],
+      howToRead: [
+        { heading: 'Know Your Type & Strategy', body: 'Generator: "Wait to Respond." Projector: "Wait for the Invitation." Manifestor: "Inform." Reflector: "Wait a Lunar Cycle (28 days)." Following your strategy reduces resistance and aligns you with the natural flow.' },
+        { heading: 'Observe Open Centers', body: 'Open centers receive and amplify external energy — they\'re also where "not-self" behavior originates. An open Head Center may cause worry over other people\'s questions. Recognizing this helps distinguish what feelings are truly yours.' },
+        { heading: 'Profile', body: 'Two numbers (e.g. 1/3, 2/4, 5/1) representing the "role" you play in this lifetime and your pattern of growth — a key dimension for understanding relationships and life themes.' },
+      ],
+      keyTerms: [
+        { term: 'Not-Self Theme', explanation: 'The signal that appears when you act against your nature: frustration (Generator), bitterness (Projector), anger (Manifestor), disappointment (Reflector).' },
+        { term: 'Channel', explanation: 'A pathway connecting two defined centers; when both ends are defined, it forms a Channel representing a consistent energy quality and gift.' },
+        { term: 'Profile', explanation: 'Two numbers derived from birth data describing the "role" and learning style you embody in this life.' },
+        { term: 'Inner Authority', explanation: 'Your most reliable built-in decision mechanism — beyond the mind\'s rational analysis, and the core of Human Design practice.' },
+      ],
+    },
+  },
+
+  vedic: {
+    zh: {
+      slug: 'vedic', icon: '🌙',
+      title: '吠陀占星',
+      subtitle: '月亮星座·那沙特拉·大运周期',
+      intro: '吠陀占星（Jyotish，意为"光之科学"）源自古印度，有超过五千年历史，是世界上最古老的占星体系之一。与西方占星强调太阳星座不同，吠陀占星以月亮星座（Rashi）和月亮所在的星宿（Nakshatra）为核心，并以行星大运（Dasha）系统预测人生时间轴上的能量周期。',
+      howItWorks: [
+        { heading: '月亮星座（Rashi）', body: '吠陀体系使用恒星黄道（Sidereal Zodiac），以固定星空为基准，与西方的回归黄道相差约23度。因此同一人的吠陀月亮星座往往与西方太阳星座不同，代表情感本能与潜意识的底层模式。' },
+        { heading: '月亮星宿（Nakshatra）', body: '将黄道分为27个月亮星宿，每个跨度13°20′。每个Nakshatra有其守护行星、主神、象征动物与能量主题，提供比星座更精细的个性描述，是吠陀占星最独特的工具。' },
+        { heading: '行星大运（Dasha）', body: '吠陀占星最核心的预测工具。按照出生时月亮所在Nakshatra的守护行星启动大运周期，总周期为120年，依次经历各行星的主运（Mahadasha），每段主运又分子运，精确描绘人生各阶段的能量主题。' },
+      ],
+      howToRead: [
+        { heading: '月亮星座优先', body: '在吠陀占星中，月亮星座比太阳星座更重要，代表深层性格与情感本质。读图时以上升星座和月亮星座为优先参考。' },
+        { heading: '理解当前大运', body: '你现在处于哪个行星的主运，决定了这段时间的整体主题。例如金星主运（20年）往往带来感情、艺术与物质的繁荣期；土星主运（19年）则是考验与沉淀的阶段。' },
+        { heading: '罗候与计都（Rahu & Ketu）', body: '北交点（罗候）代表今生需要发展的方向与渴望，南交点（计都）代表前世带来的本能与舒适区。两者的星座位置是理解人生使命的关键。' },
+      ],
+      keyTerms: [
+        { term: 'Rashi', explanation: '月亮所在的黄道星座（共12个），是吠陀占星的基础，代表情感与潜意识模式。' },
+        { term: 'Nakshatra', explanation: '27个月亮星宿，是比Rashi更精细的性格分析工具，每个有其神话背景与行星守护。' },
+        { term: 'Mahadasha', explanation: '行星大运主运，每段持续数年至数十年不等，决定人生各阶段的核心主题与事件倾向。' },
+        { term: '恒星黄道', explanation: '吠陀占星使用以固定恒星为基准的黄道，与西方占星的回归黄道相差约23°（岁差角）。' },
+      ],
+    },
+    en: {
+      slug: 'vedic', icon: '🌙',
+      title: 'Vedic Astrology',
+      subtitle: 'Moon sign · Nakshatra · Dasha cycles',
+      intro: 'Vedic astrology (Jyotish — "the science of light") originates from ancient India with over 5,000 years of history. Unlike Western astrology\'s focus on the Sun sign, Vedic astrology centers on the Moon sign (Rashi) and the lunar mansion (Nakshatra) where the Moon resides, combined with the planetary period system (Dasha) that maps energy cycles across a lifetime.',
+      howItWorks: [
+        { heading: 'Moon Sign (Rashi)', body: 'Vedic astrology uses the Sidereal Zodiac — fixed to the actual star positions — which differs from the Western Tropical Zodiac by roughly 23 degrees. Your Vedic Moon sign often differs from your Western Sun sign; it represents emotional instincts and subconscious patterns.' },
+        { heading: 'Lunar Mansion (Nakshatra)', body: 'The ecliptic is divided into 27 Nakshatras, each spanning 13°20′. Each Nakshatra has its own ruling planet, presiding deity, symbol animal, and energy theme — providing a far more granular personality portrait than the zodiac sign alone.' },
+        { heading: 'Planetary Periods (Dasha)', body: 'The most powerful predictive tool in Vedic astrology. The Nakshatra occupied by the Moon at birth determines which planetary period (Mahadasha) begins first. The total cycle spans 120 years, cycling through each planet\'s major period, each subdivided into sub-periods.' },
+      ],
+      howToRead: [
+        { heading: 'Moon Sign First', body: 'In Vedic astrology the Moon sign outweighs the Sun sign, representing core character and emotional nature. The Ascendant (Lagna) and Moon sign are the primary reference points.' },
+        { heading: 'Know Your Current Dasha', body: 'The planet ruling your current Mahadasha sets the overall tone of this life phase. A Venus Mahadasha (20 years) often brings love, art, and material flourishing; a Saturn Mahadasha (19 years) brings tests and consolidation.' },
+        { heading: 'Rahu & Ketu', body: 'The North Node (Rahu) represents what the soul craves and must develop in this life; the South Node (Ketu) represents past-life instincts and comfort zones. Their zodiac positions are key to understanding life purpose.' },
+      ],
+      keyTerms: [
+        { term: 'Rashi', explanation: 'The zodiac sign occupied by the Moon (12 signs total); the foundation of Vedic astrology representing emotions and subconscious patterns.' },
+        { term: 'Nakshatra', explanation: '27 lunar mansions offering a finer personality analysis than Rashi, each with mythological background and planetary ruler.' },
+        { term: 'Mahadasha', explanation: 'A major planetary period lasting from a few years to nearly two decades, setting the core theme and event tendencies of each life phase.' },
+        { term: 'Sidereal Zodiac', explanation: 'The fixed-star-based zodiac used in Vedic astrology, offset from the Western Tropical Zodiac by roughly 23° due to the precession of equinoxes.' },
+      ],
+    },
+  },
+
+  xingming: {
+    zh: {
+      slug: 'xingming', icon: '字',
+      title: '姓名学',
+      subtitle: '笔画数理，三才五格，命格吉凶',
+      intro: '中国姓名学以汉字笔画为基础，通过"三才五格"的数理体系，分析姓名对一个人命运的影响。五格分别是天格、人格、地格、总格、外格，三才则是将天格、人格、地格的阴阳属性组合，综合评判整体命格的格局与吉凶。',
+      howItWorks: [
+        { heading: '五格数理', body: '天格 = 姓的笔画数 + 1（多字姓则相加）；人格 = 姓的末字笔画 + 名的首字笔画；地格 = 名的总笔画数；总格 = 全名笔画总和；外格 = 总格 - 人格（或 1）。每个格数对应一个数理灵动，有吉凶之别。' },
+        { heading: '三才配置', body: '三才由天格、人格、地格的奇偶（阳/阴）组合而成，共8种基本配置。不同的三才组合代表不同的运势走向，例如"阳阳阳"偏刚，"阴阴阴"偏柔，"阳阴阳"等配置各有解析。' },
+        { heading: '数理灵动与吉凶', body: '1到81个数各有灵动含义，其中被认为"大吉"的有：1、11、13、15、16、21、23、24、31、32等；被认为"大凶"的有：9、10、19、20、34等。数理并非唯一依据，需结合五格综合判断。' },
+      ],
+      howToRead: [
+        { heading: '人格最重要', body: '五格中，人格（中格）最为核心，代表一个人的主运与个性。人格数理吉凶对整体命格影响最大。' },
+        { heading: '总格看晚运', body: '总格代表人生整体走向与晚年运势，是判断一生成就与结局的重要参考。' },
+        { heading: '结合八字', body: '姓名学不能单独成判，须结合八字五行来看。五行偏弱的，姓名中若有补足该五行的笔画数，则有加分效果；反之则需谨慎。' },
+      ],
+      keyTerms: [
+        { term: '天格', explanation: '姓的笔画数加一，代表先天祖业与家族遗传，非人力所能改变。' },
+        { term: '人格', explanation: '最核心的格，代表主运与性格，对命格影响最深。' },
+        { term: '地格', explanation: '名字部分的笔画之和，代表青年与中年运势，影响个人努力的方向。' },
+        { term: '三才', explanation: '天格、人格、地格的阴阳组合，反映整体命格的运势结构与生克关系。' },
+      ],
+    },
+    en: {
+      slug: 'xingming', icon: '字',
+      title: 'Chinese Name Analysis',
+      subtitle: 'Stroke numerology, Three Talents, Five Grids',
+      intro: 'Chinese Name Analysis uses the stroke counts of Chinese characters as its foundation. Through the "Three Talents and Five Grids" numerological framework, it analyzes how a person\'s name influences their destiny. The Five Grids are Heaven Grid, Person Grid, Earth Grid, Total Grid, and Outer Grid; the Three Talents combine the yin/yang qualities of the top three grids to assess overall fortune.',
+      howItWorks: [
+        { heading: 'The Five Grids', body: 'Heaven Grid = surname strokes + 1. Person Grid = last character of surname + first character of given name. Earth Grid = total strokes of given name. Total Grid = all strokes combined. Outer Grid = Total minus Person Grid (or 1). Each number carries a numerological resonance rated auspicious or inauspicious.' },
+        { heading: 'Three Talents Configuration', body: 'Formed by the odd/even (yang/yin) nature of the Heaven, Person, and Earth Grids — 8 basic combinations. For example, yang-yang-yang is strongly assertive; yin-yin-yin is receptive and gentle; mixed combinations have their own interpretations.' },
+        { heading: 'Numerological Resonance', body: 'Numbers 1–81 each carry resonance. Highly auspicious numbers include 1, 11, 13, 15, 16, 21, 23, 24, 31, 32; highly inauspicious include 9, 10, 19, 20, 34. Numerology is one factor among several — the five grids must be read together.' },
+      ],
+      howToRead: [
+        { heading: 'Person Grid is Most Important', body: 'Among the five grids, the Person Grid (middle grid) is the core — representing the main destiny arc and personality. Its numerological quality most heavily influences the overall reading.' },
+        { heading: 'Total Grid Shows Later Life', body: 'The Total Grid represents the overall life trajectory and later-years fortune — a key reference for assessing lifetime achievement and conclusion.' },
+        { heading: 'Combine with BaZi', body: 'Name analysis should never stand alone — it must be read alongside the BaZi Five Elements chart. If a weak element in the chart is supported by the name\'s numerological resonance, it acts as a positive supplement.' },
+      ],
+      keyTerms: [
+        { term: 'Heaven Grid', explanation: 'Surname strokes plus one; represents inherited ancestral energy and family legacy — beyond individual control.' },
+        { term: 'Person Grid', explanation: 'The most critical grid; represents the main destiny arc and personality, with the deepest influence on overall fortune.' },
+        { term: 'Earth Grid', explanation: 'Total strokes of the given name; represents youth and middle-age fortune and the direction of personal effort.' },
+        { term: 'Three Talents', explanation: 'The yin/yang combination of Heaven, Person, and Earth Grids; reflects the structural energy pattern and elemental relationships of the overall destiny.' },
+      ],
+    },
+  },
+
 export function getSystemContent(slug: string, lang: 'zh' | 'en'): SystemContent | null {
   return content[slug]?.[lang] ?? null
 }
