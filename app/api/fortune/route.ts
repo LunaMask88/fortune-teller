@@ -97,16 +97,17 @@ Return JSON only:
   ],${hasQuestions ? `
   "answers": [{"question":"q","answer":"2-3 sentences"}],` : ''}
   "luckyItems": [
-    {"name":"en","nameEN":"en","reason":"1-2 sentences","searchQuery":"product-specific English search term","category":"crystal|jewelry|color|number|plant|symbol|clothing|other","boosts":"career|wealth|love|health|luck"}
+    {"name":"en","nameEN":"en","reason":"1-2 sentences","searchQuery":"product-specific English search term","category":"crystal|jewelry|color|number|plant|symbol|clothing|food|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-Include 7-8 lucky items. Must include 1-2 clothing items (category:"clothing").
+Include 8-10 lucky items. Must include 1-2 clothing items (category:"clothing") AND 1-2 food items (category:"food").
+For food items: recommend a specific food to eat regularly that nourishes the user's weak element and boosts a fortune dimension. reason = which element it replenishes and how it helps (e.g. "Rich in iron and warmth, nourishes the Fire element, boosts vitality and love luck"). searchQuery = recipe or ingredient keyword (e.g. "red date longan tea recipe").
 CRITICAL — searchQuery must describe the SPECIFIC PRODUCT FORM, not just the material/ingredient:
 - crystal → "amethyst crystal healing bracelet" not "amethyst"
 - plant → "lavender essential oil roller bottle" not "lavender"
 - jewelry → "gold sun pendant necklace women" not "gold necklace"
 - clothing → "forest green flowy midi dress women" not "green dress"
-- symbol → "evil eye protection bracelet charm" not "evil eye"
+- food → "red date longan wolfberry tea recipe" not "red date"
 The searchQuery is used for both image search and shopping — make it specific enough to return actual buyable products. All text in English.`
         : `
 === 命理档案 ===
@@ -139,16 +140,19 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
   ],${hasQuestions ? `
   "answers": [{"question":"原题","answer":"2-3句命理解答"}],` : ''}
   "luckyItems": [
-    {"name":"中文名","nameEN":"English","reason":"1-2句命理原因","searchQuery":"英文购物搜索词","category":"crystal|jewelry|color|number|plant|symbol|clothing|other","boosts":"career|wealth|love|health|luck"}
+    {"name":"中文名","nameEN":"English","reason":"1-2句命理原因","searchQuery":"英文购物搜索词","category":"crystal|jewelry|color|number|plant|symbol|clothing|food|other","boosts":"career|wealth|love|health|luck"}
   ]
 }
-luckyItems 需 7-8 个，必须包含 1-2 个穿搭类（category:"clothing"），根据用户五行缺失推荐具体颜色和款式的服装，如"森系绿色上衣"、"深蓝色连衣裙"、"金色配饰套装"。
-关键：searchQuery 必须描述具体的商品形态，不能只写材料或颜色，示例：
+luckyItems 需 8-10 个，必须包含：
+- 1-2 个穿搭类（category:"clothing"），根据五行缺失推荐具体颜色款式，如"森系绿色上衣"、"深蓝色连衣裙"
+- 1-2 个食补类（category:"food"），推荐适合多吃的具体食物，说明补充哪个五行、提升哪方面运势，如"红枣枸杞茶"（补火、提升感情运）、"核桃黑芝麻糊"（补水、增强事业专注力）
+关键：searchQuery 必须描述具体的商品或菜谱形态，示例：
 - 水晶 → "amethyst crystal healing bracelet women" 而非 "amethyst"
 - 植物/香薰 → "lavender essential oil roller bottle" 而非 "lavender"
 - 饰品 → "gold crescent moon pendant necklace" 而非 "gold necklace"
 - 服装 → "forest green flowy midi dress women" 而非 "green dress"
-searchQuery 用于图片搜索和购物跳转，必须精准到可购买的具体商品。${country && ['CN','TW','HK','MO','SG','MY'].includes(country) ? '\n注意：用户在中文市场，searchQuery 优先使用中文商品名（如"紫水晶手链"、"月光石项链"），方便直接搜索。' : ''}`
+- 食补 → "red date longan wolfberry tea recipe" 而非 "red date"
+searchQuery 用于图片搜索和购物跳转，必须精准到具体商品或菜谱。${country && ['CN','TW','HK','MO','SG','MY'].includes(country) ? '\n注意：用户在中文市场，食补类 searchQuery 优先使用中文食材名（如"红枣枸杞茶"、"核桃黑芝麻糊做法"）。' : ''}`
 
         // ── 人生报告模式：追加专属指令 ────────────────────
         const lifeAppendZH = `

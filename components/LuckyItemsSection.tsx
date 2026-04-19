@@ -31,6 +31,20 @@ const UK_GROUP  = ['GB']
 const WEST_GROUP = ['US', 'CA', 'AU', 'NZ']
 
 function getPlatforms(category: string, country = 'other') {
+  // 食物类：专属菜谱 / 食材搜索平台
+  if (category === 'food') {
+    if (CN_GROUP.includes(country) || CHT_GROUP.includes(country)) {
+      return [
+        { id: 'xiachufang', label: '下厨房', color: '#e05c34', badge: '厨' },
+        { id: 'taobao',     label: '淘宝',   color: '#ff5000', badge: '淘' },
+      ]
+    }
+    if (JP_GROUP.includes(country)) {
+      return [{ id: 'rakuten', label: '楽天', color: '#bf0000', badge: '楽' }]
+    }
+    return [{ id: 'amazon', label: 'Amazon', color: '#ff9900', badge: 'A' }]
+  }
+
   const isClothing = category === 'clothing'
   if (CN_GROUP.includes(country)) {
     return isClothing
@@ -77,6 +91,7 @@ function platformLink(id: string, query: string, queryZH: string, country = 'oth
   const q  = encodeURIComponent(query)
   const qz = encodeURIComponent(queryZH)
   switch (id) {
+    case 'xiachufang': return `https://www.xiachufang.com/search/?keyword=${qz}`
     case 'taobao':     return `https://s.taobao.com/search?q=${qz}`
     case 'xiaohongshu':return `https://www.xiaohongshu.com/search_result/?keyword=${qz}&type=54`
     case 'shopee': {
@@ -106,11 +121,12 @@ function platformLink(id: string, query: string, queryZH: string, country = 'oth
 // ── 类别样式配置 ──────────────────────────────────────────────────────
 const CATEGORY_COLOR: Record<string, string> = {
   crystal: '#a78bfa', jewelry: '#d4af37', color: '#f97316',
-  number: '#3b82f6', plant: '#22c55e', symbol: '#ec4899', clothing: '#f43f5e', other: '#9ca3af',
+  number: '#3b82f6', plant: '#22c55e', symbol: '#ec4899',
+  clothing: '#f43f5e', food: '#fb923c', other: '#9ca3af',
 }
 const CATEGORY_EMOJI: Record<string, string> = {
   crystal: '💎', jewelry: '💍', color: '🎨',
-  number: '🔢', plant: '🌿', symbol: '✨', clothing: '👗', other: '🌟',
+  number: '🔢', plant: '🌿', symbol: '✨', clothing: '👗', food: '🍽️', other: '🌟',
 }
 const CATEGORY_BG: Record<string, [string, string]> = {
   crystal:  ['#3b0764', '#6d28d9'],
@@ -120,6 +136,7 @@ const CATEGORY_BG: Record<string, [string, string]> = {
   plant:    ['#052e16', '#15803d'],
   symbol:   ['#500724', '#be185d'],
   clothing: ['#4c0519', '#be123c'],
+  food:     ['#431407', '#b45309'],
   other:    ['#111827', '#374151'],
 }
 
