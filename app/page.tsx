@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useLang } from '@/contexts/LangContext'
+import QuickEntry from '@/components/QuickEntry'
 
 // 静态星星（避免 hydration mismatch）
 const STARS = [
@@ -91,6 +92,11 @@ export default function HomePage() {
         <p className="mt-4 text-sm" style={{ color: 'var(--text-muted)' }}>
           {tr.home.hint}
         </p>
+
+        {/* 快捷入口（有档案时显示） */}
+        <div className="w-full max-w-sm mt-6">
+          <QuickEntry />
+        </div>
       </main>
 
       {/* 功能模块网格 */}

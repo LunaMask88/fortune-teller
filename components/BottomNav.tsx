@@ -9,9 +9,10 @@ export default function BottomNav() {
   const { lang } = useLang()
 
   const tabs = [
-    { href: '/',        icon: '🏠', label: lang === 'en' ? 'Home'    : '首页' },
-    { href: '/reading', icon: '🔮', label: lang === 'en' ? 'Reading' : '解读' },
-    { href: '/result',  icon: '📊', label: lang === 'en' ? 'Report'  : '报告' },
+    { href: '/',        icon: '🏠', label: lang === 'en' ? 'Home'   : '首页' },
+    { href: '/reading', icon: '🔮', label: lang === 'en' ? 'Reading': '解读' },
+    { href: '/match',   icon: '💕', label: lang === 'en' ? 'Match'  : '配对' },
+    { href: '/result',  icon: '📊', label: lang === 'en' ? 'Report' : '报告' },
   ]
 
   return (

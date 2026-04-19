@@ -256,6 +256,35 @@ export interface FortuneReading {
   generatedAt: string
 }
 
+// ── 配对功能 ──────────────────────────────────────────────
+export interface MatchPersonInput {
+  name: string
+  birthYear: number
+  birthMonth: number
+  birthDay: number
+  birthHour: number | null
+  gender: 'male' | 'female'
+}
+
+export interface MatchDimension {
+  score: number
+  label: string
+  summary: string
+}
+
+export interface MatchResult {
+  score: number
+  dimensions: {
+    communication: MatchDimension
+    values: MatchDimension
+    emotion: MatchDimension
+    growth: MatchDimension
+  }
+  summary: string[]       // 3 段整体分析
+  advice: string          // 核心建议
+  luckyActivities: string[] // 适合两人的活动
+}
+
 // ── 完整结果 ──────────────────────────────────────────────
 export interface FullReading {
   input: UserInput

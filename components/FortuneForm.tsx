@@ -1,9 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { UserInput, FullReading } from '@/types'
 import { useLang } from '@/contexts/LangContext'
+import {
+  loadProfile, saveProfile, saveLastReading,
+  getAndClearQuickPeriod,
+  type UserProfile,
+} from '@/lib/user-profile'
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 function hourLabel(h: number) {
@@ -19,6 +24,7 @@ export default function FortuneForm() {
   const [progress, setProgress] = useState<{ step: string; pct: number } | null>(null)
   const [error, setError] = useState('')
   const [timeUnknown, setTimeUnknown] = useState(false)
+  const autoSubmitRef = useRef(false)
 
   const [form, setForm] = useState<UserInput>({
     name: '',
@@ -35,6 +41,33 @@ export default function FortuneForm() {
   function set<K extends keyof UserInput>(key: K, value: UserInput[K]) {
     setForm(f => ({ ...f, [key]: value }))
   }
+
+  // ── 挂载时从 localStorage 自动填充档案 ──────────────────
+  useEffect(() => {
+    const profile = loadProfile()
+    if (!profile) return
+    setForm(f => ({
+      ...f,
+      name: profile.name,
+      birthYear: profile.birthYear,
+      birthMonth: profile.birthMonth,
+      birthDay: profile.birthDay,
+      birthHour: profile.birthHour,
+      gender: profile.gender,
+    }))
+    if (profile.birthHour === null) setTimeUnknown(true)
+
+    // 快捷入口：检查是否有待执行的 period 快速提交
+    const quickPeriod = getAndClearQuickPeriod()
+    if (quickPeriod && !autoSubmitRef.current) {
+      autoSubmitRef.current = true
+      setForm(f => ({ ...f, period: quickPeriod as UserInput['period'] }))
+      // 用 setTimeout 等待 state 更新完成后自动提交
+      setTimeout(() => {
+        document.getElementById('fortune-submit-btn')?.click()
+      }, 100)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ★ 用户决策点：出生时间不知道时的处理策略
   // 选择：(a) 用午时(12)作为默认 (b) 完全跳过时柱计算 (c) 提示用户尽量填写
@@ -77,6 +110,14 @@ export default function FortuneForm() {
             setProgress({ step: event.step, pct: event.pct })
           } else if (event.type === 'result') {
             sessionStorage.setItem('fortune_reading', JSON.stringify(event.data))
+            // 保存档案和上次解读到 localStorage
+            const profile: UserProfile = {
+              name: form.name, birthYear: form.birthYear, birthMonth: form.birthMonth,
+              birthDay: form.birthDay, birthHour: form.birthHour, gender: form.gender,
+              lang,
+            }
+            saveProfile(profile)
+            saveLastReading(event.data as FullReading)
             router.push('/result')
           } else if (event.type === 'error') {
             throw new Error(event.message)
@@ -360,6 +401,7 @@ export default function FortuneForm() {
         )}
 
         <button
+          id="fortune-submit-btn"
           type="submit"
           disabled={loading}
           className="w-full py-4 rounded-xl font-semibold text-base transition-all"

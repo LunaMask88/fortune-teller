@@ -14,6 +14,8 @@ import HumanDesignSection from './sections/HumanDesignSection'
 import VedicSection from './sections/VedicSection'
 import XingmingSection from './sections/XingmingSection'
 import LuckyItemsSection from './LuckyItemsSection'
+import ShareCard from './ShareCard'
+import { saveLastReading } from '@/lib/user-profile'
 
 type TabId = 'overview' | 'eastern' | 'western' | 'lucky'
 
@@ -27,7 +29,9 @@ export default function FortuneResult() {
   const [hideName, setHideName] = useState(false)
   const [hideBirth, setHideBirth] = useState(false)
   const [shareToast, setShareToast] = useState('')
+  const [sharingImg, setSharingImg] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
+  const shareCardRef = useRef<HTMLDivElement>(null)
 
   const tabs: { id: TabId; label: string; icon: string }[] = [
     { id: 'overview', label: tr.result.tabs.overview.label, icon: tr.result.tabs.overview.icon },
@@ -46,6 +50,7 @@ export default function FortuneResult() {
         parsed.fortune.summary = [{ title: '综合解读', body: parsed.fortune.summary }]
       }
       setReading(parsed)
+      saveLastReading(parsed)
     } catch { router.replace('/reading') }
   }, [router])
 
@@ -161,6 +166,37 @@ ${exportRef.current.innerHTML}
   }
 
   async function handleShare() {
+    if (!shareCardRef.current || !reading) return
+    setSharingImg(true)
+    try {
+      const { default: html2canvas } = await import('html2canvas')
+      const canvas = await html2canvas(shareCardRef.current, {
+        scale: 2, useCORS: true, backgroundColor: null,
+        logging: false,
+      })
+      canvas.toBlob(async (blob) => {
+        if (!blob) return
+        const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : reading.input.name
+        const filename = `mystic-${displayName}-${Date.now()}.png`
+        const file = new File([blob], filename, { type: 'image/png' })
+        if (navigator.canShare?.({ files: [file] })) {
+          await navigator.share({ files: [file], title: lang === 'en' ? 'My Destiny Reading' : '我的命理解读' })
+        } else {
+          // 降级：下载 PNG
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url; a.download = filename; a.click()
+          URL.revokeObjectURL(url)
+          setShareToast(lang === 'en' ? '✓ Image saved' : '✓ 图片已保存')
+          setTimeout(() => setShareToast(''), 2500)
+        }
+      }, 'image/png')
+    } finally {
+      setSharingImg(false)
+    }
+  }
+
+  async function handleShareOld() {
     if (!exportRef.current || !reading) return
     const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : reading.input.name
     const title = lang === 'en' ? `${displayName}'s Destiny Report` : `${displayName} 命理报告`
@@ -330,14 +366,18 @@ ${exportRef.current.innerHTML}
           </button>
           <button
             onClick={handleShare}
+            disabled={sharingImg}
             className="flex-1 py-3 rounded-xl text-sm font-medium transition-all"
             style={{
-              background: 'rgba(201,123,132,0.12)',
+              background: sharingImg ? 'rgba(201,123,132,0.05)' : 'rgba(201,123,132,0.12)',
               border: '1px solid rgba(201,123,132,0.35)',
-              color: 'var(--rose)',
+              color: sharingImg ? 'var(--text-muted)' : 'var(--rose)',
+              cursor: sharingImg ? 'not-allowed' : 'pointer',
             }}
           >
-            {lang === 'en' ? '🔗 Share' : '🔗 分享'}
+            {sharingImg
+              ? (lang === 'en' ? '⟳ Generating…' : '⟳ 生成中…')
+              : (lang === 'en' ? '🖼 Share Image' : '🖼 分享图片')}
           </button>
         </div>
         <div className="flex gap-3">
@@ -424,6 +464,14 @@ ${exportRef.current.innerHTML}
             </section>
           )}
         </div>
+      </div>
+
+      {/* 隐藏的分享图卡片（供 html2canvas 渲染） */}
+      <div
+        ref={shareCardRef}
+        style={{ position: 'absolute', left: -9999, top: 0, pointerEvents: 'none' }}
+      >
+        <ShareCard reading={reading} lang={lang} periodLabel={periodLabel} />
       </div>
     </div>
   )
