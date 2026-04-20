@@ -53,7 +53,7 @@ export default function HomePage() {
       </div>
 
       {/* Hero */}
-      <main className="relative z-10 flex flex-col items-center text-center px-6 pt-20 pb-12 max-w-3xl mx-auto w-full">
+      <main className="relative z-10 flex flex-col items-center text-center px-6 pt-20 pb-12 max-w-4xl mx-auto w-full">
         {/* 水晶球装饰 */}
         <div className="relative mb-8 animate-float" style={{ width: 120, height: 120 }}>
           <div style={{
@@ -94,7 +94,7 @@ export default function HomePage() {
         </p>
 
         {/* 快捷入口（有档案时显示） */}
-        <div className="w-full max-w-sm mt-6">
+        <div className="w-full mt-6">
           <QuickEntry />
         </div>
       </main>
