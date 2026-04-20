@@ -227,6 +227,8 @@ ${exportRef.current.innerHTML}
   }
 
   const { bazi, sunSign, numerology, ziwei, tarotCards, liuyao, meihua, runes, humanDesign, vedic, xingming, fortune, input } = reading
+  const sys = fortune.selectedSystems  // undefined = all systems
+  const hasSys = (s: string) => !sys || sys.includes(s)
   const periodLabel = tr.result.periodLabels[input.period]
   const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : input.name
   const displayBirth = hideBirth
@@ -306,35 +308,37 @@ ${exportRef.current.innerHTML}
           {activeTab === 'overview' && (
             <>
               <OverallSection fortune={fortune} />
-              <XingmingSection xingming={xingming} />
+              {hasSys('xingming') && <XingmingSection xingming={xingming} />}
             </>
           )}
 
           {activeTab === 'eastern' && (
             <>
-              <BaziSection bazi={bazi} />
-              <ZodiacSection
-                sunSign={sunSign}
-                chineseZodiac={bazi.chineseZodiac}
-                lifePathNumber={numerology.lifePathNumber}
-                destinyNumber={numerology.destinyNumber}
-                numerologyDesc={numerology.description}
-                ziwei={ziwei}
-              />
-              <LiuyaoSection liuyao={liuyao} meihua={meihua} />
+              {hasSys('bazi') && <BaziSection bazi={bazi} />}
+              {(hasSys('astrology') || hasSys('ziwei') || hasSys('numerology')) && (
+                <ZodiacSection
+                  sunSign={sunSign}
+                  chineseZodiac={bazi.chineseZodiac}
+                  lifePathNumber={numerology.lifePathNumber}
+                  destinyNumber={numerology.destinyNumber}
+                  numerologyDesc={numerology.description}
+                  ziwei={ziwei}
+                />
+              )}
+              {(hasSys('liuyao') || hasSys('meihua')) && <LiuyaoSection liuyao={liuyao} meihua={meihua} />}
             </>
           )}
 
           {activeTab === 'western' && (
             <>
-              <VedicSection vedic={vedic} sunSign={sunSign} />
-              <TarotSection cards={tarotCards} />
-              <RunesSection runes={runes} />
-              <HumanDesignSection hd={humanDesign} />
+              {hasSys('vedic') && <VedicSection vedic={vedic} sunSign={sunSign} />}
+              {hasSys('tarot') && <TarotSection cards={tarotCards} />}
+              {hasSys('runes') && <RunesSection runes={runes} />}
+              {hasSys('humandesign') && <HumanDesignSection hd={humanDesign} />}
             </>
           )}
 
-          {activeTab === 'lucky' && (
+          {activeTab === 'lucky' && hasSys('lucky') && (
             <LuckyItemsSection items={fortune.luckyItems} country={userCountry} />
           )}
         </div>
@@ -440,21 +444,23 @@ ${exportRef.current.innerHTML}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
           <OverallSection fortune={fortune} />
-          <XingmingSection xingming={xingming} />
-          <BaziSection bazi={bazi} />
-          <ZodiacSection
-            sunSign={sunSign}
-            chineseZodiac={bazi.chineseZodiac}
-            lifePathNumber={numerology.lifePathNumber}
-            destinyNumber={numerology.destinyNumber}
-            numerologyDesc={numerology.description}
-            ziwei={ziwei}
-          />
-          <LiuyaoSection liuyao={liuyao} meihua={meihua} />
-          <VedicSection vedic={vedic} sunSign={sunSign} />
-          <TarotSection cards={tarotCards} />
-          <RunesSection runes={runes} />
-          <HumanDesignSection hd={humanDesign} />
+          {hasSys('xingming') && <XingmingSection xingming={xingming} />}
+          {hasSys('bazi') && <BaziSection bazi={bazi} />}
+          {(hasSys('astrology') || hasSys('ziwei') || hasSys('numerology')) && (
+            <ZodiacSection
+              sunSign={sunSign}
+              chineseZodiac={bazi.chineseZodiac}
+              lifePathNumber={numerology.lifePathNumber}
+              destinyNumber={numerology.destinyNumber}
+              numerologyDesc={numerology.description}
+              ziwei={ziwei}
+            />
+          )}
+          {(hasSys('liuyao') || hasSys('meihua')) && <LiuyaoSection liuyao={liuyao} meihua={meihua} />}
+          {hasSys('vedic') && <VedicSection vedic={vedic} sunSign={sunSign} />}
+          {hasSys('tarot') && <TarotSection cards={tarotCards} />}
+          {hasSys('runes') && <RunesSection runes={runes} />}
+          {hasSys('humandesign') && <HumanDesignSection hd={humanDesign} />}
 
           {/* 幸运物件纯文字版（避免重复触发图片 API） */}
           {fortune.luckyItems?.length > 0 && (

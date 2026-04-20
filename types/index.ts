@@ -12,6 +12,7 @@ export interface UserInput {
   context?: string      // 当前状况 / 补充背景
   questions?: string[]  // 用户想问的具体问题（最多 5 个）
   lang?: 'zh' | 'en'   // 界面与 AI 回复语言
+  systems?: string[]   // 选中的命理体系，undefined = 全选
 }
 
 // ── 八字 / 五行 ───────────────────────────────────────────
@@ -257,6 +258,7 @@ export interface FortuneReading {
   answers?: FortuneAnswer[]  // 针对用户问题的命理解答
   luckyItems: LuckyItem[]
   generatedAt: string
+  selectedSystems?: string[]  // 本次解读使用的体系
 }
 
 // ── 配对功能 ──────────────────────────────────────────────

@@ -38,6 +38,22 @@ const COUNTRIES = [
   { code: 'other', zh: '其他',  en: 'Other' },
 ] as const
 
+const ALL_SYSTEMS = [
+  { slug: 'bazi',        icon: '☯️', zh: '八字',  en: 'BaZi' },
+  { slug: 'astrology',   icon: '⭐', zh: '星座',  en: 'Astrology' },
+  { slug: 'tarot',       icon: '🔮', zh: '塔罗',  en: 'Tarot' },
+  { slug: 'ziwei',       icon: '🏛️', zh: '紫微',  en: 'Zi Wei' },
+  { slug: 'numerology',  icon: '🔢', zh: '数命',  en: 'Numerology' },
+  { slug: 'lucky',       icon: '🎁', zh: '幸运物', en: 'Lucky' },
+  { slug: 'liuyao',      icon: '卦', zh: '六爻',  en: 'Liu Yao' },
+  { slug: 'meihua',      icon: '🌸', zh: '梅花',  en: 'Meihua' },
+  { slug: 'runes',       icon: '᛭', zh: '符文',  en: 'Runes' },
+  { slug: 'humandesign', icon: '⬡', zh: '人类图', en: 'Human Design' },
+  { slug: 'vedic',       icon: '🌙', zh: '吠陀',  en: 'Vedic' },
+  { slug: 'xingming',    icon: '字', zh: '姓名',  en: 'Name' },
+]
+const ALL_SLUGS = ALL_SYSTEMS.map(s => s.slug)
+
 export default function FortuneForm() {
   const router = useRouter()
   const { tr, lang } = useLang()
@@ -46,6 +62,8 @@ export default function FortuneForm() {
   const [error, setError] = useState('')
   const [timeUnknown, setTimeUnknown] = useState(false)
   const autoSubmitRef = useRef(false)
+  const [selectedSystems, setSelectedSystems] = useState<string[]>(ALL_SLUGS)
+  const [showSystems, setShowSystems] = useState(false)
 
   const [form, setForm] = useState<UserInput>({
     name: '',
@@ -154,7 +172,11 @@ export default function FortuneForm() {
     setLoading(true)
     setProgress({ step: lang === 'en' ? 'Starting…' : '启动中…', pct: 5 })
 
-    const payload = { ...form, lang }
+    const payload = {
+      ...form,
+      lang,
+      systems: selectedSystems.length === ALL_SLUGS.length ? undefined : selectedSystems,
+    }
 
     try {
       await attemptFortune(payload)
@@ -440,6 +462,62 @@ export default function FortuneForm() {
             >
               + {tr.form.addQuestion}
             </button>
+          )}
+        </div>
+
+        {/* 命理体系多选 */}
+        <div>
+          <button
+            type="button"
+            onClick={() => setShowSystems(v => !v)}
+            className="w-full flex items-center justify-between text-sm py-2 px-3 rounded-xl"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-muted)' }}
+          >
+            <span>{lang === 'en' ? '⚙️ Divination Systems' : '⚙️ 命理体系'}</span>
+            <span style={{ color: selectedSystems.length === ALL_SLUGS.length ? 'var(--text-muted)' : 'var(--gold)' }}>
+              {selectedSystems.length === ALL_SLUGS.length
+                ? (lang === 'en' ? 'All 12 ▾' : '全选 12 ▾')
+                : `${selectedSystems.length}/12 ▾`}
+            </span>
+          </button>
+          {showSystems && (
+            <div className="mt-2 p-3 rounded-xl space-y-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="flex justify-between text-xs mb-2" style={{ color: 'var(--text-muted)' }}>
+                <span>{lang === 'en' ? 'Select systems to include' : '选择参与解读的体系'}</span>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setSelectedSystems(ALL_SLUGS)} style={{ color: 'var(--gold)' }}>
+                    {lang === 'en' ? 'All' : '全选'}
+                  </button>
+                  <span style={{ opacity: 0.3 }}>·</span>
+                  <button type="button" onClick={() => setSelectedSystems([])} style={{ color: 'var(--text-muted)' }}>
+                    {lang === 'en' ? 'None' : '清空'}
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {ALL_SYSTEMS.map(s => {
+                  const on = selectedSystems.includes(s.slug)
+                  return (
+                    <button
+                      key={s.slug}
+                      type="button"
+                      onClick={() => setSelectedSystems(prev =>
+                        on ? prev.filter(x => x !== s.slug) : [...prev, s.slug]
+                      )}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs transition-all"
+                      style={{
+                        background: on ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.04)',
+                        border: `1px solid ${on ? 'rgba(212,175,55,0.4)' : 'rgba(255,255,255,0.1)'}`,
+                        color: on ? 'var(--gold)' : 'var(--text-muted)',
+                      }}
+                    >
+                      <span>{s.icon}</span>
+                      <span>{lang === 'en' ? s.en : s.zh}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
           )}
         </div>
 

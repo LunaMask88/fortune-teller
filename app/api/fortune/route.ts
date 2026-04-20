@@ -23,6 +23,9 @@ export async function POST(req: NextRequest) {
   const input: UserInput = await req.json()
   const { name, birthYear, birthMonth, birthDay, birthHour, gender, period, country, city } = input
   const isEN = input.lang === 'en'
+  const ALL_SLUGS = ['bazi','astrology','tarot','ziwei','numerology','lucky','liuyao','meihua','runes','humandesign','vedic','xingming']
+  const selectedSystems: string[] = input.systems ?? ALL_SLUGS
+  const has = (s: string) => selectedSystems.includes(s)
 
   const enc = new TextEncoder()
   const stream = new ReadableStream({
@@ -70,13 +73,17 @@ export async function POST(req: NextRequest) {
 === Divination Profile ===
 Name: ${name} | Born: ${birthYear}-${birthMonth}-${birthDay}${birthHour !== null ? ` ${birthHour}h` : ''} | ${gender}${locationStr ? ` | Location: ${locationStr}` : ''}
 ${context?.trim() ? `Context: ${context.trim()}\n` : ''}
-BaZi: ${bazi.yearPillar.full} ${bazi.monthPillar.full} ${bazi.dayPillar.full} ${bazi.hourPillar?.full ?? '?'}
-Elements: Wood${bazi.elements['木']} Fire${bazi.elements['火']} Earth${bazi.elements['土']} Metal${bazi.elements['金']} Water${bazi.elements['水']} (weak:${weakStr}, strong:${bazi.dominantElement})
-Zodiac: ${bazi.chineseZodiac} | Sun: ${sunSign} | Life#: ${numerology.lifePathNumber}
-Zi Wei: ${ziwei.palaceName} palace, ${ziwei.mainStar}
-Vedic: ${vedic.moonRashi.nameCN}, ${vedic.nakshatra.nameCN}, ${vedic.currentDasha.nameCN}
-Tarot: ${tarotStr} | Runes: ${runesStr}
-Human Design: ${humanDesign.type}, ${humanDesign.profile}, ${humanDesign.authority}
+Active systems: ${selectedSystems.join(', ')}
+${has('bazi') ? `BaZi: ${bazi.yearPillar.full} ${bazi.monthPillar.full} ${bazi.dayPillar.full} ${bazi.hourPillar?.full ?? '?'}
+Elements: Wood${bazi.elements['木']} Fire${bazi.elements['火']} Earth${bazi.elements['土']} Metal${bazi.elements['金']} Water${bazi.elements['水']} (weak:${weakStr}, strong:${bazi.dominantElement})` : ''}
+${has('astrology') ? `Sun Sign: ${sunSign}` : ''}
+${has('numerology') ? `Life#: ${numerology.lifePathNumber}` : ''}
+${has('ziwei') ? `Zi Wei: ${ziwei.palaceName} palace, ${ziwei.mainStar}` : ''}
+${has('liuyao') ? `Liu Yao: ${liuyao.benGua.name}${liuyao.bianGua ? '→' + liuyao.bianGua.name : ''}` : ''}
+${has('vedic') ? `Vedic: ${vedic.moonRashi.nameCN}, ${vedic.nakshatra.nameCN}, ${vedic.currentDasha.nameCN}` : ''}
+${has('tarot') ? `Tarot: ${tarotStr}` : ''}
+${has('runes') ? `Runes: ${runesStr}` : ''}
+${has('humandesign') ? `Human Design: ${humanDesign.type}, ${humanDesign.profile}, ${humanDesign.authority}` : ''}
 Period: ${periodLabel}
 ${hasQuestions ? `Questions:\n${cleanQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n` : ''}
 Return JSON only:
@@ -110,13 +117,17 @@ Replace ALL 6 items with real personalized recommendations based on the user's B
 === 命理档案 ===
 姓名：${name} | 出生：${birthYear}-${birthMonth}-${birthDay}${birthHour !== null ? ` ${birthHour}时` : ''} | ${gender === 'male' ? '男' : gender === 'female' ? '女' : '不披露'}${locationStr ? ` | 所在地：${locationStr}` : ''}
 ${context?.trim() ? `当前状况：${context.trim()}\n` : ''}
-八字：${bazi.yearPillar.full} ${bazi.monthPillar.full} ${bazi.dayPillar.full} ${bazi.hourPillar?.full ?? '?'}
-五行：木${bazi.elements['木']} 火${bazi.elements['火']} 土${bazi.elements['土']} 金${bazi.elements['金']} 水${bazi.elements['水']}（弱：${weakStr}，旺：${bazi.dominantElement}）
-生肖：${bazi.chineseZodiac} | 星座：${sunSign} | 生命数：${numerology.lifePathNumber}
-紫微：${ziwei.palaceName}宫 ${ziwei.mainStar} | 六爻：${liuyao.benGua.name}${liuyao.bianGua ? '→' + liuyao.bianGua.name : ''}
-吠陀：${vedic.moonRashi.nameCN} ${vedic.nakshatra.nameCN} ${vedic.currentDasha.nameCN}
-塔罗：${tarotStr} | 符文：${runesStr}
-人类图：${humanDesign.typeCN} ${humanDesign.profile} ${humanDesign.authority}
+启用体系：${selectedSystems.join('、')}
+${has('bazi') ? `八字：${bazi.yearPillar.full} ${bazi.monthPillar.full} ${bazi.dayPillar.full} ${bazi.hourPillar?.full ?? '?'}
+五行：木${bazi.elements['木']} 火${bazi.elements['火']} 土${bazi.elements['土']} 金${bazi.elements['金']} 水${bazi.elements['水']}（弱：${weakStr}，旺：${bazi.dominantElement}）` : ''}
+${has('astrology') ? `星座：${sunSign} | 生肖：${bazi.chineseZodiac}` : ''}
+${has('numerology') ? `生命数：${numerology.lifePathNumber}` : ''}
+${has('ziwei') ? `紫微：${ziwei.palaceName}宫 ${ziwei.mainStar}` : ''}
+${has('liuyao') ? `六爻：${liuyao.benGua.name}${liuyao.bianGua ? '→' + liuyao.bianGua.name : ''}` : ''}
+${has('vedic') ? `吠陀：${vedic.moonRashi.nameCN} ${vedic.nakshatra.nameCN} ${vedic.currentDasha.nameCN}` : ''}
+${has('tarot') ? `塔罗：${tarotStr}` : ''}
+${has('runes') ? `符文：${runesStr}` : ''}
+${has('humandesign') ? `人类图：${humanDesign.typeCN} ${humanDesign.profile} ${humanDesign.authority}` : ''}
 运势周期：${periodLabel}
 ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q}`).join('\n')}\n` : ''}
 请综合以上各体系给出${periodLabel}运势，返回 JSON（仅 JSON）：
@@ -251,7 +262,7 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
           humanDesign,
           vedic,
           xingming,
-          fortune: { ...fortune, generatedAt: new Date().toISOString() },
+          fortune: { ...fortune, generatedAt: new Date().toISOString(), selectedSystems },
         }
 
         send({ type: 'result', data: fullReading })
