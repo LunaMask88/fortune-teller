@@ -259,6 +259,8 @@ export interface FortuneReading {
   luckyItems: LuckyItem[]
   generatedAt: string
   selectedSystems?: string[]  // 本次解读使用的体系
+  destinyType?: string        // 命格标签，如 "甲木·将星"
+  rarityPct?: number          // 稀有度，如 12 = TOP 12%
 }
 
 // ── 配对功能 ──────────────────────────────────────────────

@@ -231,6 +231,27 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
           cat.score = Math.max(62, Math.min(100, cat.score ?? 62))
         }
 
+        // ── 命格标签 & 稀有度 ─────────────────────────────
+        const ARCHETYPE: Record<string, [string, string, string]> = {
+          甲: ['将星', '文昌', '建禄'],  乙: ['文昌', '桃花', '贵人'],
+          丙: ['帝旺', '将星', '驿马'],  丁: ['文昌', '贵人', '华盖'],
+          戊: ['魁罡', '将星', '专旺'],  己: ['贵人', '文昌', '福德'],
+          庚: ['魁罡', '将星', '驿马'],  辛: ['文昌', '桃花', '贵人'],
+          壬: ['驿马', '将星', '华盖'],  癸: ['华盖', '文昌', '贵人'],
+        }
+        const dayStem = bazi.dayPillar.stem
+        const archs = ARCHETYPE[dayStem] ?? ['贵人', '文昌', '建禄']
+        const tier = fortune.overallScore >= 88 ? 0 : fortune.overallScore >= 82 ? 1 : 2
+        fortune.destinyType = `${dayStem}${bazi.dominantElement}·${archs[tier]}`
+        fortune.rarityPct = fortune.overallScore >= 95 ? 3
+          : fortune.overallScore >= 90 ? 8
+          : fortune.overallScore >= 87 ? 15
+          : fortune.overallScore >= 84 ? 25
+          : fortune.overallScore >= 82 ? 35
+          : fortune.overallScore >= 80 ? 45
+          : fortune.overallScore >= 78 ? 58
+          : 68
+
         // ── 兜底：确保 luckyItems 中有且仅有一个 food 类 ────
         const FOOD_BY_WEAK: Record<string, { name: string; nameEN: string; reason: string; searchQuery: string; boosts: string }> = {
           木: { name: '菠菜猪肝汤', nameEN: 'Spinach Liver Soup', reason: '菠菜补木行生发之气，猪肝养血明目，助提升整体运势与健康。', searchQuery: '菠菜猪肝汤做法', boosts: 'health' },

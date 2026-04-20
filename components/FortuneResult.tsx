@@ -230,6 +230,36 @@ ${exportRef.current.innerHTML}
   const sys = fortune.selectedSystems  // undefined = all systems
   const hasSys = (s: string) => !sys || sys.includes(s)
   const periodLabel = tr.result.periodLabels[input.period]
+
+  // ── 病毒传播：命格 & 稀有度 & 晒命文 ──────────────────
+  const destinyType = fortune.destinyType
+  const rarityPct = fortune.rarityPct
+  const periodLabelShort = { today: '今日', month: '本月', year: '今年', life: '终生' }[input.period] ?? periodLabel
+  const shareText = [
+    `🔮 我刚测了AI命理：`,
+    destinyType ? `命格：「${destinyType}」${rarityPct ? `| 稀有度 TOP ${rarityPct}%` : ''}` : '',
+    `${periodLabelShort}运势 ${fortune.overallScore} 分 ✨`,
+    fortune.summary[0]?.body ? fortune.summary[0].body.slice(0, 35) + '…' : '',
+    `你的命格是什么？→ mysticpalantir.com`,
+  ].filter(Boolean).join('\n')
+
+  const [copyToast, setCopyToast] = useState('')
+  function handleCopyShare() {
+    navigator.clipboard?.writeText(shareText).then(() => {
+      setCopyToast(lang === 'en' ? '✓ Copied!' : '✓ 已复制，粘贴到微信吧')
+      setTimeout(() => setCopyToast(''), 2500)
+    }).catch(() => {
+      // 降级：选中文本
+      const el = document.createElement('textarea')
+      el.value = shareText
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      setCopyToast(lang === 'en' ? '✓ Copied!' : '✓ 已复制')
+      setTimeout(() => setCopyToast(''), 2500)
+    })
+  }
   const displayName = hideName ? (lang === 'en' ? 'Anonymous' : '某命主') : input.name
   const displayBirth = hideBirth
     ? (lang === 'en' ? '????-??-??' : '****年**月**日')
@@ -275,6 +305,30 @@ ${exportRef.current.innerHTML}
             <span className="text-gold-gradient">{displayName}</span>
             <span className="text-lg font-normal ml-2" style={{ color: 'var(--text-muted)' }}>{tr.result.subtitleSuffix(periodLabel)}</span>
           </h1>
+
+          {/* 命格标签 + 稀有度 */}
+          {destinyType && (
+            <div className="flex items-center justify-center gap-2 mb-2 flex-wrap">
+              <span className="px-3 py-1 rounded-full text-sm font-bold" style={{
+                background: 'linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(124,58,237,0.18) 100%)',
+                border: '1px solid rgba(212,175,55,0.4)',
+                color: 'var(--gold)',
+                letterSpacing: '0.05em',
+              }}>
+                {destinyType}
+              </span>
+              {rarityPct && (
+                <span className="px-2 py-1 rounded-full text-xs font-semibold" style={{
+                  background: 'rgba(201,123,132,0.12)',
+                  border: '1px solid rgba(201,123,132,0.3)',
+                  color: 'var(--rose)',
+                }}>
+                  稀有度 TOP {rarityPct}%
+                </span>
+              )}
+            </div>
+          )}
+
           <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
             {displayBirth} · {input.gender === 'female' ? (lang === 'en' ? 'Female' : '女') : (lang === 'en' ? 'Male' : '男')} · {tr.result.info12}
           </p>
@@ -308,6 +362,65 @@ ${exportRef.current.innerHTML}
           {activeTab === 'overview' && (
             <>
               <OverallSection fortune={fortune} />
+
+              {/* ── 晒命文 + 稀有度横幅 ── */}
+              <div className="rounded-2xl p-4 space-y-3" style={{
+                background: 'linear-gradient(135deg, rgba(212,175,55,0.07) 0%, rgba(124,58,237,0.07) 100%)',
+                border: '1px solid rgba(212,175,55,0.2)',
+              }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    {rarityPct && (
+                      <p className="text-xs mb-0.5" style={{ color: 'var(--text-muted)' }}>
+                        {lang === 'en' ? `Your reading ranks` : `你的运势`}
+                      </p>
+                    )}
+                    <p className="text-sm font-semibold" style={{ color: 'var(--gold)' }}>
+                      {rarityPct
+                        ? (lang === 'en' ? `TOP ${rarityPct}% of all readings ✨` : `超越了 ${100 - rarityPct}% 的测算者 ✨`)
+                        : (lang === 'en' ? 'Share your reading ✨' : '分享你的命理 ✨')}
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleCopyShare}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+                    style={{
+                      background: 'rgba(212,175,55,0.15)',
+                      border: '1px solid rgba(212,175,55,0.35)',
+                      color: 'var(--gold)',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    📋 {lang === 'en' ? 'Copy & Share' : '复制晒命文'}
+                  </button>
+                </div>
+                {copyToast && (
+                  <p className="text-xs text-center py-1 rounded-lg" style={{ background: 'rgba(124,58,237,0.1)', color: 'var(--purple-light)' }}>
+                    {copyToast}
+                  </p>
+                )}
+              </div>
+
+              {/* ── 配对 CTA ── */}
+              <button
+                onClick={() => router.push('/match')}
+                className="w-full rounded-2xl p-4 flex items-center justify-between transition-all hover:opacity-90"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(244,63,94,0.1) 0%, rgba(167,139,250,0.1) 100%)',
+                  border: '1px solid rgba(244,63,94,0.25)',
+                }}
+              >
+                <div className="text-left">
+                  <p className="text-sm font-semibold mb-0.5" style={{ color: '#f87171' }}>
+                    💕 {lang === 'en' ? 'Test compatibility with someone' : '测测你们的命理契合度'}
+                  </p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    {lang === 'en' ? 'Share with a friend and start a compatibility reading' : '把结果分享给 ta，一起测合盘配对 →'}
+                  </p>
+                </div>
+                <span className="text-2xl ml-3 flex-shrink-0">💕</span>
+              </button>
+
               {hasSys('xingming') && <XingmingSection xingming={xingming} />}
             </>
           )}
