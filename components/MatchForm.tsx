@@ -425,11 +425,11 @@ export default function MatchForm() {
             </div>
           )}
 
-          {/* ✨ 生成按钮 */}
+          {/* ✨ 开始解读按钮 */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-5 rounded-2xl font-bold text-lg transition-all"
+            className="w-full py-5 rounded-2xl font-bold text-xl transition-all mt-2"
             style={{
               background: loading
                 ? 'rgba(255,255,255,0.04)'
@@ -441,13 +441,14 @@ export default function MatchForm() {
                 : '1px solid rgba(255,255,255,0.25)',
               boxShadow: loading
                 ? 'none'
-                : '0 0 0 1px rgba(255,45,85,0.4), 0 8px 32px rgba(255,45,85,0.5), 0 2px 8px rgba(0,0,0,0.4)',
+                : '0 0 0 1px rgba(255,45,85,0.4), 0 8px 40px rgba(255,45,85,0.5), 0 2px 8px rgba(0,0,0,0.4)',
               textShadow: loading ? 'none' : '0 1px 4px rgba(0,0,0,0.3)',
+              letterSpacing: '0.02em',
             }}
           >
             {loading
               ? (isZH ? '正在分析中…' : 'Analyzing…')
-              : (isZH ? '✨ 开始合盘测算' : '✨ Start Reading')}
+              : (isZH ? '💕 开始解读' : '💕 Start Reading')}
           </button>
         </form>
 
