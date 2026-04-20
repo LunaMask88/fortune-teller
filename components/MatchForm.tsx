@@ -366,10 +366,10 @@ export default function MatchForm() {
     s >= 80 ? '#d4af37' : s >= 65 ? '#22c55e' : s >= 50 ? '#a78bfa' : '#f97316'
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-8">
+    <div className="w-full max-w-2xl mx-auto px-4 pt-6 pb-32">
       {!result ? (
         /* ── 输入表单 ─────────────────────────────────── */
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <><form onSubmit={handleSubmit} className="space-y-4">
           <h1 className="text-xl font-bold text-center mb-2" style={{ color: 'var(--gold)' }}>
             💕 {isZH ? '合盘配对分析' : 'Compatibility Reading'}
           </h1>
@@ -408,50 +408,43 @@ export default function MatchForm() {
             </p>
           )}
 
-          {/* 进度条（分析中展示） */}
-          {loading && progress && (
-            <div className="mystic-card p-4 space-y-2">
-              <div className="flex justify-between text-xs" style={{ color: 'var(--gold)' }}>
-                <span className="flex items-center gap-1">
+        </form>
+
+        {/* ✨ 开始解读按钮 — 固定在底部 BottomNav 上方 */}
+        <div className="fixed bottom-16 left-0 right-0 px-4 z-30" style={{ pointerEvents: loading ? 'none' : 'auto' }}>
+          <div className="max-w-2xl mx-auto">
+            {loading && progress && (
+              <div className="mb-2 rounded-xl px-4 py-2 flex items-center justify-between text-xs"
+                style={{ background: 'rgba(13,11,30,0.95)', border: '1px solid rgba(244,63,94,0.3)', color: 'var(--gold)', backdropFilter: 'blur(8px)' }}>
+                <span className="flex items-center gap-1.5">
                   <span className="animate-spin inline-block">✦</span>
                   {progress.step}
                 </span>
                 <span>{progress.pct}%</span>
               </div>
-              <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                <div className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${progress.pct}%`, background: 'linear-gradient(90deg,#f43f5e,#a78bfa)' }} />
-              </div>
-            </div>
-          )}
-
-          {/* ✨ 开始解读按钮 */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-5 rounded-2xl font-bold text-xl transition-all mt-2"
-            style={{
-              background: loading
-                ? 'rgba(255,255,255,0.04)'
-                : 'linear-gradient(135deg, #ff2d55 0%, #ff6b9d 50%, #c084fc 100%)',
-              color: loading ? 'rgba(255,255,255,0.3)' : '#fff',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              border: loading
-                ? '1px solid rgba(255,255,255,0.1)'
-                : '1px solid rgba(255,255,255,0.25)',
-              boxShadow: loading
-                ? 'none'
-                : '0 0 0 1px rgba(255,45,85,0.4), 0 8px 40px rgba(255,45,85,0.5), 0 2px 8px rgba(0,0,0,0.4)',
-              textShadow: loading ? 'none' : '0 1px 4px rgba(0,0,0,0.3)',
-              letterSpacing: '0.02em',
-            }}
-          >
-            {loading
-              ? (isZH ? '正在分析中…' : 'Analyzing…')
-              : (isZH ? '💕 开始解读' : '💕 Start Reading')}
-          </button>
-        </form>
-
+            )}
+            <button
+              onClick={handleSubmit as unknown as React.MouseEventHandler}
+              disabled={loading}
+              className="w-full py-4 rounded-2xl font-bold text-lg transition-all"
+              style={{
+                background: loading
+                  ? 'rgba(255,255,255,0.06)'
+                  : 'linear-gradient(135deg, #ff2d55 0%, #ff6b9d 50%, #c084fc 100%)',
+                color: loading ? 'rgba(255,255,255,0.3)' : '#fff',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                border: loading ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(255,255,255,0.25)',
+                boxShadow: loading ? 'none' : '0 0 0 1px rgba(255,45,85,0.4), 0 8px 32px rgba(255,45,85,0.5)',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              {loading
+                ? (isZH ? '正在分析中…' : 'Analyzing…')
+                : (isZH ? '💕 开始解读' : '💕 Start Reading')}
+            </button>
+          </div>
+        </div>
+        </>
       ) : (
         /* ── 结果展示 ─────────────────────────────────── */
         <div className="space-y-5">
