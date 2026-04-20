@@ -53,6 +53,7 @@ const ALL_SYSTEMS = [
   { slug: 'xingming',    icon: '字', zh: '姓名',  en: 'Name' },
 ]
 const ALL_SLUGS = ALL_SYSTEMS.map(s => s.slug)
+const QUICK_SLUGS = ['tarot', 'runes', 'liuyao', 'meihua', 'lucky']
 
 export default function FortuneForm() {
   const router = useRouter()
@@ -64,6 +65,7 @@ export default function FortuneForm() {
   const autoSubmitRef = useRef(false)
   const [selectedSystems, setSelectedSystems] = useState<string[]>(ALL_SLUGS)
   const [showSystems, setShowSystems] = useState(false)
+  const [quickMode, setQuickMode] = useState(false)
 
   const [form, setForm] = useState<UserInput>({
     name: '',
@@ -148,13 +150,15 @@ export default function FortuneForm() {
         } else if (event.type === 'result') {
           gotResult = true
           sessionStorage.setItem('fortune_reading', JSON.stringify(event.data))
-          const profile: UserProfile = {
-            name: form.name, birthYear: form.birthYear, birthMonth: form.birthMonth,
-            birthDay: form.birthDay, birthHour: form.birthHour, gender: form.gender,
-            country: form.country, city: form.city || undefined,
-            lang,
+          if (!quickMode) {
+            const profile: UserProfile = {
+              name: form.name, birthYear: form.birthYear, birthMonth: form.birthMonth,
+              birthDay: form.birthDay, birthHour: form.birthHour, gender: form.gender,
+              country: form.country, city: form.city || undefined,
+              lang,
+            }
+            saveProfile(profile)
           }
-          saveProfile(profile)
           saveLastReading(event.data as FullReading)
           router.push('/result')
         } else if (event.type === 'error') {
@@ -167,12 +171,26 @@ export default function FortuneForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.name.trim()) { setError(tr.form.errorName); return }
+    if (!quickMode && !form.name.trim()) { setError(tr.form.errorName); return }
     setError('')
     setLoading(true)
     setProgress({ step: lang === 'en' ? 'Starting…' : '启动中…', pct: 5 })
 
-    const payload = {
+    const now = new Date()
+    const payload = quickMode ? {
+      name: form.name.trim() || (lang === 'en' ? 'Anonymous' : '匿名'),
+      birthYear: now.getFullYear(),
+      birthMonth: now.getMonth() + 1,
+      birthDay: now.getDate(),
+      birthHour: now.getHours(),
+      gender: 'undisclosed' as const,
+      country: form.country,
+      period: form.period,
+      context: form.context,
+      questions: form.questions,
+      lang,
+      systems: QUICK_SLUGS,
+    } : {
       ...form,
       lang,
       systems: selectedSystems.length === ALL_SLUGS.length ? undefined : selectedSystems,
@@ -203,45 +221,85 @@ export default function FortuneForm() {
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto px-4 py-8">
       <div className="mystic-card p-6 md:p-8 space-y-6">
+
+        {/* 模式切换 */}
+        <div className="flex rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
+          <button
+            type="button"
+            onClick={() => setQuickMode(false)}
+            className="flex-1 py-2.5 text-sm font-medium transition-all"
+            style={{
+              background: !quickMode ? 'rgba(212,175,55,0.15)' : 'transparent',
+              color: !quickMode ? 'var(--gold)' : 'var(--text-muted)',
+              borderRight: '1px solid rgba(255,255,255,0.1)',
+            }}
+          >
+            ☯️ {lang === 'en' ? 'Full Reading' : '完整命理'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setQuickMode(true)}
+            className="flex-1 py-2.5 text-sm font-medium transition-all"
+            style={{
+              background: quickMode ? 'rgba(124,58,237,0.2)' : 'transparent',
+              color: quickMode ? 'var(--purple-light)' : 'var(--text-muted)',
+            }}
+          >
+            🎴 {lang === 'en' ? 'Quick Divination' : '快速占卜'}
+          </button>
+        </div>
+
+        {quickMode && (
+          <div className="rounded-xl px-4 py-3 text-xs leading-relaxed" style={{ background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.2)', color: 'var(--text-muted)' }}>
+            {lang === 'en'
+              ? '🎴 No birth info needed — draws Tarot, Runes, Liu Yao & Meihua based on the current moment.'
+              : '🎴 无需生辰八字，以当下时刻为机缘，抽取塔罗、符文、六爻、梅花易数。'}
+          </div>
+        )}
+
         {/* 姓名 */}
         <div>
           <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>
-            {tr.form.name} <span style={{ color: 'var(--rose)' }}>*</span>
+            {tr.form.name}
+            {!quickMode && <span style={{ color: 'var(--rose)' }}> *</span>}
+            {quickMode && <span className="text-xs font-normal ml-1" style={{ color: 'var(--text-muted)' }}>（{lang === 'en' ? 'optional' : '选填'}）</span>}
           </label>
           <input
             className="mystic-input"
-            placeholder={tr.form.namePlaceholder}
+            placeholder={quickMode ? (lang === 'en' ? 'Nickname or leave blank' : '昵称，可留空') : tr.form.namePlaceholder}
             value={form.name}
             onChange={e => set('name', e.target.value)}
           />
-          <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>{tr.form.nameHint}</p>
+          {!quickMode && <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>{tr.form.nameHint}</p>}
         </div>
 
-        {/* 性别 */}
-        <div>
-          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>{tr.form.gender}</label>
-          <div className="flex gap-2">
-            {([
-              { value: 'female',     label: `♀ ${tr.form.female}` },
-              { value: 'male',       label: `♂ ${tr.form.male}` },
-              { value: 'undisclosed', label: lang === 'en' ? '— N/A' : '— 不披露' },
-            ] as const).map(g => (
-              <button
-                key={g.value}
-                type="button"
-                onClick={() => set('gender', g.value)}
-                className="flex-1 py-3 rounded-xl text-sm font-medium transition-all"
-                style={{
-                  background: form.gender === g.value ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${form.gender === g.value ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                  color: form.gender === g.value ? 'var(--gold)' : 'var(--text-muted)',
-                }}
-              >
-                {g.label}
-              </button>
-            ))}
+        {/* 性别（仅完整模式） */}
+        {!quickMode && (
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>{tr.form.gender}</label>
+            <div className="flex gap-2">
+              {([
+                { value: 'female',     label: `♀ ${tr.form.female}` },
+                { value: 'male',       label: `♂ ${tr.form.male}` },
+                { value: 'undisclosed', label: lang === 'en' ? '— N/A' : '— 不披露' },
+              ] as const).map(g => (
+                <button
+                  key={g.value}
+                  type="button"
+                  onClick={() => set('gender', g.value)}
+                  className="flex-1 py-3 rounded-xl text-sm font-medium transition-all"
+                  style={{
+                    background: form.gender === g.value ? 'rgba(212,175,55,0.15)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${form.gender === g.value ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.1)'}`,
+                    color: form.gender === g.value ? 'var(--gold)' : 'var(--text-muted)',
+                  }}
+                >
+                  {g.label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 所在地区 */}
         <div>
@@ -274,8 +332,8 @@ export default function FortuneForm() {
           )}
         </div>
 
-        {/* 出生日期 */}
-        <div>
+        {/* 出生日期（仅完整模式） */}
+        {!quickMode && <div>
           <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>
             {tr.form.birthDate} <span style={{ color: 'var(--rose)' }}>*</span>
           </label>
@@ -312,10 +370,10 @@ export default function FortuneForm() {
               </select>
             </div>
           </div>
-        </div>
+        </div>}
 
-        {/* 出生时辰 */}
-        <div>
+        {/* 出生时辰（仅完整模式） */}
+        {!quickMode && <div>
           <label className="block text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>{tr.form.birthHour}</label>
           <label className="flex items-center gap-2 mb-3 cursor-pointer">
             <input
@@ -341,7 +399,7 @@ export default function FortuneForm() {
           <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
             {tr.form.timeHint}
           </p>
-        </div>
+        </div>}
 
         {/* 运势周期 */}
         <div>
@@ -465,8 +523,8 @@ export default function FortuneForm() {
           )}
         </div>
 
-        {/* 命理体系多选 */}
-        <div>
+        {/* 命理体系多选（仅完整模式） */}
+        {!quickMode && <div>
           <button
             type="button"
             onClick={() => setShowSystems(v => !v)}
@@ -519,7 +577,7 @@ export default function FortuneForm() {
               </div>
             </div>
           )}
-        </div>
+        </div>}
 
         {error && (
           <p className="text-sm text-center py-2 px-4 rounded-lg" style={{ background: 'rgba(201,123,132,0.1)', color: 'var(--rose)', border: '1px solid rgba(201,123,132,0.2)' }}>

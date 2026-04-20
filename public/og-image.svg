@@ -1,0 +1,52 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#060412"/>
+      <stop offset="50%" style="stop-color:#0f0a1e"/>
+      <stop offset="100%" style="stop-color:#060412"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d4af37"/>
+      <stop offset="50%" style="stop-color:#f0d060"/>
+      <stop offset="100%" style="stop-color:#c97b84"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- 装饰圆 -->
+  <circle cx="600" cy="315" r="280" fill="none" stroke="rgba(212,175,55,0.08)" stroke-width="1"/>
+  <circle cx="600" cy="315" r="220" fill="none" stroke="rgba(124,58,237,0.1)" stroke-width="1"/>
+
+  <!-- 星点 -->
+  <circle cx="120" cy="80" r="2" fill="white" opacity="0.6"/>
+  <circle cx="280" cy="150" r="1.5" fill="white" opacity="0.4"/>
+  <circle cx="950" cy="100" r="2" fill="white" opacity="0.5"/>
+  <circle cx="1080" cy="200" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="180" cy="480" r="2" fill="white" opacity="0.4"/>
+  <circle cx="1050" cy="520" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="400" cy="50" r="1" fill="white" opacity="0.7"/>
+  <circle cx="820" cy="580" r="1" fill="white" opacity="0.6"/>
+
+  <!-- 水晶球 -->
+  <circle cx="600" cy="230" r="90" fill="none" stroke="rgba(212,175,55,0.15)" stroke-width="2"/>
+  <circle cx="600" cy="230" r="80" fill="radial-gradient(circle at 35% 35%, rgba(212,175,55,0.3), rgba(124,58,237,0.4))"/>
+  <text x="600" y="255" font-size="80" text-anchor="middle" filter="url(#glow)">🔮</text>
+
+  <!-- 主标题 -->
+  <text x="600" y="370" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="52" font-weight="700" text-anchor="middle" fill="url(#gold)">MysticPalantir</text>
+
+  <!-- 副标题 -->
+  <text x="600" y="418" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="24" text-anchor="middle" fill="rgba(160,140,200,0.9)">AI 命理解读 · 八字 · 塔罗 · 星座 · 人类图</text>
+
+  <!-- 底部标签 -->
+  <text x="600" y="570" font-family="'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="18" text-anchor="middle" fill="rgba(212,175,55,0.5)">mysticpalantir.com</text>
+
+  <!-- 边框 -->
+  <rect x="2" y="2" width="1196" height="626" fill="none" stroke="rgba(212,175,55,0.15)" stroke-width="2" rx="8"/>
+</svg>

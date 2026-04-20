@@ -366,7 +366,7 @@ export default function MatchForm() {
     s >= 80 ? '#d4af37' : s >= 65 ? '#22c55e' : s >= 50 ? '#a78bfa' : '#f97316'
 
   return (
-    <div className="w-full max-w-lg mx-auto px-4 py-8">
+    <div className="w-full max-w-2xl mx-auto px-4 py-8">
       {!result ? (
         /* ── 输入表单 ─────────────────────────────────── */
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -377,21 +377,29 @@ export default function MatchForm() {
             {isZH ? '融合八字五行与西洋星座，解析两人命理契合度' : 'BaZi + Astrology compatibility analysis'}
           </p>
 
-          <PersonForm
-            label={isZH ? '甲方' : 'Person 1'}
-            data={person1} setField={set1}
-            timeUnknown={time1Unknown} setTimeUnknown={setTime1Unknown}
-            isZH={isZH}
-          />
+          {/* 两人表单：桌面并排 / 移动竖排 */}
+          <div className="grid md:grid-cols-[1fr_auto_1fr] gap-0 md:gap-2 items-start">
+            <PersonForm
+              label={isZH ? '甲方' : 'Person 1'}
+              data={person1} setField={set1}
+              timeUnknown={time1Unknown} setTimeUnknown={setTime1Unknown}
+              isZH={isZH}
+            />
 
-          <div className="text-center text-2xl select-none">💕</div>
+            {/* 分隔符：移动端水平，桌面端垂直居中 */}
+            <div className="flex md:flex-col items-center justify-center py-3 md:py-0 md:px-1 md:self-stretch">
+              <div className="hidden md:block flex-1 w-px" style={{ background: 'rgba(244,63,94,0.2)' }} />
+              <span className="text-xl select-none mx-3 md:mx-0 md:my-3">💕</span>
+              <div className="hidden md:block flex-1 w-px" style={{ background: 'rgba(244,63,94,0.2)' }} />
+            </div>
 
-          <PersonForm
-            label={isZH ? '乙方' : 'Person 2'}
-            data={person2} setField={set2}
-            timeUnknown={time2Unknown} setTimeUnknown={setTime2Unknown}
-            isZH={isZH}
-          />
+            <PersonForm
+              label={isZH ? '乙方' : 'Person 2'}
+              data={person2} setField={set2}
+              timeUnknown={time2Unknown} setTimeUnknown={setTime2Unknown}
+              isZH={isZH}
+            />
+          </div>
 
           {error && (
             <p className="text-sm text-center py-2 px-4 rounded-lg"
