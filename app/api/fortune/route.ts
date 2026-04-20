@@ -225,10 +225,11 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
 
         const fortune = JSON.parse(rawJson)
 
-        // ── 分数下限：总分 ≥ 75，各分项 ≥ 62 ─────────────
+        // ── 分数校准：总分 ≥ 75，各分项不低于总分 12 分 ───
         fortune.overallScore = Math.max(75, Math.min(100, fortune.overallScore ?? 75))
+        const catFloor = Math.max(62, fortune.overallScore - 12)
         for (const cat of Object.values(fortune.categories ?? {}) as { score: number }[]) {
-          cat.score = Math.max(62, Math.min(100, cat.score ?? 62))
+          cat.score = Math.max(catFloor, Math.min(100, cat.score ?? catFloor))
         }
 
         // ── 命格标签 & 稀有度 ─────────────────────────────
