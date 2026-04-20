@@ -225,6 +225,12 @@ ${hasQuestions ? `用户问题：\n${cleanQuestions.map((q, i) => `${i + 1}. ${q
 
         const fortune = JSON.parse(rawJson)
 
+        // ── 分数下限：总分 ≥ 75，各分项 ≥ 62 ─────────────
+        fortune.overallScore = Math.max(75, Math.min(100, fortune.overallScore ?? 75))
+        for (const cat of Object.values(fortune.categories ?? {}) as { score: number }[]) {
+          cat.score = Math.max(62, Math.min(100, cat.score ?? 62))
+        }
+
         // ── 兜底：确保 luckyItems 中有且仅有一个 food 类 ────
         const FOOD_BY_WEAK: Record<string, { name: string; nameEN: string; reason: string; searchQuery: string; boosts: string }> = {
           木: { name: '菠菜猪肝汤', nameEN: 'Spinach Liver Soup', reason: '菠菜补木行生发之气，猪肝养血明目，助提升整体运势与健康。', searchQuery: '菠菜猪肝汤做法', boosts: 'health' },

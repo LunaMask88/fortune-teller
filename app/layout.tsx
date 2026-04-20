@@ -52,8 +52,8 @@ export const viewport: Viewport = {
   themeColor: '#060412',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 5,       // 允许放大，WeChat/iOS 无障碍需要
+  viewportFit: 'cover',  // 支持 iPhone 刘海/圆角安全区
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -63,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <LangProvider>
             <LangToggle />
-            <div className="pb-16">{children}</div>
+            <div style={{ paddingBottom: 'calc(4rem + env(safe-area-inset-bottom))' }}>{children}</div>
             <BottomNav />
           </LangProvider>
         </ThemeProvider>

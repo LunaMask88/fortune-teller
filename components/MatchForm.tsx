@@ -411,7 +411,7 @@ export default function MatchForm() {
         </form>
 
         {/* ✨ 开始解读按钮 — 固定在底部 BottomNav 上方 */}
-        <div className="fixed bottom-16 left-0 right-0 px-4 z-30" style={{ pointerEvents: loading ? 'none' : 'auto' }}>
+        <div className="fixed left-0 right-0 px-4 z-30" style={{ bottom: 'calc(4rem + env(safe-area-inset-bottom))', pointerEvents: loading ? 'none' : 'auto' }}>
           <div className="max-w-2xl mx-auto">
             {loading && progress && (
               <div className="mb-2 rounded-xl px-4 py-2 flex items-center justify-between text-xs"
@@ -429,13 +429,13 @@ export default function MatchForm() {
               className="w-full py-4 rounded-2xl font-bold text-lg transition-all"
               style={{
                 background: loading
-                  ? 'rgba(255,255,255,0.06)'
-                  : 'linear-gradient(135deg, #ff2d55 0%, #ff6b9d 50%, #c084fc 100%)',
-                color: loading ? 'rgba(255,255,255,0.3)' : '#fff',
+                  ? 'rgba(255,255,255,0.04)'
+                  : 'linear-gradient(135deg, rgba(160,50,80,0.85) 0%, rgba(120,60,140,0.85) 100%)',
+                color: loading ? 'rgba(255,255,255,0.25)' : 'rgba(255,220,230,0.95)',
                 cursor: loading ? 'not-allowed' : 'pointer',
-                border: loading ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(255,255,255,0.25)',
-                boxShadow: loading ? 'none' : '0 0 0 1px rgba(255,45,85,0.4), 0 8px 32px rgba(255,45,85,0.5)',
-                backdropFilter: 'blur(8px)',
+                border: loading ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(200,100,130,0.35)',
+                boxShadow: loading ? 'none' : '0 4px 20px rgba(120,40,80,0.4), inset 0 1px 0 rgba(255,255,255,0.08)',
+                backdropFilter: 'blur(12px)',
               }}
             >
               {loading

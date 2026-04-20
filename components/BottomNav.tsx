@@ -19,9 +19,11 @@ export default function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-40 flex"
       style={{
-        background: 'rgba(6,4,18,0.85)',
+        background: 'rgba(6,4,18,0.92)',
+        WebkitBackdropFilter: 'blur(16px)',
         backdropFilter: 'blur(16px)',
         borderTop: '1px solid rgba(255,255,255,0.07)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
       }}
     >
       {tabs.map(tab => {
@@ -31,7 +33,7 @@ export default function BottomNav() {
             key={tab.href}
             href={tab.href}
             className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 transition-all"
-            style={{ color: active ? 'var(--gold)' : 'var(--text-muted)' }}
+            style={{ color: active ? 'var(--gold)' : 'var(--text-muted)', touchAction: 'manipulation' }}
           >
             <span style={{ fontSize: 20, lineHeight: 1 }}>{tab.icon}</span>
             <span style={{ fontSize: 11, fontWeight: active ? 600 : 400 }}>{tab.label}</span>

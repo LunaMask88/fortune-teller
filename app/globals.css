@@ -22,11 +22,30 @@
 
 * { box-sizing: border-box; }
 
+html {
+  /* iOS Safari 弹性滚动 */
+  -webkit-overflow-scrolling: touch;
+}
+
 body {
   background: var(--bg-deep);
   color: var(--text-primary);
-  font-family: var(--font-sans), 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: var(--font-sans), 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   min-height: 100vh;
+  /* 防止 iOS 字体大小自动调整 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* 所有可点击元素：消除 300ms 点击延迟（微信/iOS 关键） */
+a, button, [role="button"], input, select, textarea, label {
+  touch-action: manipulation;
+}
+
+/* 防止 iOS/微信双击缩放 */
+button, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 }
 
 /* 星空背景 */
@@ -130,6 +149,11 @@ body {
   width: 100%;
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
+  /* ≥16px 防止 iOS/微信聚焦时自动缩放页面 */
+  font-size: 16px;
+  /* iOS select 去掉默认外观 */
+  -webkit-appearance: none;
+  appearance: none;
 }
 .mystic-input:focus {
   border-color: rgba(212, 175, 55, 0.6);
